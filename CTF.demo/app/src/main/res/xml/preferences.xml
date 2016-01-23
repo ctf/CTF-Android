@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <PreferenceCategory
+        android:title="@string/pref_push_title"
+        android:key="pref_push_key">
+        <CheckBoxPreference
+            android:key="pref_pushprinterdownup"
+            android:title="@string/pref_pushprinterdownup"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="pref_roomnotfull"
+            android:title="@string/pref_roomnotfull"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="pref_jobenters"
+            android:title="@string/pref_jobenters"
+            android:defaultValue="false" />
+        <EditTextPreference
+            android:key="pref_remainquota"
+            android:title="@string/pref_remainquota"
+            android:numeric="integer" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_other_title"
+        android:key="pref_other_key">
+        <ListPreference
+            android:key="pref_language"
+            android:title="@string/pref_language"
+            android:entries="@array/language"
+            android:entryValues="@array/language_alias" />
+        <Preference
+            android:key="pref_about"
+            android:title="@string/pref_about">
+            <!-- <intent android:action="ca.mcgill.sus.taskforce.ctf_app"/> -->
+        </Preference>
+
+        <Preference
+            android:key="pref_logout"
+            android:title="@string/pref_logout">
+            <!-- <intent android:action="ca.mcgill.sus.taskforce.ctf_app"/> -->
+        </Preference>
+
+
+    </PreferenceCategory>
+</PreferenceScreen>
