@@ -97,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.settings) {
             fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
         } else if (id == R.id.report_problem) {
-            Intent myIntent = new Intent(MainActivity.this, SendError.class);
-            MainActivity.this.startActivity(myIntent);
-            //fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
+            //Intent myIntent = new Intent(MainActivity.this, SendError.class);
+            //MainActivity.this.startActivity(myIntent);
+            fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
             //Launching the activity this way allows it to actually work. (When I launch it your way it acts like the java file does not exist)
             //However, this makes the nav drawer non-existent.
             //Please fix.
