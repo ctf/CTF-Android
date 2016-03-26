@@ -1,11 +1,16 @@
 package com.example.ctfdemo;
 
-import android.app.FragmentManager;
+/* note to future self : don't fucking touch the v4 support lib fragment manager,
+ * or the v4 support lib fragments. I fucking finally got it working nicely so that
+ * all pages share the same navigation drawer. You can't use the android.app.Fragment
+ * because some of the methods implemented for the recyclerview on the roominfo pages
+ * won't work, and treating them as a special case with their own activity fucking lags,
+ * and brings up a host of other bugs, so leave it this way unless you've found a better way to do it.
+ */
+
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +24,7 @@ import com.example.fragments.MainFragment;
 import com.example.fragments.ReportProblemFragment;
 import com.example.fragments.SettingsFragment;
 import com.example.fragments.UserInfoFragment;
+import com.example.fragments.RoomInfoFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,15 +35,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
     }
 
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -94,13 +91,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.dashboard) {
             fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
         } else if (id == R.id.room_info) {
-            startActivity(new Intent(this, RoomInfoTabs.class));
+            fm.beginTransaction().replace(R.id.content_frame, new RoomInfoFragment()).commit();
         } else if (id == R.id.user_info) {
             fm.beginTransaction().replace(R.id.content_frame, new UserInfoFragment()).commit();
         } else if (id == R.id.settings) {
             fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
         } else if (id == R.id.report_problem) {
-            fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
+            Intent myIntent = new Intent(MainActivity.this, SendError.class);
+            MainActivity.this.startActivity(myIntent);
+            //fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
+            //Launching the activity this way allows it to actually work. (When I launch it your way it acts like the java file does not exist)
+            //However, this makes the nav drawer non-existent.
+            //Please fix.
+            //Thanks, Z
         } else if (id == R.id.logout) {
 
         }

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:rowCount="9" android:columnCount="6">
+
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="50dp" android:layout_height="50dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_false"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="50dp" android:layout_height="50dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_false"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="50dp" android:layout_height="50dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_false"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_false"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="50dp" android:layout_height="50dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <Space android:layout_width="25dp" android:layout_height="25dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="50dp" android:layout_height="50dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <Space android:layout_width="50dp" android:layout_height="50dp"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+    <ImageView
+        android:id="@+id/computer_icon"
+        android:contentDescription="@string/computers_available"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/computers_available_true"
+        android:layout_weight="1"/>
+
+
+
+
+</GridLayout>

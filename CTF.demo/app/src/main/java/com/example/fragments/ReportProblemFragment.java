@@ -1,6 +1,6 @@
 package com.example.fragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -18,7 +18,7 @@ public class ReportProblemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_reportproblem, container, false);
+        View rootView = inflater.inflate(R.layout.activity_send_error, container, false);
 
         return rootView;
 

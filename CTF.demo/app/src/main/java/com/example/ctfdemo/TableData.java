@@ -9,6 +9,9 @@ import android.widget.TableRow;
 public class TableData {
     private String user;
     private String date;
+    private String jobId;
+    private String pageCount;
+
     public String getUser() {
         return user;
     }
@@ -21,4 +24,8 @@ public class TableData {
     public void setDate(String date) {
         this.date = date;
     }
+    public String getJobId() { return jobId; }
+    public void setJobId(String jobId) { this.jobId = jobId; }
+    public String getPageCount() { return pageCount; }
+    public void setPageCount(String pageCount) { this.pageCount = pageCount; }
 }

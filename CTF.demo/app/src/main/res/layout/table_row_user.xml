@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:stretchColumns="0,1,2">
+    <TableRow android:id="@+id/table_data_user">
+       <TextView
+           android:id="@+id/print_hist_job"
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+           android:padding="2dp"
+           android:gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/print_hist_date"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:padding="2dp"
+            android:gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/print_hist_pageCount"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:padding="2dp"
+            android:gravity="center_horizontal"/>
+    </TableRow>
+
+</TableLayout>

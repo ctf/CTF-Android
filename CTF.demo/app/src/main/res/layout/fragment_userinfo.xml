@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/windowBackground">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="This page will display user info: print history, quota, etc."
-        android:id="@+id/textView3"
-        android:layout_gravity="center" />
-</FrameLayout>
+        android:id="@+id/quota"
+        style="@style/subheader"
+        android:text="Quota: "
+        android:layout_width="match_parent"
+        android:layout_height="48dp"/>
+    <TextView
+        android:text="Print History"
+        android:id="@+id/print_hist_subhead"
+        style="@style/table_header"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/quota"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/print_history"
+        style="@style/table"
+        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/print_hist_subhead"
+        android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
