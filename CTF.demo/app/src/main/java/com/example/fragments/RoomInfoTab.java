@@ -2,11 +2,13 @@ package com.example.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.TableData;
@@ -53,6 +55,16 @@ public class RoomInfoTab extends Fragment {
         // recent jobs table uses a linear layout manager and a custom adapter for table rows
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new mTableRowAdapter(getActivity(), getData(position)));
+
+        Button viewSeats = (Button) rootView.findViewById(R.id.map_button);
+        View.OnClickListener buttonClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRoomMapDialog();
+            }
+        };
+        viewSeats.setOnClickListener(buttonClickListener);
+
         return rootView;
     }
 
@@ -69,6 +81,12 @@ public class RoomInfoTab extends Fragment {
             data.add(currentData);
         }
         return data;
+    }
+
+    private void showRoomMapDialog() {
+        FragmentManager fm = getFragmentManager();
+        RoomMapFragment roomMapFragment = RoomMapFragment.newInstance("dummy_title");
+        roomMapFragment.show(fm, "room_map");
     }
 
 }
