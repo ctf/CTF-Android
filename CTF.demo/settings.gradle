@@ -1,1 +1,2 @@
 include ':app'
+include ':app:libraries:android-support-v4-preferencefragment'
