@@ -32,18 +32,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // the app opens on the MainFragment, which loads the xml for the dashboard
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
     }
@@ -84,32 +85,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         FragmentManager fm = getSupportFragmentManager();
-
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.dashboard) {
-            fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
-        } else if (id == R.id.room_info) {
-            fm.beginTransaction().replace(R.id.content_frame, new RoomInfoFragment()).commit();
-        } else if (id == R.id.user_info) {
-            fm.beginTransaction().replace(R.id.content_frame, new UserInfoFragment()).commit();
-        } else if (id == R.id.settings) {
-            fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
-        } else if (id == R.id.report_problem) {
-            //Intent myIntent = new Intent(MainActivity.this, SendError.class);
-            //MainActivity.this.startActivity(myIntent);
-            fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
-            //Launching the activity this way allows it to actually work. (When I launch it your way it acts like the java file does not exist)
-            //However, this makes the nav drawer non-existent.
-            //Please fix.
-            //Thanks, Z
-        } else if (id == R.id.logout) {
+        // respond to clicks in nav drawer
+        switch (id) {
+            case (R.id.dashboard) :
+                fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+                getSupportActionBar().setTitle(R.string.dashboard);
+            case (R.id.room_info) :
+                fm.beginTransaction().replace(R.id.content_frame, new RoomInfoFragment()).commit();
+                getSupportActionBar().setTitle(R.string.roominfo);
+            case (R.id.user_info) :
+                fm.beginTransaction().replace(R.id.content_frame, new UserInfoFragment()).commit();
+                getSupportActionBar().setTitle(R.string.userinfo);
+            case (R.id.settings) :
+                fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
+                getSupportActionBar().setTitle(R.string.settings);
+            case (R.id.report_problem) :
+                fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
+                getSupportActionBar().setTitle(R.string.reportproblem);
+            case (R.id.logout) :
 
+            case (R.id.login) :
+                Intent mIntent = new Intent(this, LoginActivity.class);
+                MainActivity.this.startActivity(mIntent);
         }
 
+        // then close the drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 }

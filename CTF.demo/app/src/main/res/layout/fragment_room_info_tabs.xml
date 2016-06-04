@@ -2,17 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.ctfdemo.RoomInfoTabs$PlaceholderFragment"
+    tools:context="com.example.fragments.RoomInfoFragment"
     android:background="@color/windowBackground">
+
     <LinearLayout
         android:id="@+id/status_icons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
+
         <ImageView
             android:id="@+id/computer_icon"
             android:contentDescription="@string/computers_available"
@@ -20,6 +18,7 @@
             android:layout_height="100dp"
             android:src="@drawable/computers_available_true"
             android:layout_weight="1"/>
+
         <ImageView
             android:id="@+id/printer_working"
             android:contentDescription="@string/printer_working"
@@ -27,42 +26,54 @@
             android:layout_height="100dp"
             android:src="@drawable/ic_printer_alert"
             android:layout_weight="1" />
+
     </LinearLayout>
-    <LinearLayout
+
+<!--    <LinearLayout
         android:id="@+id/status_strings"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/status_icons"
         android:layout_marginTop="10dp">
+
         <TextView
             android:id="@+id/computer_text"
             android:text="@string/computers_available"
-            android:textColor="@color/white"
+            android:textColor="#DE000000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_weight="1"/>
+
         <TextView
             android:id="@+id/printer_text"
             android:text="@string/printer_error"
-            android:textColor="@color/white"
+            android:textColor="#DE000000"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_weight="1"/>
-    </LinearLayout>
+
+    </LinearLayout>-->
+
     <Button
         android:id="@+id/map_button"
+        style="?android:textAppearanceSmall"
+        android:textStyle="bold"
         android:text="@string/map_button"
-        android:layout_width="140dp"
-        android:layout_height="50dp"
-        android:layout_below="@+id/status_strings"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/status_icons"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:layout_alignParentEnd="false" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recent_jobs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
         android:layout_below="@+id/map_button"></android.support.v7.widget.RecyclerView>
+
 </RelativeLayout>

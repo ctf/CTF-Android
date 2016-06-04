@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">CTF</string>
 
+    <!-- Strings for page titles -->
     <string name="dashboard">Dashboard</string>
     <string name="roominfo">Room Info</string>
-    <string name="userinfo">User Info</string>
+    <string name="userinfo">My Account</string>
     <string name="settings">Settings</string>
     <string name="reportproblem">Report a problem</string>
 
+    <!-- Strings for blind people? -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -17,9 +19,8 @@
     <string name="map_button">View Room Map</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_room_info_tabs">RoomInfoTabs</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 
+    <!-- Srings related to settings -->
     <string name="pref_push_title">Push notifications</string>
     <string name="pref_pushprinterdownup">Printer goes down/comes back up</string>
     <string name="pref_roomnotfull">A previously full room frees up</string>
@@ -41,6 +42,20 @@
 
     <string name="title_activity_user">User</string>
     <string name="authenticator_account_type">com.example.ctfdemo.StudentAccount</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
 
 

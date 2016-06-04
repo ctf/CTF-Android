@@ -20,12 +20,30 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:preference-v7:23.1.1'
     compile project('libraries:android-support-v4-preferencefragment')
-compile 'com.android.support:preference-v7:23.1.1'
+    compile files('libraries/jersey-entity-filtering-2.22.1.jar')
+    compile files('libraries/javax.annotation-api-1.2.jar')
+    compile files('libraries/hk2-locator-2.4.0-b31.jar')
+    compile files('libraries/jersey-client.jar')
+    compile files('libraries/jackson-core-2.5.4.jar')
+    compile files('libraries/hk2-api-2.4.0-b31.jar')
+    compile files('libraries/xz-1.5.jar')
+    compile files('libraries/javax.ws.rs-api-2.0.1.jar')
+    compile files('libraries/jersey-guava-2.22.1.jar')
+    compile files('libraries/jackson-module-jaxb-annotations-2.5.4.jar')
+    compile files('libraries/javax.inject-2.4.0-b31.jar')
+    compile files('libraries/jackson-databind-2.5.4.jar')
+    compile files('libraries/hk2-utils-2.4.0-b31.jar')
+    compile files('libraries/jackson-jaxrs-base-2.5.4.jar')
+    compile files('libraries/jackson-annotations-2.5.4.jar')
+    compile files('libraries/jersey-media-json-jackson-2.22.1.jar')
+    compile files('libraries/jackson-jaxrs-json-provider-2.5.4.jar')
+    compile files('libraries/jersey-common.jar')
 }

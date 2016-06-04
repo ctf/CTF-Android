@@ -17,6 +17,9 @@ import com.example.ctfdemo.R;
 
 public class RoomInfoFragment extends Fragment {
 
+    // the number of tabs on the room info page
+    private static final int FRAGMENT_COUNT = 3;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -67,14 +70,13 @@ public class RoomInfoFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a RoomInfoTab
+            // we return a RoomInfoTab
             return RoomInfoTab.newInstance(position + 1);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            return FRAGMENT_COUNT;
         }
 
         @Override

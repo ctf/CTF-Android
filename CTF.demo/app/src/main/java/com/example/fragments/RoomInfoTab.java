@@ -19,8 +19,10 @@ import java.util.List;
 
 /**
  * Created by erasmas on 19/03/16.
+ * a single tab on the room info fragment
  */
 public class RoomInfoTab extends Fragment {
+
     /**
      * The fragment argument representing the section number for this
      * fragment.

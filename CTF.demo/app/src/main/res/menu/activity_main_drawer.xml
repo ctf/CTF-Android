@@ -2,23 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/dashboard" android:icon="@android:drawable/ic_menu_camera"
+        <item android:id="@+id/dashboard" android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="Dashboard" />
-        <item android:id="@+id/room_info" android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Room Info" />
-        <item android:id="@+id/user_info" android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="User Info" />
-        <item android:id="@+id/settings" android:icon="@android:drawable/ic_menu_manage"
+        <item android:id="@+id/room_info" android:icon="@drawable/ic_weekend_black_24px"
+            android:title="Rooms" />
+        <item android:id="@+id/user_info" android:icon="@drawable/ic_account"
+            android:title="My Account" />
+        <item android:id="@+id/settings" android:icon="@drawable/ic_settings"
             android:title="Settings" />
-    </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item android:id="@+id/report_problem" android:icon="@android:drawable/ic_menu_share"
+            <item android:id="@+id/report_problem" android:icon="@drawable/ic_bug_report_black_24px"
                 android:title="Report a problem" />
+            <item android:id="@+id/login" android:icon="@android:drawable/ic_menu_send"
+                android:title="Login" />
             <item android:id="@+id/logout" android:icon="@android:drawable/ic_menu_send"
                 android:title="Logout" />
-        </menu>
-    </item>
+    </group>
 
 </menu>
