@@ -23,7 +23,7 @@ public class ReportProblemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.activity_send_error, container, false);
+        View rootView = inflater.inflate(R.layout.activity_report_problem, container, false);
 
         roomSelect = 0;
         errorMessage = "";
@@ -43,7 +43,6 @@ public class ReportProblemFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.problem_spinner, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
 
         View.OnClickListener onClickListener1B16 = new View.OnClickListener() {
             @Override

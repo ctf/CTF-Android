@@ -23,8 +23,8 @@ import android.view.MenuItem;
 import com.example.fragments.MainFragment;
 import com.example.fragments.ReportProblemFragment;
 import com.example.fragments.SettingsFragment;
-import com.example.fragments.UserInfoFragment;
-import com.example.fragments.RoomInfoFragment;
+import com.example.fragments.MyAccountFragment;
+import com.example.fragments.RoomFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -87,28 +87,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager fm = getSupportFragmentManager();
         int id = item.getItemId();
 
-        // respond to clicks in nav drawer
-        switch (id) {
-            case (R.id.dashboard) :
-                fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
-                getSupportActionBar().setTitle(R.string.dashboard);
-            case (R.id.room_info) :
-                fm.beginTransaction().replace(R.id.content_frame, new RoomInfoFragment()).commit();
-                getSupportActionBar().setTitle(R.string.roominfo);
-            case (R.id.user_info) :
-                fm.beginTransaction().replace(R.id.content_frame, new UserInfoFragment()).commit();
-                getSupportActionBar().setTitle(R.string.userinfo);
-            case (R.id.settings) :
-                fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
-                getSupportActionBar().setTitle(R.string.settings);
-            case (R.id.report_problem) :
-                fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
-                getSupportActionBar().setTitle(R.string.reportproblem);
-            case (R.id.logout) :
+        if (id == R.id.dashboard) {
+            fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+            getSupportActionBar().setTitle(R.string.dashboard);
+        } else if (id == R.id.room_info) {
+            fm.beginTransaction().replace(R.id.content_frame, new RoomFragment()).commit();
+            getSupportActionBar().setTitle(R.string.roominfo);
+        } else if (id == R.id.user_info) {
+            fm.beginTransaction().replace(R.id.content_frame, new MyAccountFragment()).commit();
+            getSupportActionBar().setTitle(R.string.userinfo);
+        } else if (id == R.id.settings) {
+            fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
+            getSupportActionBar().setTitle(R.string.settings);
+        } else if (id == R.id.report_problem) {
+            fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
+            getSupportActionBar().setTitle(R.string.reportproblem);
+        } else if (id == R.id.logout) {
 
-            case (R.id.login) :
-                Intent mIntent = new Intent(this, LoginActivity.class);
-                MainActivity.this.startActivity(mIntent);
+        } else if (id == R.id.login) {
+            Intent mIntent = new Intent(this, LoginActivity.class);
+            MainActivity.this.startActivity(mIntent);
         }
 
         // then close the drawer

@@ -1,6 +1,5 @@
 package com.example.fragments;
 
-
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,11 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ctfdemo.MainActivity;
 import com.example.ctfdemo.R;
 
-
-public class RoomInfoFragment extends Fragment {
+public class RoomFragment extends Fragment {
 
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
@@ -44,11 +41,10 @@ public class RoomInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.roominfo);
 
         View rootView = inflater.inflate(R.layout.fragment_viewpager, container, false);
         viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new SectionsPagerAdapter(getChildFragmentManager()));
+        viewPager.setAdapter(new RoomPagerAdapter(getChildFragmentManager()));
 
         tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -56,22 +52,21 @@ public class RoomInfoFragment extends Fragment {
         return rootView;
     }
 
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
+     * one of the room pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class RoomPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        public RoomPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // we return a RoomInfoTab
-            return RoomInfoTab.newInstance(position + 1);
+            // we return a RoomTabFragment
+            return RoomTabFragment.newInstance(position + 1);
         }
 
         @Override

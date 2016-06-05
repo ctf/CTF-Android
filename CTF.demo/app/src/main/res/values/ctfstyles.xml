@@ -25,7 +25,5 @@
     </style>
 
     <style name="table">
-        <item name="android:layout_width">@string/maxwidth</item>
-        <item name="android:layout_marginLeft">@dimen/activity_vertical_margin</item>
     </style>
 </resources>

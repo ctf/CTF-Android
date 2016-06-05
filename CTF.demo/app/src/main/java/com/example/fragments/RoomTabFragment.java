@@ -10,18 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.ctfdemo.PrintJob;
+import com.example.ctfdemo.PrintJobAdapter;
 import com.example.ctfdemo.R;
-import com.example.ctfdemo.TableData;
-import com.example.ctfdemo.mTableRowAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by erasmas on 19/03/16.
  * a single tab on the room info fragment
  */
-public class RoomInfoTab extends Fragment {
+public class RoomTabFragment extends Fragment {
 
     /**
      * The fragment argument representing the section number for this
@@ -33,8 +34,8 @@ public class RoomInfoTab extends Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static RoomInfoTab newInstance(int sectionNumber) {
-        RoomInfoTab fragment = new RoomInfoTab();
+    public static RoomTabFragment newInstance(int sectionNumber) {
+        RoomTabFragment fragment = new RoomTabFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -42,13 +43,13 @@ public class RoomInfoTab extends Fragment {
     }
 
     // Required empty public constructor
-    public RoomInfoTab() {
+    public RoomTabFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // rootView occupies screen space below tabs
-        View rootView = inflater.inflate(R.layout.fragment_room_info_tabs, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_room_tabs, container, false);
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recent_jobs);
 
         Bundle bundle = getArguments();
@@ -56,7 +57,7 @@ public class RoomInfoTab extends Fragment {
 
         // recent jobs table uses a linear layout manager and a custom adapter for table rows
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new mTableRowAdapter(getActivity(), getData(position)));
+        mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), getData(), PrintJobAdapter.ROOMS));
 
         Button viewSeats = (Button) rootView.findViewById(R.id.map_button);
         View.OnClickListener buttonClickListener = new View.OnClickListener() {
@@ -70,19 +71,26 @@ public class RoomInfoTab extends Fragment {
         return rootView;
     }
 
-    // make a bunch of TableData objects to pass to the table row adapter, depending on the current room displayed
-    public static List<TableData> getData(int position) {
-        List<TableData> data = new ArrayList<>();
+    /**
+     * get a bunch of PrintJob objects to pass to the PrintJobAdapter,
+     * which extracts the relevant data and formats it depending on the
+     * type of table it is filling (user's job history or room queues)
+     */
+    public static List<PrintJob> getData() {
+        List<PrintJob> printJobs = new ArrayList<>();
+
         // TODO: query server for recent job info and store in array
-        String[] users = {""+position,"test user","test user","test user","test user","test user","test user","test user","test user"};
-        String[] dates = {""+position,"test date","test date","test date","test date","test date","test date","test date","test date"};
-        for (int i=0; i<users.length && i<dates.length; i++) {
-            TableData currentData = new TableData();
-            currentData.setUser(users[i]);
-            currentData.setDate(dates[i]);
-            data.add(currentData);
+        PrintJob testJob = new PrintJob();
+        testJob.setName("final_grades.xml");
+        testJob.setPages(1);
+        testJob.setPrinted(new Date());
+        testJob.setUserIdentification("student123");
+
+        for (int i = 0; i < 10; i++) {
+            printJobs.add(testJob);
         }
-        return data;
+
+        return printJobs;
     }
 
     private void showRoomMapDialog() {
