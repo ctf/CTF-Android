@@ -7,43 +7,24 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * The main login screen users will see
@@ -228,7 +209,6 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
         @Override
         protected Intent doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
             final Intent res = new Intent();
             String authToken;
 
@@ -249,7 +229,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         private String getAuthTokenFromCredentials(String mAccountName, String mPassword, String mAuthType) {
             final TextView textdisplay = (TextView) findViewById(R.id.token);
 
-            SessionRequest req = new SessionRequest().withUsername(mAccountName)
+            SessionRequest req = new SessionRequest().withUsername(mEmail)
                                         .withPassword(mPassword)
                                         .withPersistent(true)
                                         .withPermanent(true);

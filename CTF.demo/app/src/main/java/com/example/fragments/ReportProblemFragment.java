@@ -117,19 +117,14 @@ public class ReportProblemFragment extends Fragment {
     // TODO: why is this hitting each case statement?!
     private String generateErrorReport() {
         String errorReport = " Problem in room ";
-        switch (roomSelect) {
-            case 0: {
-                // TODO: signal the idiot user they must select a room
-            }
-            case 1: {
-                errorReport += "1B16 ";
-            }
-            case 2: {
-                errorReport += "1B17 ";
-            }
-            case 3: {
-                errorReport += "1B18 ";
-            }
+        if (roomSelect == 0) {
+            // TODO: signal the idiot user they must select a room
+        } else if (roomSelect == 1) {
+            errorReport += "1B16 ";
+        } else if (roomSelect == 2) {
+            errorReport += "1B17 ";
+        } else if (roomSelect == 3) {
+            errorReport += "1B18 ";
         }
         errorReport += errorMessage;
         return errorReport;
