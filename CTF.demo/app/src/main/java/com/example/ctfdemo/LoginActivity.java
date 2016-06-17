@@ -19,12 +19,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.glassfish.jersey.jackson.JacksonFeature;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * The main login screen users will see
@@ -49,6 +51,11 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     private View mProgressView;
     private View mLoginFormView;
 
+    // connection references
+    final String serverUrl = "https://tepid.sus.mcgill.ca:8443/tepid/sessions/";
+    RequestQueue requestQueue = VolleySingleton.getInstance().getRequestQueue();
+    JsonObjectRequest request = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +65,9 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         mAccountName = getIntent().getStringExtra(ARG_ACCOUNT_NAME);
         mAccountType = getIntent().getStringExtra(ARG_ACCOUNT_TYPE);
         mAuthType = getIntent().getStringExtra(ARG_AUTH_TYPE);
+
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
-
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -86,16 +93,16 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     }
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     * attempts to sign in using the credentials provided in the login form.
+     * if there are form errors (invalid email, missing fields, etc.), no login
+     * attempt is made and the errors are highlighted to the user
      */
     private void attemptLogin() {
         if (mAuthTask != null) { // means another login attempt is already in progress
             return;
         }
 
-        // Reset errors before trying again
+        // Reset any previous errors before trying again
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
@@ -103,7 +110,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        // cancel is set to true if the credentials are empty or invalid and the offending field is highlighted
+        // cancel is set to true if the credentials are empty or invalid and focusView
+        // is set to the offending field
         boolean cancel = false;
         View focusView = null;
 
@@ -143,12 +151,12 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
+        //TODO: Replace this with your own logic, regex for a mcgill short user or email?
         return true;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
+        //TODO: Replace this with your own logic, or scrap?
         return true;
     }
 
@@ -194,16 +202,13 @@ public class LoginActivity extends AccountAuthenticatorActivity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Intent> {
 
-        final String serverUrl = "http://tepid.sus.mcgill.ca:8080/tepid";
-        final WebTarget tepidServer = ClientBuilder.newBuilder().register(JacksonFeature.class).build().target(serverUrl);
-
-        private final String mEmail;
+        private final String mUsername;
         private final String mPassword;
         private String PARAM_USER_PASS = "";
         private String KEY_ERROR_MESSAGE = "";
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
+        UserLoginTask(String username, String password) {
+            mUsername = username;
             mPassword = password;
         }
 
@@ -227,17 +232,33 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         }
 
         private String getAuthTokenFromCredentials(String mAccountName, String mPassword, String mAuthType) {
-            final TextView textdisplay = (TextView) findViewById(R.id.token);
+            final TextView errorBox = (TextView) findViewById(R.id.token);
 
-            SessionRequest req = new SessionRequest().withUsername(mEmail)
+            SessionRequest requestBody = new SessionRequest().withUsername(mUsername)
                                         .withPassword(mPassword)
                                         .withPersistent(true)
                                         .withPermanent(true);
-            Session session= tepidServer.path("sessions")
-                                        .request(MediaType.APPLICATION_JSON)
-                                        .post(Entity.entity(req, MediaType.APPLICATION_JSON))
-                                        .readEntity(Session.class);
-            return session.toString();
+            try {
+                JSONObject requestString = new JSONObject("{username: \"" + mUsername + "\", password: \"" + mPassword + "\", persistent: false}");
+                request = new JsonObjectRequest(Request.Method.POST, serverUrl, requestString,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                errorBox.setText(response.toString());
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                errorBox.setText(error.getMessage());
+                            }
+                        });
+            } catch (JSONException e) {
+                errorBox.setText(e.getMessage());
+            }
+            requestQueue.add(request);
+
+            return "session.toString()";
         }
 
         @Override
@@ -246,7 +267,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             showProgress(false);
 
             if (intent.hasExtra(KEY_ERROR_MESSAGE)) {
-                mPasswordView.setError(intent.getStringExtra(KEY_ERROR_MESSAGE));
+                //mPasswordView.setError(intent.getStringExtra(KEY_ERROR_MESSAGE));
                 mPasswordView.requestFocus();
             } else {
                 finishLogin(intent);

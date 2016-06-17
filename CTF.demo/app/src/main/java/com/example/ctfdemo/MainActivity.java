@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.fragments.ConstitutionFragment;
 import com.example.fragments.MainFragment;
 import com.example.fragments.ReportProblemFragment;
 import com.example.fragments.SettingsFragment;
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.report_problem) {
             fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
             getSupportActionBar().setTitle(R.string.reportproblem);
+        } else if (id == R.id.constitution) {
+            fm.beginTransaction().replace(R.id.content_frame, new ConstitutionFragment()).commit();
         } else if (id == R.id.logout) {
 
         } else if (id == R.id.login) {

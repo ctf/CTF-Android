@@ -27,6 +27,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:preference-v7:23.1.1'
+    compile 'com.android.volley:volley:1.0.0'
     compile project('libraries:android-support-v4-preferencefragment')
     compile files('libraries/jersey-entity-filtering-2.22.1.jar')
     compile files('libraries/javax.annotation-api-1.2.jar')
