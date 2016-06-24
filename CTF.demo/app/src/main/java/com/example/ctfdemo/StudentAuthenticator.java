@@ -26,6 +26,16 @@ public class StudentAuthenticator extends AbstractAccountAuthenticator {
         return null;
     }
 
+    /**
+     *
+     * @param response used to pass data back to the system after login
+     * @param accountType the type of account, account manager allows to get accounts by type
+     * @param authTokenType
+     * @param requiredFeatures account specific features, account manager allows to get accounts by type and features
+     * @param options
+     * @return an intent used by the system to display the login screen to the user
+     * @throws NetworkErrorException
+     */
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
         final Intent intent = new Intent(mContext, LoginActivity.class);

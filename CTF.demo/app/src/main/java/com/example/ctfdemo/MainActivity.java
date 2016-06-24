@@ -5,7 +5,8 @@ package com.example.ctfdemo;
  * all pages share the same navigation drawer. You can't use the android.app.Fragment
  * because some of the methods implemented for the recyclerview on the roominfo pages
  * won't work, and treating them as a special case with their own activity fucking lags,
- * and brings up a host of other bugs, so leave it this way unless you've found a better way to do it.
+ * and brings up a host of other problems, so leave it this way unless you've found
+ * a better way to do it.
  */
 
 import android.content.Intent;
@@ -61,9 +62,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) { // no use for this atm
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -72,14 +73,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+/*        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);*/
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
