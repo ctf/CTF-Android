@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.fragments.ReportProblemFragment"
+    tools:context=".fragments.ReportProblemFragment"
     android:orientation="vertical">
 
     <TextView
@@ -49,11 +49,13 @@
     </LinearLayout>
 
     <Spinner
+        android:id="@+id/spinner"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner"
-        android:layout_gravity="center_horizontal" />
+        android:padding="10dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#FFFFFF"/>
 
     <Button
         android:layout_marginTop="48dp"

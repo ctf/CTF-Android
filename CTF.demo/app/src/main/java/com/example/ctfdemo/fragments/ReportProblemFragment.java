@@ -1,4 +1,4 @@
-package com.example.fragments;
+package com.example.ctfdemo.fragments;
 
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
@@ -16,35 +16,26 @@ import com.example.ctfdemo.R;
 
 public class ReportProblemFragment extends Fragment {
 
+    //todo:  mock up ErrorReport object to send to tepid,
+    //todo:  include room, general problem info, optional additional details (station number, paper jam, etc),
+    //todo:  user submitting the report, date report was submitted, etc.
+
     private static int roomSelect;
     private static String errorMessage;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.activity_report_problem, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_report_problem, container, false);
 
         roomSelect = 0;
         errorMessage = "";
 
-        Button send_button = (Button) rootView.findViewById(R.id.button_send);
-
-        // buttons to select the room
         final Button b_1b16 = (Button) rootView.findViewById(R.id.button_1b16);
         final Button b_1b17 = (Button) rootView.findViewById(R.id.button_1b17);
         final Button b_1b18 = (Button) rootView.findViewById(R.id.button_1b18);
 
-        b_1b16.setBackgroundColor(Color.GRAY);
-        b_1b17.setBackgroundColor(Color.GRAY);
-        b_1b18.setBackgroundColor(Color.GRAY);
-
-        final Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.problem_spinner, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        View.OnClickListener onClickListener1B16 = new View.OnClickListener() {
+        b_1b16.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 b_1b16.setBackgroundColor(Color.RED);
@@ -52,8 +43,8 @@ public class ReportProblemFragment extends Fragment {
                 b_1b18.setBackgroundColor(Color.GRAY);
                 roomSelect = 1;
             }
-        };
-        View.OnClickListener onClickListener1B17 = new View.OnClickListener() {
+        });
+        b_1b17.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 b_1b16.setBackgroundColor(Color.GRAY);
@@ -61,8 +52,8 @@ public class ReportProblemFragment extends Fragment {
                 b_1b18.setBackgroundColor(Color.GRAY);
                 roomSelect = 2;
             }
-        };
-        View.OnClickListener onClickListener1B18 = new View.OnClickListener() {
+        });
+        b_1b18.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 b_1b16.setBackgroundColor(Color.GRAY);
@@ -70,9 +61,20 @@ public class ReportProblemFragment extends Fragment {
                 b_1b18.setBackgroundColor(Color.RED);
                 roomSelect = 3;
             }
-        };
-        // when an item in the dropdown is clicked, set the global "error message" string correspondingly
-        AdapterView.OnItemSelectedListener spinnerDropdownSelectionListener = new AdapterView.OnItemSelectedListener() {
+        });
+
+        b_1b16.setBackgroundColor(Color.GRAY);
+        b_1b17.setBackgroundColor(Color.GRAY);
+        b_1b18.setBackgroundColor(Color.GRAY);
+
+        // set up dropdown menu with list of problems
+        final Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.problem_spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // when an item in the dropdown is clicked, set the global "error message" string accordingly
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ReportProblemFragment.setErrorMessage(position);
@@ -82,50 +84,53 @@ public class ReportProblemFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
                 ReportProblemFragment.setErrorMessage(-1);
             }
-        };
-        View.OnClickListener onClickListenerSendReport = new View.OnClickListener() {
+        });
+
+        // handle clicks on "SEND" button...
+        rootView.findViewById(R.id.button_send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: we should do something with the error report...
+                // TODO: we should do something with this error report...
                 generateErrorReport();
             }
-        };
-
-        b_1b16.setOnClickListener(onClickListener1B16);
-        b_1b17.setOnClickListener(onClickListener1B17);
-        b_1b18.setOnClickListener(onClickListener1B18);
-        spinner.setOnItemSelectedListener(spinnerDropdownSelectionListener);
-        send_button.setOnClickListener(onClickListenerSendReport);
+        });
 
         return rootView;
-
     }
 
     private static void setErrorMessage(int dropdownMenuIndex) {
         switch (dropdownMenuIndex) {
             case -1 :
-                errorMessage = "";
+                errorMessage = "[no error selected]";
+                break;
             case 0 :
                 errorMessage = "Printer Down";
+                break;
             case 1 :
                 errorMessage = "Computer Down";
-            case 2 :
-                errorMessage = "pls halp";
+                break;
         }
     }
 
-    // TODO: why is this hitting each case statement?!
+    //todo here we would extract all info selected by user, add timestamp, username, etc, and send the object to tepid/ticketing system
     private String generateErrorReport() {
         String errorReport = " Problem in room ";
-        if (roomSelect == 0) {
-            // TODO: signal the idiot user they must select a room
-        } else if (roomSelect == 1) {
-            errorReport += "1B16 ";
-        } else if (roomSelect == 2) {
-            errorReport += "1B17 ";
-        } else if (roomSelect == 3) {
-            errorReport += "1B18 ";
+
+        switch (roomSelect) {
+            case 0:
+                // TODO: signal the idiot user they must select a room
+                break;
+            case 1:
+                errorReport += "1B16 :";
+                break;
+            case 2:
+                errorReport += "1B17 :";
+                break;
+            case 3:
+                errorReport += "1B18 :";
+                break;
         }
+
         errorReport += errorMessage;
         return errorReport;
     }

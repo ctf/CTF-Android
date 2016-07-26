@@ -6,9 +6,13 @@
         android:minSdkVersion="19"
         android:targetSdkVersion="23" />
 
-    <!-- to use our custom account authenticator -->
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <!-- to be able to add a "CTF account" to the device -->
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" /> <!-- for pre api22 -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +33,7 @@
         </activity>
 
         <service
-            android:name=".StudentAuthenticatorService"
+            android:name=".auth.StudentAuthenticatorService"
             android:enabled="true"
             android:exported="false"
             android:process=":auth">
@@ -40,6 +44,10 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+
+        <service
+            android:name="com.octo.android.robospice.JacksonGoogleHttpClientSpiceService"
+            android:exported="false" />
 
         <activity
             android:name=".LoginActivity"

@@ -9,10 +9,12 @@ package com.example.ctfdemo;
  * a better way to do it.
  */
 
-import android.content.Intent;
-import android.support.v4.app.FragmentManager;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,13 +22,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.example.fragments.ConstitutionFragment;
-import com.example.fragments.MainFragment;
-import com.example.fragments.ReportProblemFragment;
-import com.example.fragments.SettingsFragment;
-import com.example.fragments.MyAccountFragment;
-import com.example.fragments.RoomFragment;
+import com.example.ctfdemo.auth.AccountUtil;
+import com.example.ctfdemo.fragments.MainFragment;
+import com.example.ctfdemo.fragments.MyAccountFragment;
+import com.example.ctfdemo.fragments.ReportProblemFragment;
+import com.example.ctfdemo.fragments.RoomFragment;
+import com.example.ctfdemo.fragments.SettingsFragment;
+import com.gc.materialdesign.widgets.Dialog;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -46,9 +52,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // the app opens on the MainFragment, which loads the xml for the dashboard
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+        AccountUtil.init(this);
+
+        // make sure we have an account to work with
+        if (AccountUtil.getAccount() != null) {
+            // if previously logged in, the app opens on the MainFragment, which loads the xml for the dashboard
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+        } else {
+            // if not we add an account first, and then load the MainFragment
+            AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
+
+                @Override
+                public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                    AccountUtil.init(CTFApp.getAppContext());
+
+                    FragmentManager fm = getSupportFragmentManager();
+                    fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+                }
+            }, null);
+        }
     }
 
     @Override
@@ -83,34 +106,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         FragmentManager fm = getSupportFragmentManager();
         int id = item.getItemId();
 
-        if (id == R.id.dashboard) {
-            fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
-            getSupportActionBar().setTitle(R.string.dashboard);
-        } else if (id == R.id.room_info) {
-            fm.beginTransaction().replace(R.id.content_frame, new RoomFragment()).commit();
-            getSupportActionBar().setTitle(R.string.roominfo);
-        } else if (id == R.id.user_info) {
-            fm.beginTransaction().replace(R.id.content_frame, new MyAccountFragment()).commit();
-            getSupportActionBar().setTitle(R.string.userinfo);
-        } else if (id == R.id.settings) {
-            fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
-            getSupportActionBar().setTitle(R.string.settings);
-        } else if (id == R.id.report_problem) {
-            fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
-            getSupportActionBar().setTitle(R.string.reportproblem);
-        } else if (id == R.id.constitution) {
-            fm.beginTransaction().replace(R.id.content_frame, new ConstitutionFragment()).commit();
-        } else if (id == R.id.logout) {
-
-        } else if (id == R.id.login) {
-            Intent mIntent = new Intent(this, LoginActivity.class);
-            MainActivity.this.startActivity(mIntent);
+        switch (id) {
+            case R.id.dashboard:
+                fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+                getSupportActionBar().setTitle(R.string.dashboard);
+                break;
+            case R.id.room_info:
+                fm.beginTransaction().replace(R.id.content_frame, new RoomFragment()).commit();
+                getSupportActionBar().setTitle(R.string.roominfo);
+                break;
+            case R.id.user_info:
+                fm.beginTransaction().replace(R.id.content_frame, new MyAccountFragment()).commit();
+                getSupportActionBar().setTitle(R.string.userinfo);
+                break;
+            case R.id.settings:
+                fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
+                getSupportActionBar().setTitle(R.string.settings);
+                break;
+            case R.id.report_problem:
+                fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
+                getSupportActionBar().setTitle(R.string.reportproblem);
+                break;
+            case R.id.logout:
+                showLogoutDialog();
+                break;
         }
 
         // then close the drawer
@@ -118,5 +142,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    private void showLogoutDialog() {
+        String[] logoutMessages = getResources().getStringArray(R.array.logout_messages);
+        int rand = new Random().nextInt(logoutMessages.length);
+        final Dialog dialog = new Dialog(this, "", logoutMessages[rand].toUpperCase());
+        dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AccountUtil.removeAccount();
+                finish();
+                //System.exit(0);
+            }
+        });
+        dialog.show();
     }
 }

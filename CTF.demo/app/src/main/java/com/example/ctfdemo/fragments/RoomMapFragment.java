@@ -1,4 +1,4 @@
-package com.example.fragments;
+package com.example.ctfdemo.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 
 import com.example.ctfdemo.R;
 
-/**
- * Created by erasmas on 06/04/16.
- */
 public class RoomMapFragment extends DialogFragment {
 
     public RoomMapFragment() {

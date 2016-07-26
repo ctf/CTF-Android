@@ -12,10 +12,8 @@
             android:title="Settings" />
         <item android:id="@+id/report_problem" android:icon="@drawable/ic_error_black_24px"
                 android:title="Report a problem" />
-        <item android:id="@+id/constitution" android:icon="@drawable/document"
-            android:title="Constitution" />
-        <item android:id="@+id/login" android:icon="@android:drawable/ic_menu_send"
-                android:title="Login" />
+<!--        <item android:id="@+id/login" android:icon="@android:drawable/ic_menu_send"
+                android:title="Login" />-->
         <item android:id="@+id/logout" android:icon="@drawable/logout"
                 android:title="Logout" />
     </group>

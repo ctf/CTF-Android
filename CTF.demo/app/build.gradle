@@ -1,13 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-
+    compileSdkVersion 24
+    buildToolsVersion '24.0.0'
     defaultConfig {
-        applicationId "com.example.ctfdemo"
-        minSdkVersion 19
-        targetSdkVersion 23
+        applicationId 'com.example.ctf'
+        minSdkVersion 22
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -17,35 +16,34 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.android.support:support-v4:23.1.1'
-    compile 'com.android.support:preference-v14:23.4.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:design:24.0.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:support-v4:24.0.0'
+    compile 'com.android.support:preference-v14:24.0.0'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'com.github.vajro:MaterialDesignLibrary:1.6'
 
-    compile files('libraries/jersey-entity-filtering-2.22.1.jar')
-    compile files('libraries/javax.annotation-api-1.2.jar')
-    compile files('libraries/hk2-locator-2.4.0-b31.jar')
-    compile files('libraries/jersey-client.jar')
-    compile files('libraries/jackson-core-2.5.4.jar')
-    compile files('libraries/hk2-api-2.4.0-b31.jar')
-    compile files('libraries/xz-1.5.jar')
-    compile files('libraries/javax.ws.rs-api-2.0.1.jar')
-    compile files('libraries/jersey-guava-2.22.1.jar')
-    compile files('libraries/jackson-module-jaxb-annotations-2.5.4.jar')
-    compile files('libraries/javax.inject-2.4.0-b31.jar')
-    compile files('libraries/jackson-databind-2.5.4.jar')
-    compile files('libraries/hk2-utils-2.4.0-b31.jar')
-    compile files('libraries/jackson-jaxrs-base-2.5.4.jar')
-    compile files('libraries/jackson-annotations-2.5.4.jar')
-    compile files('libraries/jersey-media-json-jackson-2.22.1.jar')
-    compile files('libraries/jackson-jaxrs-json-provider-2.5.4.jar')
-    compile files('libraries/jersey-common.jar')
+/*    compile 'org.glassfish.jersey.core:jersey-client:2.23.1'
+    compile 'org.glassfish.jersey.core:jersey-common:2.23.1'*/
+    compile 'com.eclipsesource.jaxrs:jersey-all:2.22.2'
+
+    compile 'com.octo.android.robospice:robospice:1.4.14'
+    compile 'com.octo.android.robospice:robospice-google-http-client:1.4.14'
+
+    compile('com.google.http-client:google-http-client-jackson:1.22.0') {
+        exclude module: 'xpp3'
+        exclude group: 'stax'
+    }
 }

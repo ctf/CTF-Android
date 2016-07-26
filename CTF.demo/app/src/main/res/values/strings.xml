@@ -38,12 +38,22 @@
     <string-array name="problem_spinner">
         <item>Printer Down</item>
         <item>Computer Down</item>
-        <item>Downs syndrome</item>
     </string-array>
 
     <string name="title_activity_user">User</string>
     <string name="authenticator_account_type">com.example.ctfdemo.StudentAccount</string>
+    <string name="authenticator_token_type">com.example.ctfdemo.TepidToken</string>
     <string name="title_activity_login">Sign in</string>
+
+    <string-array name="logout_messages">
+        <item>do svidan’ya!</item>
+        <item>arrivederci!</item>
+        <item>ciao!</item>
+        <item>au revoir!</item>
+        <item>adieu!</item>
+        <item>goodbye!</item>
+        <item>zai jian!</item>
+    </string-array>
 
     <!-- Strings related to login -->
     <string name="prompt_email">McGill Email / Short User</string>
@@ -54,6 +64,11 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+
+
+    <string name="dashboard_username_text">User: %s</string>
+    <string name="dashboard_quota_text">Quota %s</string>
+    <string name="dashboard_last_job_text">Last print job: %s</string>
 
 </resources>
 

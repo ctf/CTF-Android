@@ -1,4 +1,4 @@
-package com.example.ctfdemo;
+package com.example.ctfdemo.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import com.example.ctfdemo.R;
+import com.example.ctfdemo.tepid.PrintJob;
 
 import java.util.Collections;
 import java.util.List;
