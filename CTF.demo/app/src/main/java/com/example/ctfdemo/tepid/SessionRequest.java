@@ -1,24 +1,10 @@
 package com.example.ctfdemo.tepid;
 
-import com.google.api.client.http.HttpContent;
-import com.google.api.client.util.Key;
+public class SessionRequest {
 
-import java.io.IOException;
-import java.io.OutputStream;
+	public String username, password;
 
-public class SessionRequest implements HttpContent {
-
-	@Key
-	public String username;
-
-	@Key
-	public String password;
-
-	@Key
-	public boolean persistent;
-
-	@Key
-	public boolean permanent;
+	public boolean persistent, permanent;
 
 	public SessionRequest withUsername(String username) {
 		this.username = username;
@@ -40,29 +26,4 @@ public class SessionRequest implements HttpContent {
 		return this;
 	}
 
-	@Override
-	public long getLength() throws IOException {
-		return -1;
-	}
-
-	@Override
-	public String getType() {
-		return null;
-	}
-
-	@Override
-	public boolean retrySupported() {
-		return true;
-	}
-
-	@Override
-	public void writeTo(OutputStream out) throws IOException {
-		byte[] sr = ("{username:" + this.username +
-				", password:" + this.password +
-				", persistent:" + this.persistent +
-				", permanent:" + this.permanent + "}")
-				.getBytes();
-		out.write(sr);
-		out.flush();
-	}
 }

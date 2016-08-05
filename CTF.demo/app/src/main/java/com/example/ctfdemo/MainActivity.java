@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // make sure we have an account to work with
         if (AccountUtil.getAccount() != null) {
-            // if previously logged in, the app opens on the MainFragment, which loads the xml for the dashboard
+            // if previously logged in, the app opens on the dashboard
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
         } else {
@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
                     AccountUtil.init(CTFApp.getAppContext());
 
-                    FragmentManager fm = getSupportFragmentManager();
-                    fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+                    //FragmentManager fm = getSupportFragmentManager();
+                    //fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
                 }
             }, null);
         }

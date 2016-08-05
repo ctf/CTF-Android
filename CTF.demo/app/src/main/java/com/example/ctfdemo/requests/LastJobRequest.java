@@ -2,28 +2,36 @@ package com.example.ctfdemo.requests;
 
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.tepid.PrintJob;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.json.jackson.JacksonFactory;
-import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+import com.google.gson.Gson;
 
-public class LastJobRequest extends GoogleHttpClientSpiceRequest<PrintJob> {
+import okhttp3.Request;
+import okhttp3.Response;
 
-    private String url;
+public class LastJobRequest extends BaseTepidRequest<PrintJob> {
+
+    private static final String url = "https://tepid.sus.mcgill.ca:8443/tepid/jobs/" + AccountUtil.getUserName() + "/";
 
     public LastJobRequest() {
         super(PrintJob.class);
-        url = "https://tepid.sus.mcgill.ca:8443/tepid/jobs/" + AccountUtil.getUserName() + "/";
 
     }
 
     @Override
     public PrintJob loadDataFromNetwork() throws Exception {
-        HttpRequest request = getHttpRequestFactory().buildGetRequest(new GenericUrl(url)).setHeaders(new HttpHeaders().setAuthorization(AccountUtil.getAuthTokenHash()));
-        request.setParser(new JacksonFactory().createJsonObjectParser());
+        Request request = new Request.Builder()
+                .header("Authorization", "token " + AccountUtil.getAuthToken())
+                .url(url)
+                .build();
 
-        return request.execute().parseAs(getResultType());
+        Response response = getOkHttpClient()
+                .newCall(request)
+                .execute();
+
+        if (!response.isSuccessful()) {
+            throw new Exception("UH OH AN ERROR OCCURRED!!!!!!!!!");
+        }
+
+        return new Gson().fromJson(response.body().toString(), PrintJob.class);
     }
 
 }

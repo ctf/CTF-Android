@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.example.ctfdemo.adapter.PrintJobAdapter;
 import com.example.ctfdemo.requests.QuotaRequest;
 import com.example.ctfdemo.R;
-import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -24,15 +24,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/*import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;*/
-
 public class MyAccountFragment extends Fragment {
 
     TextView quotaView;
 
-    private SpiceManager requestManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
+    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
     @Nullable
     @Override

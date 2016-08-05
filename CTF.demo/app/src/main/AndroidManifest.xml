@@ -46,7 +46,7 @@
         </service>
 
         <service
-            android:name="com.octo.android.robospice.JacksonGoogleHttpClientSpiceService"
+            android:name="com.example.ctfdemo.requests.CTFSpiceService"
             android:exported="false" />
 
         <activity

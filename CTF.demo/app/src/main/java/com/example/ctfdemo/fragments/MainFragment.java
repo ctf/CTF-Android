@@ -12,11 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ctfdemo.auth.AccountUtil;
+import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.LastJobRequest;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.example.ctfdemo.requests.QuotaRequest;
 import com.example.ctfdemo.R;
-import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -29,7 +29,7 @@ public class MainFragment extends Fragment{
     private TextView lastJobView;
 
     // todo use jacksongooglehttpclient or implement custom spice service?
-    private SpiceManager requestManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
+    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
     // todo keys for the Spice cache, not used yet
     private static final String KEY_QUOTA = "QUOTA";
@@ -124,7 +124,7 @@ public class MainFragment extends Fragment{
                     .path("jobs")
                     .path(AccountUtil.getUserName())
                     .request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Token " + AccountUtil.getAuthTokenHash())
+                    .header("Authorization", "Token " + AccountUtil.getAuthToken())
                     .get().readEntity(String.class);*//*
 
             return "";//lastJob;

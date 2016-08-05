@@ -17,11 +17,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.ctfdemo.R;
 import com.example.ctfdemo.auth.AccountUtil;
-import com.example.ctfdemo.requests.AuthRequest;
+import com.example.ctfdemo.requests.LoginRequest;
+import com.example.ctfdemo.requests.CTFSpiceService;
+
 import com.example.ctfdemo.tepid.Session;
-import com.octo.android.robospice.JacksonGoogleHttpClientSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -30,11 +30,6 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import org.json.JSONException;
 
 import java.util.concurrent.ExecutionException;
-
-/*import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;*/
 
 /**
  * The main login screen users will see
@@ -60,7 +55,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    private SpiceManager spiceManager = new SpiceManager(JacksonGoogleHttpClientSpiceService.class);
+    private SpiceManager spiceManager = new SpiceManager(CTFSpiceService.class);
 
 
     @Override
@@ -158,7 +153,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             //mAuthTask = new UserLoginTask(email, password);
             //mAuthTask.execute((Void) null);
 
-            spiceManager.execute(new AuthRequest(username, password), "json", DurationInMillis.ALWAYS_EXPIRED, new AuthRequestListener());
+            spiceManager.execute(new LoginRequest(username, password), "json", DurationInMillis.ALWAYS_EXPIRED, new AuthRequestListener());
 
         }
     }
@@ -217,15 +212,17 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         public void onRequestSuccess(Session session) {
             showProgress(false);
 
-            final Account account = new Account(session.getUser().shortUser, AccountUtil.accountType);
+            // create a new CTF account, will be displayed in settings under user's salutation
+            final Account account = new Account(session.getUser().salutation, AccountUtil.accountType);
 
             if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
-                // Creating the account
-                // Password is optional to this call, safer not to send it really.
-                mAccountManager.addAccountExplicitly(account, null, null);
+                Bundle userData = new Bundle();
+                userData.putString(AccountUtil.KEY_USERNAME, session.getUser().shortUser);
+                // password is optional here, we won't keep it
+                mAccountManager.addAccountExplicitly(account, null, userData);
             }
-            // set the auth token we got (Not setting the auth token will cause
-            // another call to the server to authenticate the user)
+
+            // set the auth token using the session we received
             mAccountManager.setAuthToken(account, AccountUtil.tokenType,
                     Base64.encodeToString((session.getUser().shortUser + ":" + session.getId()).getBytes(), Base64.CRLF));
 
