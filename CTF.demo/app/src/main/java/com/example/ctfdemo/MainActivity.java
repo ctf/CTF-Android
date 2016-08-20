@@ -12,6 +12,7 @@ package com.example.ctfdemo;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -38,40 +39,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         AccountUtil.init(this);
 
         // make sure we have an account to work with
-        if (AccountUtil.getAccount() != null) {
+        if (AccountUtil.isSignedIn()) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+
             // if previously logged in, the app opens on the dashboard
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+            MainFragment.canRequest = true;
+
         } else {
-            // if not we add an account first, and then load the MainFragment
+            // if not we add an account and restart the main activity
             AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
 
                 @Override
                 public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                    AccountUtil.init(CTFApp.getAppContext());
-
-                    //FragmentManager fm = getSupportFragmentManager();
-                    //fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+                    AccountUtil.init(getApplicationContext());
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                 }
             }, null);
         }
+
+
     }
 
     @Override

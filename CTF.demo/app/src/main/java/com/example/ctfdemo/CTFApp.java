@@ -17,7 +17,7 @@ public class CTFApp extends Application {
         super.onCreate();
         mInstance = this;
 
-        // for network debug
+        //todo using for network debug
         Stetho.initializeWithDefaults(this);
     }
 

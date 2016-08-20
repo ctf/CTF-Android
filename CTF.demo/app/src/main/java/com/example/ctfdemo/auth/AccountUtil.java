@@ -47,15 +47,15 @@ public class AccountUtil {
 
         if (am.getAccountsByType(accountType).length > 0) {
 
-            // init account
+            // get account
             account = am.getAccountsByType(accountType)[0];
 
             // get auth token
-
             spiceManager.execute(new TokenRequest(account, context), new RequestListener<String>(){
 
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
+                    // todo adding an account probably isn't what we want to do here
                     AccountManager.get(context).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, (Activity) context, null, null);
                 }
 
@@ -64,23 +64,20 @@ public class AccountUtil {
                     token = s;
                 }
             });
-            // todo will this still work using ctfapp.getappcontext?!
-            // todo confirmed will not work. can't cast application to activity
-            //final AccountManagerFuture<Bundle> future = am.getAuthToken(account, tokenType, null, (Activity) context, null, null);
-            //todo should we pass the the given "context" parameter, or get CTFApp.getAppContext()?
-            //token = "";
-            //try {
-            //    token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
-            //} catch (OperationCanceledException | IOException | AuthenticatorException e) {
-                //todo better exception handling, what causes authenticator exception, what to do if cancelled?
-            //}
         }
 
         spiceManager.shouldStop();
     }
 
-    public static Account getAccount() {
+    private static Account getAccount() {
         return account;
+    }
+
+    public static boolean isSignedIn() {
+        if (getAccount() != null) {
+            return true;
+        }
+        return false;
     }
 
     public static String getUserName() {

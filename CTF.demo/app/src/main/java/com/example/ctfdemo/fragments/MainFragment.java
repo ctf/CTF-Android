@@ -50,10 +50,14 @@ public class MainFragment extends Fragment{
     }
 
     // the static layout elements defined in xml will now be visible to the user, the dynamic ones will be populated here
+    public static boolean canRequest = false;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUIElements();
+        while (!canRequest) {
+            System.out.println("Main fragment is waiting for sign-in to make requests...");
+        }
         performQuotaRequest();
         performLastJobRequest();
     }
@@ -92,6 +96,11 @@ public class MainFragment extends Fragment{
         requestManager.execute(new QuotaRequest(), new QuotaRequestListener());
     }
 
+    private void performLastJobRequest() {
+        lastJobView.setText(getString(R.string.dashboard_last_job_text, ""));
+        requestManager.execute(new LastJobRequest(), new LastJobRequestListener());
+    }
+
     private final class QuotaRequestListener implements RequestListener<String> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -103,37 +112,6 @@ public class MainFragment extends Fragment{
             MainFragment.this.getActivity().setProgressBarIndeterminateVisibility(false);
             quotaView.setText(getString(R.string.dashboard_quota_text, quota));
         }
-    }
-
-
-/*    private final class LastJobRequest extends SpiceRequest<String> {
-
-        public LastJobRequest() {
-            super(String.class);
-        }
-
-        @Override
-        public String loadDataFromNetwork() throws Exception {
-*//*            final WebTarget tepidServer = ClientBuilder
-                    .newBuilder()
-                    *//**//*.register(JacksonFeature.class)*//**//*
-                    .build()
-                    .target(AccountUtil.tepidURL);
-
-            String lastJob = tepidServer
-                    .path("jobs")
-                    .path(AccountUtil.getUserName())
-                    .request(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Token " + AccountUtil.getAuthToken())
-                    .get().readEntity(String.class);*//*
-
-            return "";//lastJob;
-        }
-    }*/
-
-    private void performLastJobRequest() {
-        lastJobView.setText(getString(R.string.dashboard_last_job_text, ""));
-        requestManager.execute(new LastJobRequest(), new LastJobRequestListener());
     }
 
     private final class LastJobRequestListener implements RequestListener<PrintJob> {

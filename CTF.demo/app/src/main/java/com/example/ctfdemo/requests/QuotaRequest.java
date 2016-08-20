@@ -17,7 +17,7 @@ public class QuotaRequest extends BaseTepidRequest<String> {
     @Override
     public String loadDataFromNetwork() throws Exception {
         Request request = new Request.Builder()
-                .header("Authorization", "token " + AccountUtil.getAuthToken())
+                .header("Authorization", "token "+AccountUtil.getAuthToken())
                 .url(url)
                 .build();
 
@@ -25,9 +25,9 @@ public class QuotaRequest extends BaseTepidRequest<String> {
                 .newCall(request)
                 .execute();
 
-        if (!response.isSuccessful()) {
+/*        if (!response.isSuccessful()) {
             throw new Exception("UH OH AN ERROR OCCURRED!!!!!!!!!");
-        }
+        }*/
 
         return response.body().toString();
     }

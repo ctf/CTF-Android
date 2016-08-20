@@ -20,6 +20,7 @@ public class TokenRequest extends SpiceRequest<String> {
     }
     @Override
     public String loadDataFromNetwork() throws Exception {
+        // todo this throws OperationCancelledException, AuthenticatorException, IOException, under what conditions, fine-tune exception handling
         return AccountManager
                 .get(context)
                 .getAuthToken(account, AccountUtil.tokenType, null, (Activity) context, null, null)
