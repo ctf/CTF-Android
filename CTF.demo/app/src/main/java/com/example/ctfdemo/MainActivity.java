@@ -9,6 +9,7 @@ package com.example.ctfdemo;
  * a better way to do it.
  */
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
@@ -37,38 +38,35 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AccountUtil.init(this);
+        AccountUtil.initAccount(this);
 
-        // make sure we have an account to work with
         if (AccountUtil.isSignedIn()) {
+
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.setDrawerListener(toggle);
             toggle.syncState();
-
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
 
-            // if previously logged in, the app opens on the dashboard
+            username = AccountUtil.getUserName();
+
             FragmentManager fm = getSupportFragmentManager();
-            fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
-            MainFragment.canRequest = true;
+            fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username)).commit();
 
         } else {
-            // if not we add an account and restart the main activity
             AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
-
                 @Override
                 public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                    AccountUtil.init(getApplicationContext());
+                    // switch back to main activity after user signs in
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                 }
@@ -115,17 +113,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager fm = getSupportFragmentManager();
         int id = item.getItemId();
 
+        //todo use fragment.newinstance when possible, no reason for every fragment to start making token requests
         switch (id) {
             case R.id.dashboard:
-                fm.beginTransaction().replace(R.id.content_frame, new MainFragment()).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username)).commit();
                 getSupportActionBar().setTitle(R.string.dashboard);
                 break;
             case R.id.room_info:
-                fm.beginTransaction().replace(R.id.content_frame, new RoomFragment()).commit();
+                fm.beginTransaction().replace(R.id.content_frame, RoomFragment.newInstance()).commit();
                 getSupportActionBar().setTitle(R.string.roominfo);
                 break;
             case R.id.user_info:
-                fm.beginTransaction().replace(R.id.content_frame, new MyAccountFragment()).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(username)).commit();
                 getSupportActionBar().setTitle(R.string.userinfo);
                 break;
             case R.id.settings:
@@ -148,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    //todo kill the dialog
     private void showLogoutDialog() {
         String[] logoutMessages = getResources().getStringArray(R.array.logout_messages);
         int rand = new Random().nextInt(logoutMessages.length);

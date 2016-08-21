@@ -25,6 +25,7 @@ public class TokenRequest extends SpiceRequest<String> {
                 .get(context)
                 .getAuthToken(account, AccountUtil.tokenType, null, (Activity) context, null, null)
                 .getResult()
-                .getString(AccountManager.KEY_AUTHTOKEN);
+                .getString(AccountManager.KEY_AUTHTOKEN)
+                .trim();
     }
 }

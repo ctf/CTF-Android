@@ -7,17 +7,18 @@ import okhttp3.Response;
 
 public class QuotaRequest extends BaseTepidRequest<String> {
 
-    private String url;
+    private String url, token;
 
-    public QuotaRequest() {
+    public QuotaRequest(String token) {
         super(String.class);
         url = "https://tepid.sus.mcgill.ca:8443/tepid/users/" + AccountUtil.getUserName() + "/quota/";
+        this.token = token;
     }
 
     @Override
     public String loadDataFromNetwork() throws Exception {
         Request request = new Request.Builder()
-                .header("Authorization", "token "+AccountUtil.getAuthToken())
+                .header("Authorization", "Token "+token)
                 .url(url)
                 .build();
 
@@ -25,11 +26,11 @@ public class QuotaRequest extends BaseTepidRequest<String> {
                 .newCall(request)
                 .execute();
 
-/*        if (!response.isSuccessful()) {
+        if (!response.isSuccessful()) {
             throw new Exception("UH OH AN ERROR OCCURRED!!!!!!!!!");
-        }*/
+        }
 
-        return response.body().toString();
+        return response.body().string();
     }
 
 }

@@ -26,6 +26,13 @@ public class RoomFragment extends Fragment {
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
 
+
+    public static RoomFragment newInstance() {
+        RoomFragment frag = new RoomFragment();
+        //Bundle args = new Bundle();
+        //frag.setArguments(args);
+        return frag;
+    }
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a

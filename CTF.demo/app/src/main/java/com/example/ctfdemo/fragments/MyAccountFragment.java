@@ -26,9 +26,17 @@ import java.util.List;
 
 public class MyAccountFragment extends Fragment {
 
+    private static final String KEY_USERNAME = "username";
     TextView quotaView;
-
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+
+    public static MyAccountFragment newInstance(String username) {
+        MyAccountFragment frag = new MyAccountFragment();
+        Bundle args = new Bundle();
+        args.putString(KEY_USERNAME, username);
+        frag.setArguments(args);
+        return frag;
+    }
 
     @Nullable
     @Override
@@ -44,7 +52,6 @@ public class MyAccountFragment extends Fragment {
         mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), getPrintHistoryData(), PrintJobAdapter.MY_ACCOUNT));
         return rootView;
     }
-
     /**
      * get a bunch of PrintJob objects to pass to the PrintJobAdapter,
      * which extracts the relevant data and formats it depending on the
@@ -69,12 +76,12 @@ public class MyAccountFragment extends Fragment {
         return printJobs;
     }
 
-    private void performQuotaRequest() {
+    private void performQuotaRequest(String token) {
         quotaView.setText(getString(R.string.dashboard_quota_text, ""));
 
         MyAccountFragment.this.getActivity().setProgressBarIndeterminateVisibility(true);
 
-        QuotaRequest request = new QuotaRequest();
+        QuotaRequest request = new QuotaRequest(token);
         requestManager.execute(request, new QuotaRequestListener());
     }
 

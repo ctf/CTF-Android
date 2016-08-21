@@ -11,29 +11,35 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ctfdemo.R;
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.LastJobRequest;
-import com.example.ctfdemo.tepid.PrintJob;
 import com.example.ctfdemo.requests.QuotaRequest;
-import com.example.ctfdemo.R;
+import com.example.ctfdemo.requests.TokenRequest;
+import com.example.ctfdemo.tepid.PrintJob;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
 public class MainFragment extends Fragment{
 
+    private static final String KEY_USERNAME = "username";
     private ImageView[][] statusIcons = new ImageView[3][2];
-    private TextView usernameView;
-    private TextView quotaView;
-    private TextView lastJobView;
-
-    // todo use jacksongooglehttpclient or implement custom spice service?
+    private TextView usernameView, quotaView, lastJobView;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
-
     // todo keys for the Spice cache, not used yet
-    private static final String KEY_QUOTA = "QUOTA";
-    private static final String KEY_LAST_JOB = "LAST JOB";
+    private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB";
+    private String username, token;
+
+    //todo do something with the username and token, see fragment lifecycle
+    public static MainFragment newInstance(String username) {
+        MainFragment frag = new MainFragment();
+        Bundle args = new Bundle();
+        args.putString(KEY_USERNAME, username);
+        frag.setArguments(args);
+        return frag;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,21 +51,19 @@ public class MainFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
+        Bundle args = getArguments();
+        if (args != null) {
+            username = args.getString(KEY_USERNAME);
+        }
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
-    // the static layout elements defined in xml will now be visible to the user, the dynamic ones will be populated here
-    public static boolean canRequest = false;
+    // the static layout elements defined in xml will now be visible to the user
+    // the dynamic ones will be populated here
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initUIElements();
-        while (!canRequest) {
-            System.out.println("Main fragment is waiting for sign-in to make requests...");
-        }
-        performQuotaRequest();
-        performLastJobRequest();
+        populateUI();
     }
 
     @Override
@@ -78,7 +82,7 @@ public class MainFragment extends Fragment{
         super.onStop();
     }
 
-    private void initUIElements() {
+    private void populateUI() {
         int[] rooms = {R.id.dashboard_row_1B16, R.id.dashboard_row_1B17, R.id.dashboard_row_1B18};
         for (int i = 0; i < 3; i++) {
             TableRow row = (TableRow) getView().findViewById(rooms[i]);
@@ -86,30 +90,44 @@ public class MainFragment extends Fragment{
             statusIcons[i][1] = (ImageView) row.getChildAt(2);
         }
         usernameView = ((TextView) getView().findViewById(R.id.dashboard_username));
-        usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getUserName()));
+        usernameView.setText(getString(R.string.dashboard_username_text, username));
         quotaView = (TextView) getView().findViewById(R.id.dashboard_quota);
         lastJobView = (TextView) getView().findViewById(R.id.dashboard_last_print_job);
+
+        requestManager.execute(new TokenRequest(AccountUtil.getAccount(), getActivity()), new RequestListener<String>(){
+
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                // todo wat do if we can't get token?!
+                System.out.println("REQUEST FAILED!!!!!!!!!!");
+            }
+
+            @Override
+            public void onRequestSuccess(String str) {
+                performQuotaRequest(str);
+                performLastJobRequest(str);
+                System.out.println("REQUEST SUCCEEDED!!!!!!!!!!!!!!!!!!!!");
+            }
+        });
     }
 
-    private void performQuotaRequest() {
+    private void performQuotaRequest(String token) {
         quotaView.setText(getString(R.string.dashboard_quota_text, ""));
-        requestManager.execute(new QuotaRequest(), new QuotaRequestListener());
+        requestManager.execute(new QuotaRequest(token), new QuotaRequestListener());
     }
 
-    private void performLastJobRequest() {
+    private void performLastJobRequest(String token) {
         lastJobView.setText(getString(R.string.dashboard_last_job_text, ""));
-        requestManager.execute(new LastJobRequest(), new LastJobRequestListener());
+        requestManager.execute(new LastJobRequest(token), new LastJobRequestListener());
     }
 
     private final class QuotaRequestListener implements RequestListener<String> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             Toast.makeText(getActivity(), "Error: failed to load data from TEPID server.", Toast.LENGTH_SHORT).show();
-            MainFragment.this.getActivity().setProgressBarIndeterminateVisibility(false);
         }
         @Override
         public void onRequestSuccess(String quota) {
-            MainFragment.this.getActivity().setProgressBarIndeterminateVisibility(false);
             quotaView.setText(getString(R.string.dashboard_quota_text, quota));
         }
     }
@@ -118,7 +136,6 @@ public class MainFragment extends Fragment{
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             Toast.makeText(getActivity(), "Error: failed to load data from TEPID server.", Toast.LENGTH_SHORT).show();
-            MainFragment.this.getActivity().setProgressBarIndeterminateVisibility(false);
         }
         @Override
         public void onRequestSuccess(PrintJob p) {

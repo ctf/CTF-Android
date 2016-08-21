@@ -68,8 +68,8 @@
 
 
     <string name="dashboard_username_text">User: %s</string>
-    <string name="dashboard_quota_text">Quota %s</string>
-    <string name="dashboard_last_job_text">Last print job: %s</string>
+    <string name="dashboard_quota_text">Quota: %s</string>
+    <string name="dashboard_last_job_text">Last job: %s</string>
 
 </resources>
 
