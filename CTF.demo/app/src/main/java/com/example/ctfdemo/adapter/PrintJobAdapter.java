@@ -71,10 +71,10 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
             vh.userIdentification.setText(current.getUserIdentification());
         } else if (tableType == MY_ACCOUNT) {
             vh.jobName.setText(current.getName());
-            // TODO: this crashes
-            //vh.pageCount.setText(current.getPages());
         }
-        vh.datePrinted.setText(current.getPrinted().toString());
+        if (current.getPrinted() != null) {
+            vh.datePrinted.setText(current.getPrinted().toString());
+        }
 
         if (position % 2 == 0) {
             vh.rowColor.setBackgroundColor(context.getResources().getColor(R.color.transparentBlack)); // this alternates the row colors
@@ -95,10 +95,7 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView jobName;
-        TextView userIdentification;
-        TextView datePrinted;
-        TextView pageCount;
+        TextView jobName, userIdentification, datePrinted;
         TableRow rowColor;
 
         public ViewHolder(View view) {
@@ -106,7 +103,6 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
             if (tableType == MY_ACCOUNT) {
                 jobName = (TextView) itemView.findViewById(R.id.print_hist_job);
                 datePrinted = (TextView) itemView.findViewById(R.id.print_hist_date);
-                pageCount = (TextView) itemView.findViewById(R.id.print_hist_pageCount);
                 rowColor = (TableRow) itemView.findViewById(R.id.table_data_user);
             } else if (tableType == ROOMS) {
                 userIdentification = (TextView) itemView.findViewById(R.id.table_row_user);

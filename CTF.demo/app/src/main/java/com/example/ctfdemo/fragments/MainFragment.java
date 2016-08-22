@@ -19,6 +19,7 @@ import com.example.ctfdemo.requests.QuotaRequest;
 import com.example.ctfdemo.requests.TokenRequest;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -30,7 +31,7 @@ public class MainFragment extends Fragment{
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
     // todo keys for the Spice cache, not used yet
     private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB";
-    private String username, token;
+    private String username;
 
     //todo do something with the username and token, see fragment lifecycle
     public static MainFragment newInstance(String username) {
@@ -113,12 +114,12 @@ public class MainFragment extends Fragment{
 
     private void performQuotaRequest(String token) {
         quotaView.setText(getString(R.string.dashboard_quota_text, ""));
-        requestManager.execute(new QuotaRequest(token), new QuotaRequestListener());
+        requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
     }
 
     private void performLastJobRequest(String token) {
         lastJobView.setText(getString(R.string.dashboard_last_job_text, ""));
-        requestManager.execute(new LastJobRequest(token), new LastJobRequestListener());
+        requestManager.execute(new LastJobRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new LastJobRequestListener());
     }
 
     private final class QuotaRequestListener implements RequestListener<String> {
@@ -132,14 +133,14 @@ public class MainFragment extends Fragment{
         }
     }
 
-    private final class LastJobRequestListener implements RequestListener<PrintJob> {
+    private final class LastJobRequestListener implements RequestListener<String> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             Toast.makeText(getActivity(), "Error: failed to load data from TEPID server.", Toast.LENGTH_SHORT).show();
         }
         @Override
-        public void onRequestSuccess(PrintJob p) {
-            lastJobView.setText(getString(R.string.dashboard_last_job_text, p.getPrinted()));
+        public void onRequestSuccess(String p) {
+            lastJobView.setText(getString(R.string.dashboard_last_job_text, p));
         }
     }
 

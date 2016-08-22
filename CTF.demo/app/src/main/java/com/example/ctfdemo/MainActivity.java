@@ -9,7 +9,6 @@ package com.example.ctfdemo;
  * a better way to do it.
  */
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;

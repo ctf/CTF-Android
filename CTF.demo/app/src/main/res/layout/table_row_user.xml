@@ -6,21 +6,19 @@
        <TextView
            android:id="@+id/print_hist_job"
            android:layout_height="wrap_content"
-           android:layout_width="wrap_content"
+           android:layout_width="0dp"
+           android:layout_weight=".5"
            android:padding="2dp"
-           android:gravity="center_horizontal"/>
+           android:gravity="center_horizontal"
+           android:singleLine="true" />
         <TextView
             android:id="@+id/print_hist_date"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
             android:padding="2dp"
-            android:gravity="center_horizontal"/>
-        <TextView
-            android:id="@+id/print_hist_pageCount"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:padding="2dp"
-            android:gravity="center_horizontal"/>
+            android:gravity="center_horizontal"
+            android:singleLine="true" />
     </TableRow>
 
 </TableLayout>

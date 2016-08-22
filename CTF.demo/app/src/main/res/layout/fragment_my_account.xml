@@ -6,7 +6,7 @@
     android:background="@color/windowBackground">
 
     <TextView
-        android:id="@+id/quota"
+        android:id="@+id/my_account_quota"
         style="@style/subheader"
         android:layout_width="match_parent"
         android:layout_height="48dp"/>
@@ -16,7 +16,7 @@
         style="@style/table_header"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@id/quota"/>
+        android:layout_below="@id/my_account_quota"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/print_history"
