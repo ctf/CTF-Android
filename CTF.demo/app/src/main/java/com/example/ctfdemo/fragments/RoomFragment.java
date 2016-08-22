@@ -15,7 +15,13 @@ import android.widget.Button;
 
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.adapter.PrintJobAdapter;
+import com.example.ctfdemo.auth.AccountUtil;
+import com.example.ctfdemo.requests.CTFSpiceService;
+import com.example.ctfdemo.requests.TokenRequest;
 import com.example.ctfdemo.tepid.PrintJob;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,14 +31,19 @@ public class RoomFragment extends Fragment {
 
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
+    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+    private static final String KEY_TOKEN = "token";
+    private String token;
 
 
-    public static RoomFragment newInstance() {
+    public static RoomFragment newInstance(String token) {
         RoomFragment frag = new RoomFragment();
-        //Bundle args = new Bundle();
-        //frag.setArguments(args);
+        Bundle args = new Bundle();
+        args.putString(KEY_TOKEN, token);
+        frag.setArguments(args);
         return frag;
     }
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -53,19 +64,41 @@ public class RoomFragment extends Fragment {
         setRetainInstance(true);
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        setHasOptionsMenu(true);
-
         View rootView = inflater.inflate(R.layout.fragment_viewpager, container, false);
-        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new RoomPagerAdapter(getChildFragmentManager()));
+        return rootView;
+    }
 
-        tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            token = args.getString(KEY_TOKEN);
+        }
+        viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
+        viewPager.setAdapter(new RoomPagerAdapter(getChildFragmentManager(), token));
+
+        tabLayout = (TabLayout) getView().findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        requestManager.start(getActivity());
+    }
+
+    @Override
+    public void onStop() {
+        // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
+        // ugly if statement.
+        if (requestManager.isStarted()) {
+            requestManager.shouldStop();
+        }
+        super.onStop();
     }
 
     /**
@@ -74,15 +107,18 @@ public class RoomFragment extends Fragment {
      */
     public class RoomPagerAdapter extends FragmentPagerAdapter {
 
-        public RoomPagerAdapter(FragmentManager fm) {
+        private String token;
+
+        public RoomPagerAdapter(FragmentManager fm, String token) {
             super(fm);
+            this.token = token;
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // we return a RoomTabFragment
-            return RoomTabFragment.newInstance(position + 1);
+            return RoomTabFragment.newInstance(position, token);
         }
 
         @Override
@@ -111,45 +147,42 @@ public class RoomFragment extends Fragment {
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+        private static final String ARG_SECTION_NUMBER = "section_number", KEY_TOKEN = "token";
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static RoomTabFragment newInstance(int sectionNumber) {
+        public static RoomTabFragment newInstance(int sectionNumber, String token) {
             RoomTabFragment fragment = new RoomTabFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString(KEY_TOKEN, token);
             fragment.setArguments(args);
             return fragment;
         }
 
         // Required empty public constructor
-        public RoomTabFragment() {
-        }
+        public RoomTabFragment() {}
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            // rootView occupies screen space below tabs
             View rootView = inflater.inflate(R.layout.fragment_room_tabs, container, false);
+
+            Bundle args = getArguments();
+            int position = args.getInt(ARG_SECTION_NUMBER); // position corresponds to room number 1B16, etc.
+            String token = args.getString(KEY_TOKEN);
+
             RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recent_jobs);
-
-            Bundle bundle = getArguments();
-            int position = bundle.getInt(ARG_SECTION_NUMBER); // position corresponds to room number 1B16, etc.
-
-            // recent jobs table uses a linear layout manager and a custom adapter for table rows
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), getData(), PrintJobAdapter.ROOMS));
+            mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), getData(token), PrintJobAdapter.ROOMS));
 
-            Button viewSeats = (Button) rootView.findViewById(R.id.map_button);
-            View.OnClickListener buttonClickListener = new View.OnClickListener() {
+            rootView.findViewById(R.id.map_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showRoomMapDialog();
                 }
-            };
-            viewSeats.setOnClickListener(buttonClickListener);
+            });
 
             return rootView;
         }
@@ -159,7 +192,7 @@ public class RoomFragment extends Fragment {
          * which extracts the relevant data and formats it depending on the
          * type of table it is filling (user's job history or room queues)
          */
-        public static List<PrintJob> getData() {
+        public static List<PrintJob> getData(String token) {
             List<PrintJob> printJobs = new ArrayList<>();
 
             // TODO: query server for recent job info and store in array
@@ -167,7 +200,7 @@ public class RoomFragment extends Fragment {
             testJob.setName("final_grades.xml");
             testJob.setPages(1);
             testJob.setPrinted(new Date());
-            testJob.setUserIdentification("student123");
+            testJob.setUserIdentification(token);
 
             for (int i = 0; i < 10; i++) {
                 printJobs.add(testJob);

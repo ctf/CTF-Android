@@ -30,16 +30,17 @@ import java.util.List;
 
 public class MyAccountFragment extends Fragment {
 
-    private static final String KEY_USERNAME = "username";
-    TextView quotaView;
+    private static final String KEY_USERNAME = "username", KEY_TOKEN = "token";
+    TextView quotaView, usernameView;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
-    private String username;
+    private String username, token;
     private RecyclerView mRecyclerView;
 
-    public static MyAccountFragment newInstance(String username) {
+    public static MyAccountFragment newInstance(String username, String token) {
         MyAccountFragment frag = new MyAccountFragment();
         Bundle args = new Bundle();
         args.putString(KEY_USERNAME, username);
+        args.putString(KEY_TOKEN, token);
         frag.setArguments(args);
         return frag;
     }
@@ -53,25 +54,18 @@ public class MyAccountFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        if (args != null) {
-            username = args.getString(KEY_USERNAME);
-        }
-
         View rootView = inflater.inflate(R.layout.fragment_my_account, container, false);
-
-        quotaView = (TextView) rootView.findViewById(R.id.my_account_quota);
-
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.print_history);
-        // print history table uses a linear layout manager and a custom adapter for table rows
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            username = args.getString(KEY_USERNAME);
+            token = args.getString(KEY_TOKEN);
+        }
         populateUI();
     }
 
@@ -92,25 +86,18 @@ public class MyAccountFragment extends Fragment {
     }
 
     private void populateUI() {
-        //usernameView = ((TextView) getView().findViewById(R.id.dashboard_username));
+        //usernameView = (TextView) getView().findViewById(R.id.dashboard_username);
         //usernameView.setText(getString(R.string.dashboard_username_text, username));
         quotaView = (TextView) getView().findViewById(R.id.my_account_quota);
+        quotaView.setText(getString(R.string.dashboard_quota_text, ""));
+        mRecyclerView = (RecyclerView) getView().findViewById(R.id.print_history);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        requestManager.execute(new TokenRequest(AccountUtil.getAccount(), getActivity()), new RequestListener<String>(){
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                // todo wat do if we can't get token?!
-            }
-            @Override
-            public void onRequestSuccess(String str) {
-                performQuotaRequest(str);
-                performUserJobsRequest(str);
-            }
-        });
+        performQuotaRequest(token);
+        performUserJobsRequest(token);
     }
 
     private void performQuotaRequest(String token) {
-        quotaView.setText(getString(R.string.dashboard_quota_text, ""));
         requestManager.execute(new QuotaRequest(token), new QuotaRequestListener());
     }
 

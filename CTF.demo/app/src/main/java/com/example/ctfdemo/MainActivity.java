@@ -31,22 +31,28 @@ import com.example.ctfdemo.fragments.MyAccountFragment;
 import com.example.ctfdemo.fragments.ReportProblemFragment;
 import com.example.ctfdemo.fragments.RoomFragment;
 import com.example.ctfdemo.fragments.SettingsFragment;
+import com.example.ctfdemo.requests.CTFSpiceService;
+import com.example.ctfdemo.requests.TokenRequest;
 import com.gc.materialdesign.widgets.Dialog;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String username;
+    private String username, token;
+    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AccountUtil.initAccount(this);
 
         if (AccountUtil.isSignedIn()) {
-
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -58,9 +64,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             username = AccountUtil.getUserName();
 
-            FragmentManager fm = getSupportFragmentManager();
-            fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username)).commit();
-
         } else {
             AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
                 @Override
@@ -71,8 +74,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }, null);
         }
+    }
 
+    @Override
+    protected void onStart() {
+        requestManager.start(this);
+        requestManager.execute(new TokenRequest(AccountUtil.getAccount(), this), new RequestListener<String>(){
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                // todo wat do if we can't get token?!
+                System.out.println("REQUEST FAILED!!!!!!!!!!");
+            }
+            @Override
+            public void onRequestSuccess(String str) {
+                token = str;
+                FragmentManager fm = getSupportFragmentManager();
+                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username, token)).commit();
+            }
+        });
 
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        requestManager.shouldStop();
+        super.onStop();
     }
 
     @Override
@@ -113,17 +140,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //todo use fragment.newinstance when possible, no reason for every fragment to start making token requests
+        //todo null check token before passing to frags
         switch (id) {
             case R.id.dashboard:
-                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username)).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username, token)).commit();
                 getSupportActionBar().setTitle(R.string.dashboard);
                 break;
             case R.id.room_info:
-                fm.beginTransaction().replace(R.id.content_frame, RoomFragment.newInstance()).commit();
+                fm.beginTransaction().replace(R.id.content_frame, RoomFragment.newInstance(token)).commit();
                 getSupportActionBar().setTitle(R.string.roominfo);
                 break;
             case R.id.user_info:
-                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(username)).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(username, token)).commit();
                 getSupportActionBar().setTitle(R.string.userinfo);
                 break;
             case R.id.settings:

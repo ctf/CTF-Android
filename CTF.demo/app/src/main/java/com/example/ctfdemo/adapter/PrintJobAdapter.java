@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.tepid.PrintJob;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,7 +75,8 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
             vh.jobName.setText(current.getName());
         }
         if (current.getPrinted() != null) {
-            vh.datePrinted.setText(current.getPrinted().toString());
+            Date printed = current.getPrinted();
+            vh.datePrinted.setText(new SimpleDateFormat("E, MMM d, h:m").format(printed));
         }
 
         if (position % 2 == 0) {

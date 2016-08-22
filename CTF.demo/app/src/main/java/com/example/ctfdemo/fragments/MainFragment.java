@@ -25,19 +25,20 @@ import com.octo.android.robospice.request.listener.RequestListener;
 
 public class MainFragment extends Fragment{
 
-    private static final String KEY_USERNAME = "username";
+    private static final String KEY_USERNAME = "username", KEY_TOKEN = "token";
     private ImageView[][] statusIcons = new ImageView[3][2];
     private TextView usernameView, quotaView, lastJobView;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
     // todo keys for the Spice cache, not used yet
     private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB";
-    private String username;
+    private String username, token;
 
     //todo do something with the username and token, see fragment lifecycle
-    public static MainFragment newInstance(String username) {
+    public static MainFragment newInstance(String username, String token) {
         MainFragment frag = new MainFragment();
         Bundle args = new Bundle();
         args.putString(KEY_USERNAME, username);
+        args.putString(KEY_TOKEN, token);
         frag.setArguments(args);
         return frag;
     }
@@ -52,10 +53,6 @@ public class MainFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            username = args.getString(KEY_USERNAME);
-        }
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
@@ -64,6 +61,11 @@ public class MainFragment extends Fragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            username = args.getString(KEY_USERNAME);
+            token = args.getString(KEY_TOKEN);
+        }
         populateUI();
     }
 
@@ -93,32 +95,19 @@ public class MainFragment extends Fragment{
         usernameView = ((TextView) getView().findViewById(R.id.dashboard_username));
         usernameView.setText(getString(R.string.dashboard_username_text, username));
         quotaView = (TextView) getView().findViewById(R.id.dashboard_quota);
+        quotaView.setText(getString(R.string.dashboard_quota_text, ""));
         lastJobView = (TextView) getView().findViewById(R.id.dashboard_last_print_job);
+        lastJobView.setText(getString(R.string.dashboard_last_job_text, ""));
 
-        requestManager.execute(new TokenRequest(AccountUtil.getAccount(), getActivity()), new RequestListener<String>(){
-
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                // todo wat do if we can't get token?!
-                System.out.println("REQUEST FAILED!!!!!!!!!!");
-            }
-
-            @Override
-            public void onRequestSuccess(String str) {
-                performQuotaRequest(str);
-                performLastJobRequest(str);
-                System.out.println("REQUEST SUCCEEDED!!!!!!!!!!!!!!!!!!!!");
-            }
-        });
+        performQuotaRequest(token);
+        performLastJobRequest(token);
     }
 
     private void performQuotaRequest(String token) {
-        quotaView.setText(getString(R.string.dashboard_quota_text, ""));
         requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
     }
 
     private void performLastJobRequest(String token) {
-        lastJobView.setText(getString(R.string.dashboard_last_job_text, ""));
         requestManager.execute(new LastJobRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new LastJobRequestListener());
     }
 
