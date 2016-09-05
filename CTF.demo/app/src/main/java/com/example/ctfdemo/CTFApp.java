@@ -18,7 +18,7 @@ public class CTFApp extends Application {
         mInstance = this;
 
         //todo using for network debug
-        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
     }
 
     public static CTFApp getInstance() {
@@ -27,7 +27,7 @@ public class CTFApp extends Application {
 
     public static OkHttpClient getHttpClient() {
         if (httpClientInstance == null) {
-            httpClientInstance = new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build();
+            httpClientInstance = new OkHttpClient.Builder()/*.addNetworkInterceptor(new StethoInterceptor())*/.build();
         }
         return httpClientInstance;
     }

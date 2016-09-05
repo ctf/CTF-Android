@@ -7,33 +7,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ctfdemo.R;
-import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.requests.CTFSpiceService;
+import com.example.ctfdemo.requests.DestinationRequest;
 import com.example.ctfdemo.requests.LastJobRequest;
 import com.example.ctfdemo.requests.QuotaRequest;
-import com.example.ctfdemo.requests.TokenRequest;
-import com.example.ctfdemo.tepid.PrintJob;
+import com.example.ctfdemo.tepid.Destination;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainFragment extends Fragment{
 
-    private static final String KEY_USERNAME = "username", KEY_TOKEN = "token";
-    private ImageView[][] statusIcons = new ImageView[3][2];
+    private static final String KEY_USERNAME = "username", KEY_TOKEN = "token", KEY_DESTINATIONS = "destinations";
     private TextView usernameView, quotaView, lastJobView;
+    private HashMap<String, ImageView> printerIcons = new HashMap<String, ImageView>();
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
     // todo keys for the Spice cache, not used yet
     private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB";
     private String username, token;
 
-    //todo do something with the username and token, see fragment lifecycle
     public static MainFragment newInstance(String username, String token) {
         MainFragment frag = new MainFragment();
         Bundle args = new Bundle();
@@ -86,21 +86,21 @@ public class MainFragment extends Fragment{
     }
 
     private void populateUI() {
-        int[] rooms = {R.id.dashboard_row_1B16, R.id.dashboard_row_1B17, R.id.dashboard_row_1B18};
-        for (int i = 0; i < 3; i++) {
-            TableRow row = (TableRow) getView().findViewById(rooms[i]);
-            statusIcons[i][0] = (ImageView) row.getChildAt(1);
-            statusIcons[i][1] = (ImageView) row.getChildAt(2);
-        }
         usernameView = ((TextView) getView().findViewById(R.id.dashboard_username));
         usernameView.setText(getString(R.string.dashboard_username_text, username));
         quotaView = (TextView) getView().findViewById(R.id.dashboard_quota);
         quotaView.setText(getString(R.string.dashboard_quota_text, ""));
         lastJobView = (TextView) getView().findViewById(R.id.dashboard_last_print_job);
         lastJobView.setText(getString(R.string.dashboard_last_job_text, ""));
+        printerIcons.put("1B16-North", (ImageView) getView().findViewById(R.id.printer_1B16_north));
+        printerIcons.put("1B16-South", (ImageView) getView().findViewById(R.id.printer_1B16_south));
+        printerIcons.put("1B17-North", (ImageView) getView().findViewById(R.id.printer_1B17_north));
+        printerIcons.put("1B17-South", (ImageView) getView().findViewById(R.id.printer_1B17_south));
+        printerIcons.put("1B18-North", (ImageView) getView().findViewById(R.id.printer_1B18));
 
         performQuotaRequest(token);
         performLastJobRequest(token);
+        performDestinationRequest(token);
     }
 
     private void performQuotaRequest(String token) {
@@ -109,6 +109,10 @@ public class MainFragment extends Fragment{
 
     private void performLastJobRequest(String token) {
         requestManager.execute(new LastJobRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new LastJobRequestListener());
+    }
+
+    private void performDestinationRequest(String token) {
+        requestManager.execute(new DestinationRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationRequestListener());
     }
 
     private final class QuotaRequestListener implements RequestListener<String> {
@@ -133,13 +137,27 @@ public class MainFragment extends Fragment{
         }
     }
 
-
-
-/*    private final class DestinationStatusRequest extends SpiceRequest<> {
+    private final class DestinationRequestListener implements RequestListener<Map> {
 
         @Override
-        public Destination[] loadDataFromNetwork() throws Exception {
-            return new Destination[0];
+        public void onRequestFailure(SpiceException spiceException) {
+            for (ImageView i : printerIcons.values()) {
+                i.setImageResource(R.drawable.printer_down);
+            }
         }
-    }*/
+
+        @Override
+        public void onRequestSuccess(Map destinations) {
+            for (Object d : destinations.values()) {
+                if (d instanceof Destination) {
+                    if (((Destination)d).isUp()) {
+                        printerIcons.get(((Destination)d).getName()).setImageResource(R.drawable.printer_up);
+                    } else {
+                        printerIcons.get(((Destination)d).getName()).setImageResource(R.drawable.printer_down);
+                    }
+                }
+            }
+        }
+    }
+
 }

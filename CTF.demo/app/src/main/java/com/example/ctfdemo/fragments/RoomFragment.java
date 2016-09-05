@@ -1,37 +1,37 @@
 package com.example.ctfdemo.fragments;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.adapter.PrintJobAdapter;
-import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.requests.CTFSpiceService;
-import com.example.ctfdemo.requests.TokenRequest;
+import com.example.ctfdemo.requests.DestinationRequest;
+import com.example.ctfdemo.requests.QueueRequest;
+import com.example.ctfdemo.tepid.Destination;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
 
 public class RoomFragment extends Fragment {
 
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
-    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
     private static final String KEY_TOKEN = "token";
     private String token;
 
@@ -85,22 +85,6 @@ public class RoomFragment extends Fragment {
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        requestManager.start(getActivity());
-    }
-
-    @Override
-    public void onStop() {
-        // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
-        // ugly if statement.
-        if (requestManager.isStarted()) {
-            requestManager.shouldStop();
-        }
-        super.onStop();
-    }
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the room pages.
@@ -118,7 +102,7 @@ public class RoomFragment extends Fragment {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // we return a RoomTabFragment
-            return RoomTabFragment.newInstance(position, token);
+            return RoomTabFragment.newInstance("1B" + (16 + position), token);
         }
 
         @Override
@@ -148,15 +132,19 @@ public class RoomFragment extends Fragment {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number", KEY_TOKEN = "token";
+        private String room, token;
+        private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+        private RecyclerView mRecyclerView;
+        private ImageView statusNorth, statusSouth;
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static RoomTabFragment newInstance(int sectionNumber, String token) {
+        public static RoomTabFragment newInstance(String roomNumber, String token) {
             RoomTabFragment fragment = new RoomTabFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString(ARG_SECTION_NUMBER, roomNumber);
             args.putString(KEY_TOKEN, token);
             fragment.setArguments(args);
             return fragment;
@@ -167,15 +155,21 @@ public class RoomFragment extends Fragment {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_room_tabs, container, false);
-
             Bundle args = getArguments();
-            int position = args.getInt(ARG_SECTION_NUMBER); // position corresponds to room number 1B16, etc.
-            String token = args.getString(KEY_TOKEN);
+            room = args.getString(ARG_SECTION_NUMBER); // corresponds to room number 1B16, etc.
+            token = args.getString(KEY_TOKEN);
 
-            RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recent_jobs);
+            View rootView = inflater.inflate(R.layout.fragment_room_tab, container, false);
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recent_jobs);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), getData(token), PrintJobAdapter.ROOMS));
+
+            statusNorth = (ImageView) rootView.findViewById(R.id.printer_north);
+            if (!room.equals("1B18")) {
+                statusSouth = (ImageView) rootView.findViewById(R.id.printer_south);
+            }
+
+            requestManager.execute(new QueueRequest(token, room), new QueueRequestListener());
+            requestManager.execute(new DestinationRequest(token), new DestinationRequestListener());
 
             rootView.findViewById(R.id.map_button).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -187,26 +181,20 @@ public class RoomFragment extends Fragment {
             return rootView;
         }
 
-        /**
-         * get a bunch of PrintJob objects to pass to the PrintJobAdapter,
-         * which extracts the relevant data and formats it depending on the
-         * type of table it is filling (user's job history or room queues)
-         */
-        public static List<PrintJob> getData(String token) {
-            List<PrintJob> printJobs = new ArrayList<>();
+        @Override
+        public void onStart() {
+            super.onStart();
+            requestManager.start(getActivity());
+        }
 
-            // TODO: query server for recent job info and store in array
-            PrintJob testJob = new PrintJob();
-            testJob.setName("final_grades.xml");
-            testJob.setPages(1);
-            testJob.setPrinted(new Date());
-            testJob.setUserIdentification(token);
-
-            for (int i = 0; i < 10; i++) {
-                printJobs.add(testJob);
+        @Override
+        public void onStop() {
+            // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
+            // ugly if statement.
+            if (requestManager.isStarted()) {
+                requestManager.shouldStop();
             }
-
-            return printJobs;
+            super.onStop();
         }
 
         private void showRoomMapDialog() {
@@ -215,5 +203,53 @@ public class RoomFragment extends Fragment {
             roomMapFragment.show(fm, "room_map");
         }
 
+        private final class QueueRequestListener implements RequestListener<PrintJob[]> {
+
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+
+            }
+
+            @Override
+            public void onRequestSuccess(PrintJob[] printJobs) {
+                mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), new ArrayList<PrintJob>(Arrays.asList(printJobs)), PrintJobAdapter.ROOMS));
+            }
+        }
+
+        private final class DestinationRequestListener implements RequestListener<Map> {
+
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                System.out.println("FAILURE");
+            }
+
+            @Override
+            public void onRequestSuccess(Map destinations) {
+                for (Object d : destinations.values()) {
+                    String[] id = ((Destination)d).getName().split("-");
+                    boolean isUp = ((Destination)d).isUp();
+                    if (id[0].equals(room)) {
+                        switch (id[1]) {
+                            case "North":
+                                if (isUp) {
+                                    statusNorth.setImageResource(R.drawable.printer_up);
+                                } else {
+                                    statusNorth.setImageResource(R.drawable.printer_down);
+                                }
+                                break;
+                            case "South":
+                                if (isUp) {
+                                    statusSouth.setImageResource(R.drawable.printer_up);
+                                } else {
+                                    statusSouth.setImageResource(R.drawable.printer_down);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

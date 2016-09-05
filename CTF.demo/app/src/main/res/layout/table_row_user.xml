@@ -4,7 +4,7 @@
     android:stretchColumns="0,1,2">
     <TableRow android:id="@+id/table_data_user">
        <TextView
-           android:id="@+id/print_hist_job"
+           android:id="@+id/job_name"
            android:layout_height="wrap_content"
            android:layout_width="0dp"
            android:layout_weight=".5"
@@ -12,7 +12,7 @@
            android:gravity="center_horizontal"
            android:singleLine="true" />
         <TextView
-            android:id="@+id/print_hist_date"
+            android:id="@+id/job_date"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight=".5"

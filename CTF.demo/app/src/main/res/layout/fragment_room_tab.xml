@@ -14,18 +14,24 @@
         <ImageView
             android:id="@+id/computer_icon"
             android:contentDescription="@string/computers_available"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:src="@drawable/computers_available_true"
-            android:layout_weight="1"/>
+            android:layout_weight=".3"
+            android:src="@drawable/computers_available_true" />
 
         <ImageView
-            android:id="@+id/printer_working"
+            android:id="@+id/printer_north"
             android:contentDescription="@string/printer_working"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
+            android:layout_weight=".3"
+            android:layout_height="100dp" />
+
+        <ImageView
+            android:id="@+id/printer_south"
+            android:contentDescription="@string/printer_working"
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_printer_alert"
-            android:layout_weight="1" />
+            android:layout_weight=".3" />
 
     </LinearLayout>
 

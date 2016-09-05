@@ -50,45 +50,45 @@ public class LastJobRequest extends BaseTepidRequest<String> {
         Gson gson = builder.create();
 
         PrintJob[] userJobs = gson.fromJson(response.body().string(), PrintJob[].class);
-        Date mostRecent = userJobs[userJobs.length-1].getPrinted();
-        Date current = new Date();
-        return computeDifference(mostRecent, current);
+        long mostRecent = userJobs[userJobs.length-1].getPrinted().getTime();
+        long current = new Date().getTime();
+        return computeDifference(current - mostRecent);
     }
 
-    private String computeDifference(Date leastRecent, Date mostRecent) {
-        String unit = "", diff = "";
+    private String computeDifference(long difference) {
         int count = 0;
+        String unit = "";
+        difference = Math.abs(difference);
 
-        if (leastRecent.getYear() == mostRecent.getYear()) {
-            if (leastRecent.getMonth() == mostRecent.getMonth()) {
-                if (leastRecent.getDate() == mostRecent.getDate()) {
-                    if (leastRecent.getHours() == mostRecent.getHours()) {
-                        if (leastRecent.getMinutes() == mostRecent.getMinutes()) {
-                            count = 1;
-                            unit = "minute";
+        if (difference > 3600000) {
+            if (difference > 86400000) {
+                if (difference > 6.048e+8) {
+                    if (difference > 2.628e+9) {
+                        if (difference > 3.154e+10) {
+                            count = (int) (difference / 3.154e+10);
+                            unit = "year";
                         } else {
-                            count = mostRecent.getMinutes() - leastRecent.getMinutes();
-                            unit = "minute";
+                            count = (int) (difference / 2.628e+9);
+                            unit = "month";
                         }
                     } else {
-                        count = mostRecent.getHours() - leastRecent.getHours();
-                        unit = "hour";
+                        count = (int) (difference / 6.048e+8);
+                        unit = "week";
                     }
                 } else {
-                    count = mostRecent.getDate() - leastRecent.getDate();
-                    unit = "day";
+                    count = (int) (difference / 86400000);
+                    unit = "week";
                 }
             } else {
-                count = mostRecent.getMonth() - leastRecent.getMonth();
-                unit = "month";
+                count = (int) (difference / 3600000);
+                unit = "hour";
             }
         } else {
-            count = mostRecent.getYear() - leastRecent.getYear();
-            unit = "year";
+            count = (int) (difference / 60000);
+            unit = "minute";
         }
 
-        diff += count + " " + unit + (count>1?"s ":" ") + "ago.";
-        return diff;
+        return "" + count + " " + unit + ((count > 1)?"s":"") + " ago.";
     }
 
 }

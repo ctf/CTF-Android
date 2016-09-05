@@ -104,12 +104,12 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
         public ViewHolder(View view) {
             super(view);
             if (tableType == MY_ACCOUNT) {
-                jobName = (TextView) itemView.findViewById(R.id.print_hist_job);
-                datePrinted = (TextView) itemView.findViewById(R.id.print_hist_date);
+                jobName = (TextView) itemView.findViewById(R.id.job_name);
+                datePrinted = (TextView) itemView.findViewById(R.id.job_date);
                 rowColor = (TableRow) itemView.findViewById(R.id.table_data_user);
             } else if (tableType == ROOMS) {
-                userIdentification = (TextView) itemView.findViewById(R.id.table_row_user);
-                datePrinted = (TextView) itemView.findViewById(R.id.table_row_date);
+                userIdentification = (TextView) itemView.findViewById(R.id.queue_job_user);
+                datePrinted = (TextView) itemView.findViewById(R.id.queue_job_date);
                 rowColor = (TableRow) itemView.findViewById(R.id.table_data_room);
             }
         }

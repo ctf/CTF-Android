@@ -4,9 +4,9 @@
     <!-- Strings for page titles -->
     <string name="dashboard">Dashboard</string>
     <string name="roominfo">Room Info</string>
-    <string name="userinfo">My Account</string>
-    <string name="settings">Settings</string>
-    <string name="reportproblem">Report a problem</string>
+    <string name="userinfo">Mon Compte</string>
+    <string name="settings">Réglages</string>
+    <string name="reportproblem">Contactez nous</string>
 
     <!-- Strings for blind people? -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -16,9 +16,9 @@
     <string name="printer_working">Printing Available</string>
     <string name="computers_available">Computers Available</string>
     <string name="computers_unavailable">No Computers Available</string>
-    <string name="map_button">View Room Map</string>
+    <string name="map_button">Voire la carte</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Réglages</string>
 
     <!-- Srings related to settings -->
     <string name="pref_push_title">Push notifications</string>
@@ -34,25 +34,17 @@
     <!-- Srings related to problem report page -->
     <string name="error_inst">Pick which room in causing you grievances, select the error, and press send to relay onto us your grievance.</string>
     <string name="error_report_title">Error Report</string>
+
     <string-array name="problem_spinner">
         <item>Printer Down</item>
         <item>Computer Down</item>
     </string-array>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">McGill Email / Short User</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This is not a valid McGill email address</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
     <string name="title_activity_user">User</string>
     <string name="authenticator_account_type">com.example.ctfdemo.StudentAccount</string>
     <string name="authenticator_token_type">com.example.ctfdemo.TepidToken</string>
     <string name="key_username">USERNAME</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">S\'inscrire</string>
 
     <string-array name="logout_messages">
         <item>do svidan’ya!</item>
@@ -64,13 +56,20 @@
         <item>zai jian!</item>
     </string-array>
 
-    <!-- Strings displayed on the dashboard -->
-    <string name="dashboard_username_text">User: %s</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Adresse courriel McGill / Nom d\'utilisateur</string>
+    <string name="prompt_password">Mot de passe</string>
+    <string name="action_sign_in">S\'inscrire</string>
+    <string name="action_sign_in_short">S\'inscrire</string>
+    <string name="error_invalid_email">Adresse courriel McGill invalide</string>
+    <string name="error_invalid_password">Le mot de passe est trop court</string>
+    <string name="error_incorrect_password">Le mot de passe est incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
+
+    <string name="dashboard_username_text">Utilisateur: %s</string>
     <string name="dashboard_quota_text">Quota: %s</string>
-    <string name="dashboard_last_job_text">Last job: %s</string>
-    <string name="string_1b16">1B16</string>
-    <string name="string_1b17">1B17</string>
-    <string name="string_1b18">1B18</string>
+    <string name="dashboard_last_job_text">Dernière impression: %s</string>
 
 </resources>
 
