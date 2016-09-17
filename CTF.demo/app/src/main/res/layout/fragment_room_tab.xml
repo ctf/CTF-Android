@@ -76,10 +76,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recent_jobs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/table"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
-        android:layout_below="@+id/map_button"></android.support.v7.widget.RecyclerView>
+        android:layout_below="@+id/map_button" />
 
 </RelativeLayout>

@@ -12,9 +12,9 @@
         <!-- row for 1b16 -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_margin="12dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_1B16"
@@ -31,35 +31,44 @@
 
             <ImageView
                 android:id="@+id/vacancies_1B16"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
+                style="@style/dashboard_icons"
                 android:contentDescription="@string/computers_available"
                 android:src="@drawable/computers_available_true" />
 
             <ImageView
                 android:id="@+id/printer_1B16_south"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
-                android:contentDescription="@string/printer_working"
-                android:src="@drawable/printer_up" />
+                style="@style/dashboard_icons"
+                android:contentDescription="@string/printer_working" />
 
             <ImageView
                 android:id="@+id/printer_1B16_north"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
-                android:contentDescription="@string/printer_working"
-                android:src="@drawable/printer_up" />
+                style="@style/dashboard_icons"
+                android:contentDescription="@string/printer_working" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView style="@style/dashboard_subheaders" />
+
+            <TextView style="@style/dashboard_subheaders" />
+
+            <TextView
+                style="@style/dashboard_subheaders"
+                android:text="@string/south" />
+
+            <TextView
+                style="@style/dashboard_subheaders"
+                android:text="@string/north" />
         </LinearLayout>
 
         <!-- row for 1b17 -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_margin="12dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_1B17"
@@ -75,35 +84,44 @@
 
             <ImageView
                 android:id="@+id/vacancies_1B17"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
+                style="@style/dashboard_icons"
                 android:contentDescription="@string/computers_available"
                 android:src="@drawable/computers_available_true" />
 
             <ImageView
                 android:id="@+id/printer_1B17_south"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
-                android:contentDescription="@string/printer_working"
-                android:src="@drawable/printer_up" />
+                style="@style/dashboard_icons"
+                android:contentDescription="@string/printer_working" />
 
             <ImageView
                 android:id="@+id/printer_1B17_north"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
-                android:contentDescription="@string/printer_working"
-                android:src="@drawable/printer_up" />
+                style="@style/dashboard_icons"
+                android:contentDescription="@string/printer_working" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView style="@style/dashboard_subheaders" />
+
+            <TextView style="@style/dashboard_subheaders" />
+
+            <TextView
+                style="@style/dashboard_subheaders"
+                android:text="@string/south" />
+
+            <TextView
+                style="@style/dashboard_subheaders"
+                android:text="@string/north" />
         </LinearLayout>
 
         <!-- row for 1b18 -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_margin="12dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_1B18"
@@ -120,57 +138,47 @@
 
             <ImageView
                 android:id="@+id/vacancies_1B18"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
+                style="@style/dashboard_icons"
                 android:contentDescription="@string/computers_available"
                 android:src="@drawable/computers_available_true" />
 
             <ImageView
                 android:id="@+id/printer_1B18"
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
-                android:contentDescription="@string/printer_working"
-                android:src="@drawable/printer_up" />
+                style="@style/dashboard_icons"
+                android:contentDescription="@string/printer_working" />
 
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="80dp"
-                android:layout_weight=".25"
+                style="@style/dashboard_icons"
                 android:contentDescription="filler" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView style="@style/dashboard_subheaders" />
+
+            <TextView style="@style/dashboard_subheaders" />
+
+            <TextView
+                style="@style/dashboard_subheaders"
+                android:text="@string/north" />
+
+            <TextView style="@style/dashboard_subheaders" />
+        </LinearLayout>
+
+        <!-- status text -->
         <TextView
             android:id="@+id/dashboard_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ffffff" />
+            style="@style/dashboard_text" />
 
         <TextView
             android:id="@+id/dashboard_quota"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ffffff" />
+            style="@style/dashboard_text" />
 
         <TextView
             android:id="@+id/dashboard_last_print_job"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ffffff" />
+            style="@style/dashboard_text" />
 
     </LinearLayout>
 

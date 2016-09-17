@@ -1,20 +1,10 @@
 package com.example.ctfdemo;
 
-/* note to future self : don't fucking touch the v4 support lib fragment manager,
- * or the v4 support lib fragments. I fucking finally got it working nicely so that
- * all pages share the same navigation drawer. You can't use the android.app.Fragment
- * because some of the methods implemented for the recyclerview on the roominfo pages
- * won't work, and treating them as a special case with their own activity fucking lags,
- * and brings up a host of other problems, so leave it this way unless you've found
- * a better way to do it.
- */
-
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -26,7 +16,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.fragments.MainFragment;
@@ -36,13 +25,9 @@ import com.example.ctfdemo.fragments.RoomFragment;
 import com.example.ctfdemo.fragments.SettingsFragment;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.TokenRequest;
-import com.gc.materialdesign.widgets.Dialog;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-
-import java.util.Locale;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,7 +39,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
 
         AccountUtil.initAccount(this);
-        setLocale();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = preferences.getString("pref_language", "en");
+        SettingsFragment.setLocale(this, lang);
 
         if (AccountUtil.isSignedIn()) {
             setContentView(R.layout.activity_main);
@@ -106,7 +94,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
-        setLocale();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = preferences.getString("pref_language", "en");
+        SettingsFragment.setLocale(this, lang);
+        //prefs.setTheme();
         super.onResume();
     }
 
@@ -155,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager fm = getSupportFragmentManager();
         int id = item.getItemId();
 
-        //todo use fragment.newinstance when possible, no reason for every fragment to start making token requests
         //todo null check token before passing to frags
         switch (id) {
             case R.id.dashboard:
@@ -171,15 +161,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle(R.string.userinfo);
                 break;
             case R.id.settings:
-                fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
+                fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment(), SettingsFragment.TAG).commit();
                 getSupportActionBar().setTitle(R.string.settings);
                 break;
             case R.id.report_problem:
                 fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
                 getSupportActionBar().setTitle(R.string.reportproblem);
-                break;
-            case R.id.logout:
-                showLogoutDialog();
                 break;
         }
 
@@ -190,30 +177,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    //todo kill the dialog
-    private void showLogoutDialog() {
-        String[] logoutMessages = getResources().getStringArray(R.array.logout_messages);
-        int rand = new Random().nextInt(logoutMessages.length);
-        final Dialog dialog = new Dialog(this, "", logoutMessages[rand].toUpperCase());
-        dialog.setOnAcceptButtonClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AccountUtil.removeAccount();
-                finish();
-                //System.exit(0);
-            }
-        });
-        dialog.show();
-    }
-
-    private void setLocale() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String lang = preferences.getString("user_language", "en");
-        Locale locale = new Locale(lang);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());
-    }
 }

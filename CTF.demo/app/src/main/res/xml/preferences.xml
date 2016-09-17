@@ -2,48 +2,48 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <PreferenceCategory
-        android:title="@string/pref_push_title"
-        android:key="pref_push_key">
-        <CheckBoxPreference
-            android:key="pref_pushprinterdownup"
-            android:title="@string/pref_pushprinterdownup"
-            android:defaultValue="false" />
-        <CheckBoxPreference
-            android:key="pref_roomnotfull"
-            android:title="@string/pref_roomnotfull"
-            android:defaultValue="false" />
-        <CheckBoxPreference
-            android:key="pref_jobenters"
-            android:title="@string/pref_jobenters"
-            android:defaultValue="false" />
-        <EditTextPreference
-            android:key="pref_remainquota"
-            android:title="@string/pref_remainquota"
-            android:numeric="integer" />
 
+    <PreferenceCategory
+        android:key="pref_push_key"
+        android:title="@string/pref_push_title">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_pushprinterdownup"
+            android:title="@string/pref_pushprinterdownup" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_roomnotfull"
+            android:title="@string/pref_roomnotfull" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_jobenters"
+            android:title="@string/pref_jobenters" />
+        <EditTextPreference
+            android:defaultValue="0"
+            android:key="pref_remainquota"
+            android:numeric="integer"
+            android:title="@string/pref_remainquota" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/pref_other_title"
-        android:key="pref_other_key">
+        android:key="pref_other_key"
+        android:title="@string/pref_other_title">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_theme"
+            android:title="Dark Mode" />
         <ListPreference
-            android:key="pref_language"
-            android:title="@string/pref_language"
+            android:defaultValue="en"
             android:entries="@array/language"
-            android:entryValues="@array/language_alias" />
+            android:entryValues="@array/language_alias"
+            android:key="pref_language"
+            android:title="@string/pref_language" />
         <Preference
             android:key="pref_about"
-            android:title="@string/pref_about">
-            <!-- <intent android:action="ca.mcgill.sus.taskforce.ctf_app"/> -->
-        </Preference>
-
+            android:title="@string/pref_about" />
         <Preference
             android:key="pref_logout"
-            android:title="@string/pref_logout">
-            <!-- <intent android:action="ca.mcgill.sus.taskforce.ctf_app"/> -->
-        </Preference>
-
-
+            android:title="@string/pref_logout" />
     </PreferenceCategory>
+
 </PreferenceScreen>

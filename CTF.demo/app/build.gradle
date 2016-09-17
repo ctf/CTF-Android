@@ -35,8 +35,6 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.vajro:MaterialDesignLibrary:1.6'
 
-/*    compile 'org.glassfish.jersey.core:jersey-client:2.23.1'
-    compile 'org.glassfish.jersey.core:jersey-common:2.23.1'*/
     compile 'com.eclipsesource.jaxrs:jersey-all:2.22.2'
 
     compile 'com.squareup.okhttp3:okhttp:3.3.0'
@@ -47,10 +45,6 @@ dependencies {
 
     compile 'com.octo.android.robospice:robospice:1.4.14'
     compile 'com.octo.android.robospice:robospice-okhttp:1.4.14'
-    /*compile 'com.octo.android.robospice:robospice-google-http-client:1.4.14'*/
 
-/*    compile('com.google.http-client:google-http-client-jackson:1.22.0') {
-        exclude module: 'xpp3'
-        exclude group: 'stax'
-    }*/
+    compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.7'
 }

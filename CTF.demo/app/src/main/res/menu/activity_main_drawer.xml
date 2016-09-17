@@ -2,20 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/dashboard" android:icon="@drawable/ic_dashboard_black_24dp"
-            android:title="Dashboard" />
-        <item android:id="@+id/room_info" android:icon="@drawable/ic_weekend_black_24px"
-            android:title="Rooms" />
-        <item android:id="@+id/user_info" android:icon="@drawable/account"
-            android:title="My Account" />
-        <item android:id="@+id/settings" android:icon="@drawable/settings"
-            android:title="Settings" />
-        <item android:id="@+id/report_problem" android:icon="@drawable/ic_error_black_24px"
-                android:title="Report a problem" />
-<!--        <item android:id="@+id/login" android:icon="@android:drawable/ic_menu_send"
-                android:title="Login" />-->
-        <item android:id="@+id/logout" android:icon="@drawable/logout"
-                android:title="Logout" />
+        <item
+            android:id="@+id/dashboard"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="@string/dashboard" />
+        <item
+            android:id="@+id/room_info"
+            android:icon="@drawable/ic_weekend_black_24px"
+            android:title="@string/roominfo" />
+        <item
+            android:id="@+id/user_info"
+            android:icon="@drawable/account"
+            android:title="@string/userinfo" />
+        <item
+            android:id="@+id/report_problem"
+            android:icon="@drawable/ic_error_black_24px"
+            android:title="@string/reportproblem" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/settings"
+            android:title="@string/settings" />
+
     </group>
 
 </menu>

@@ -13,25 +13,27 @@ import android.widget.Toast;
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.DestinationRequest;
-import com.example.ctfdemo.requests.LastJobRequest;
 import com.example.ctfdemo.requests.QuotaRequest;
+import com.example.ctfdemo.requests.UserJobsRequest;
 import com.example.ctfdemo.tepid.Destination;
+import com.example.ctfdemo.tepid.PrintJob;
+import com.ocpsoft.pretty.time.PrettyTime;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainFragment extends Fragment{
 
-    private static final String KEY_USERNAME = "username", KEY_TOKEN = "token", KEY_DESTINATIONS = "destinations";
+    private static final String KEY_USERNAME = "username", KEY_TOKEN = "token";
     private TextView usernameView, quotaView, lastJobView;
     private HashMap<String, ImageView> printerIcons = new HashMap<String, ImageView>();
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
-    // todo keys for the Spice cache, not used yet
-    private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB";
+    private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB", KEY_DESTINATIONS = "DESTINATIONS";
     private String username, token;
 
     public static MainFragment newInstance(String username, String token) {
@@ -56,8 +58,6 @@ public class MainFragment extends Fragment{
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
-    // the static layout elements defined in xml will now be visible to the user
-    // the dynamic ones will be populated here
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -98,20 +98,8 @@ public class MainFragment extends Fragment{
         printerIcons.put("1B17-South", (ImageView) getView().findViewById(R.id.printer_1B17_south));
         printerIcons.put("1B18-North", (ImageView) getView().findViewById(R.id.printer_1B18));
 
-        performQuotaRequest(token);
-        performLastJobRequest(token);
-        performDestinationRequest(token);
-    }
-
-    private void performQuotaRequest(String token) {
         requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
-    }
-
-    private void performLastJobRequest(String token) {
-        requestManager.execute(new LastJobRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new LastJobRequestListener());
-    }
-
-    private void performDestinationRequest(String token) {
+        requestManager.execute(new UserJobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
         requestManager.execute(new DestinationRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationRequestListener());
     }
 
@@ -126,14 +114,16 @@ public class MainFragment extends Fragment{
         }
     }
 
-    private final class LastJobRequestListener implements RequestListener<String> {
+    private final class UserJobsRequestListener implements RequestListener<PrintJob[]> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             Toast.makeText(getActivity(), "Error: failed to load data from TEPID server.", Toast.LENGTH_SHORT).show();
         }
         @Override
-        public void onRequestSuccess(String p) {
-            lastJobView.setText(getString(R.string.dashboard_last_job_text, p));
+        public void onRequestSuccess(PrintJob[] p) {
+            Date last = p[0].started;
+            PrettyTime pt = new PrettyTime(); //todo if date is null pt uses current time
+            lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
         }
     }
 

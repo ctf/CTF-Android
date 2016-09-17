@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.tepid.PrintJob;
+import com.ocpsoft.pretty.time.PrettyTime;
 
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -74,10 +74,9 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
         } else if (tableType == MY_ACCOUNT) {
             vh.jobName.setText(current.getName());
         }
-        if (current.getPrinted() != null) {
-            Date printed = current.getPrinted();
-            vh.datePrinted.setText(new SimpleDateFormat("E, MMM d, h:m").format(printed));
-        }
+
+        Date printed = current.getPrinted() != null ? current.getPrinted() : current.started;
+        vh.datePrinted.setText(new PrettyTime().format(printed));//new SimpleDateFormat("E, MMM d, h:m").format(printed));
 
         if (position % 2 == 0) {
             vh.rowColor.setBackgroundColor(context.getResources().getColor(R.color.transparentBlack)); // this alternates the row colors

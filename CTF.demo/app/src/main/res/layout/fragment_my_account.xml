@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/windowBackground">
 
-    <TextView
-        android:id="@+id/my_account_quota"
-        style="@style/subheader"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"/>
-    <TextView
-        android:text="Print History"
-        android:id="@+id/print_hist_subhead"
-        style="@style/table_header"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@id/my_account_quota"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/print_history"
-        style="@style/table"
-        android:layout_height="300dp"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/print_hist_subhead"
-        android:layout_alignParentBottom="true"></android.support.v7.widget.RecyclerView>
+        <TextView
+            android:id="@+id/my_account_quota"
+            style="@style/subheader" />
 
-</RelativeLayout>
+        <TextView
+            style="@style/table_header"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/table_header_print_history" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/print_history"
+            style="@style/table" />
+
+    </LinearLayout>
+
+</ScrollView>

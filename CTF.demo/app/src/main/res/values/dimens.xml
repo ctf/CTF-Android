@@ -8,6 +8,4 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
-    <string name="maxheight">match_parent</string>
-    <string name="maxwidth">match_parent</string>
 </resources>
