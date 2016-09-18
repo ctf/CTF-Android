@@ -3,8 +3,11 @@ package com.example.ctfdemo;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -42,31 +45,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
-        SettingsFragment.setLocale(this, lang);
+        SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
 
-        if (AccountUtil.isSignedIn()) {
-            setContentView(R.layout.activity_main);
+        if (isWifiConnected()) {
+            if (AccountUtil.isSignedIn()) {
+                setContentView(R.layout.activity_main);
+
+                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+                setSupportActionBar(toolbar);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                drawer.setDrawerListener(toggle);
+                toggle.syncState();
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                navigationView.setNavigationItemSelectedListener(this);
+
+                username = AccountUtil.getUserName();
+            } else {
+                AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
+                    @Override
+                    public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                        // switch back to main activity after user signs in
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    }
+                }, null);
+            }
+        } else {
+            setContentView(R.layout.no_wifi);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
-            toggle.syncState();
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-
-            username = AccountUtil.getUserName();
-
-        } else {
-            AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
-                @Override
-                public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                    // switch back to main activity after user signs in
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                }
-            }, null);
         }
     }
 
@@ -175,6 +185,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    private boolean isWifiConnected() {
+        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        if (wm.isWifiEnabled()) {
+            WifiInfo wi = wm.getConnectionInfo();
+            if (null != wi && wi.getNetworkId() != -1) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

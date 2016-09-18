@@ -7,6 +7,7 @@
         android:targetSdkVersion="23" />
 
     <!-- to be able to add a "CTF account" to the device -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" /> <!-- for pre api22 -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
