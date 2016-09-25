@@ -8,13 +8,46 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.auth.AccountUtil;
+import com.example.ctfdemo.requests.CTFSpiceService;
+import com.example.ctfdemo.requests.LogoutRequest;
+import com.example.ctfdemo.tepid.Session;
 import com.gc.materialdesign.widgets.Dialog;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.Locale;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    public static final String TAG = "SETTINGS_FRAGMENT";
+    public static final String TAG = "SETTINGS_FRAGMENT", KEY_TOKEN = "TOKEN";
+    private String token;
+    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+
+    public static SettingsFragment newInstance(String token) {
+        SettingsFragment frag = new SettingsFragment();
+        Bundle args = new Bundle();
+        args.putString(KEY_TOKEN, token);
+        frag.setArguments(args);
+        return frag;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            token = args.getString(KEY_TOKEN);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        requestManager.start(getActivity());
+    }
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -53,11 +86,31 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference("pref_logout").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AccountUtil.removeAccount();
-                getActivity().finish();
+                Session session = AccountUtil.getSession();
+                requestManager.execute(new LogoutRequest(token, session.getId()), new RequestListener<String>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+                        AccountUtil.removeAccount();
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onRequestSuccess(String s) {
+                        AccountUtil.removeAccount();
+                        getActivity().finish();
+                    }
+                });
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        if (requestManager.isStarted()) {
+            requestManager.shouldStop();
+        }
+        super.onStop();
     }
 
     public static void setLocale(Activity activity, String lang) {

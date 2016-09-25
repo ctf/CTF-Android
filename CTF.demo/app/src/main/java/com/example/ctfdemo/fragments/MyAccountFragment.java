@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +29,9 @@ import java.util.Arrays;
 
 public class MyAccountFragment extends Fragment {
 
-    private static final String KEY_USERNAME = "username", KEY_TOKEN = "token";
+    public static final String TAG = "MY_ACCOUNT_FRAGMENT";
+
+    private static final String KEY_TOKEN = "token";
     TextView quotaView, usernameView;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
     private String token;
@@ -48,53 +49,27 @@ public class MyAccountFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            token = args.getString(KEY_TOKEN);
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_my_account, container, false);
-        return rootView;
-    }
+        final View rootView = inflater.inflate(R.layout.fragment_my_account, container, false);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            token = args.getString(KEY_TOKEN);
-        }
-        populateUI();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        requestManager.start(getActivity());
-    }
-
-    @Override
-    public void onStop() {
-        // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
-        // ugly if statement.
-        if (requestManager.isStarted()) {
-            requestManager.shouldStop();
-        }
-        super.onStop();
-    }
-
-    private void populateUI() {
-        usernameView = (TextView) getView().findViewById(R.id.my_account_username);
+        usernameView = (TextView) rootView.findViewById(R.id.my_account_username);
         usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
-        quotaView = (TextView) getView().findViewById(R.id.my_account_quota);
-        quotaView.setText(getString(R.string.dashboard_quota_text, ""));
-        mRecyclerView = (RecyclerView) getView().findViewById(R.id.print_history);
+        quotaView = (TextView) rootView.findViewById(R.id.my_account_quota);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.print_history);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        Button changeNick = (Button) getView().findViewById(R.id.change_nick);
-        changeNick.setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.change_nick).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText et = (EditText) getView().findViewById(R.id.nick_field);
+                EditText et = (EditText) rootView.findViewById(R.id.nick_field);
                 String nick = et.getText().toString();
 
                 if (!nick.isEmpty()) {
@@ -103,15 +78,27 @@ public class MyAccountFragment extends Fragment {
             }
         });
 
-        performQuotaRequest(token);
-        performUserJobsRequest(token);
+        return rootView;
     }
 
-    private void performQuotaRequest(String token) {
+    @Override
+    public void onStart() {
+        super.onStart();
+        requestManager.start(getActivity());
+
+        getUIData();
+    }
+
+    @Override
+    public void onStop() {
+        if (requestManager.isStarted()) {
+            requestManager.shouldStop();
+        }
+        super.onStop();
+    }
+
+    private void getUIData() {
         requestManager.execute(new QuotaRequest(token), new QuotaRequestListener());
-    }
-
-    private void performUserJobsRequest(String token) {
         requestManager.execute(new UserJobsRequest(token), new UserJobsRequestListener());
     }
 
@@ -155,6 +142,5 @@ public class MyAccountFragment extends Fragment {
         }
     }
 
-//todo add edittext + button, onclicklistener sends nickrequest, responselistener updates the username current
 }
 

@@ -34,6 +34,7 @@ import java.util.Map;
 
 public class MainFragment extends Fragment{
 
+    public static final String TAG = "MAIN_FRAGMENT";
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
     private TextView quotaView, lastJobView;
     private Map<String, Destination> destinations;

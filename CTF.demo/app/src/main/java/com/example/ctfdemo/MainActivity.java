@@ -34,7 +34,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String username, token;
+    private String token;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
     @Override
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 navigationView.setNavigationItemSelectedListener(this);
 
-                username = AccountUtil.getNick();
             } else {
                 AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
                     @Override
@@ -159,28 +158,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //todo null check token before passing to frags
         switch (id) {
             case R.id.dashboard:
-                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(token)).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(token), MainFragment.TAG).commit();
                 getSupportActionBar().setTitle(R.string.dashboard);
                 break;
             case R.id.room_info:
-                fm.beginTransaction().replace(R.id.content_frame, RoomFragment.newInstance(token)).commit();
+                fm.beginTransaction().replace(R.id.content_frame, RoomFragment.newInstance(token), RoomFragment.TAG).commit();
                 getSupportActionBar().setTitle(R.string.roominfo);
                 break;
             case R.id.user_info:
-                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(token)).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(token), MyAccountFragment.TAG).commit();
                 getSupportActionBar().setTitle(R.string.userinfo);
                 break;
             case R.id.settings:
-                fm.beginTransaction().replace(R.id.content_frame, new SettingsFragment(), SettingsFragment.TAG).commit();
+                fm.beginTransaction().replace(R.id.content_frame, SettingsFragment.newInstance(token), SettingsFragment.TAG).commit();
                 getSupportActionBar().setTitle(R.string.settings);
                 break;
             case R.id.report_problem:
-                fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment()).commit();
+                fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment(), ReportProblemFragment.TAG).commit();
                 getSupportActionBar().setTitle(R.string.reportproblem);
                 break;
         }
 
-        // then close the drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 

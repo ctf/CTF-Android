@@ -1,9 +1,9 @@
 package com.example.ctfdemo.fragments;
 
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +19,8 @@ public class ReportProblemFragment extends Fragment {
     //todo:  mock up ErrorReport object to send to tepid,
     //todo:  include room, general problem info, optional additional details (station number, paper jam, etc),
     //todo:  user submitting the report, date report was submitted, etc.
+
+    public static final String TAG = "REPORT_PROBLEM_FRAGMENT";
 
     private static int roomSelect;
     private static String errorMessage;

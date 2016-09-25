@@ -30,6 +30,8 @@ import java.util.Map;
 
 public class RoomFragment extends Fragment {
 
+    public static final String TAG = "ROOM_FRAGMENT";
+
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
     private static final String KEY_TOKEN = "token";
