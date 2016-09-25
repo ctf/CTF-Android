@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 navigationView.setNavigationItemSelectedListener(this);
 
-                username = AccountUtil.getUserName();
+                username = AccountUtil.getNick();
             } else {
                 AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
                     @Override
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onRequestSuccess(String str) {
                     token = str;
                     FragmentManager fm = getSupportFragmentManager();
-                    fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username, token)).commit();
+                    fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(token)).commit();
                 }
             });
         }
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //todo null check token before passing to frags
         switch (id) {
             case R.id.dashboard:
-                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(username, token)).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(token)).commit();
                 getSupportActionBar().setTitle(R.string.dashboard);
                 break;
             case R.id.room_info:
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle(R.string.roominfo);
                 break;
             case R.id.user_info:
-                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(username, token)).commit();
+                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(token)).commit();
                 getSupportActionBar().setTitle(R.string.userinfo);
                 break;
             case R.id.settings:

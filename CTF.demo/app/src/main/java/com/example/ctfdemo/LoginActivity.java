@@ -18,10 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.ctfdemo.auth.AccountUtil;
-import com.example.ctfdemo.requests.LoginRequest;
 import com.example.ctfdemo.requests.CTFSpiceService;
-
+import com.example.ctfdemo.requests.LoginRequest;
 import com.example.ctfdemo.tepid.Session;
+import com.google.gson.Gson;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -153,7 +153,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             //mAuthTask = new UserLoginTask(email, password);
             //mAuthTask.execute((Void) null);
 
-            spiceManager.execute(new LoginRequest(username, password), "json", DurationInMillis.ALWAYS_EXPIRED, new AuthRequestListener());
+            spiceManager.execute(new LoginRequest(username, password), "json", DurationInMillis.ALWAYS_EXPIRED, new LoginRequestListener());
 
         }
     }
@@ -199,12 +199,12 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         }
     }
 
-    private final class AuthRequestListener implements RequestListener<Session> {
+    private final class LoginRequestListener implements RequestListener<Session> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             showProgress(false);
-            mPasswordField.setError(spiceException.getMessage());
+            mPasswordField.setError(spiceException.getMessage());//todo probs not a great idea to show user exception message eh?
             mPasswordField.requestFocus();
         }
 
@@ -213,11 +213,11 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             showProgress(false);
 
             // create a new CTF account, will be displayed in settings under user's salutation
-            final Account account = new Account(session.getUser().salutation, AccountUtil.accountType);
+            final Account account = new Account(session.getUser().shortUser, AccountUtil.accountType);
 
             if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
                 Bundle userData = new Bundle();
-                userData.putString(AccountUtil.KEY_USERNAME, session.getUser().shortUser);
+                userData.putString(AccountUtil.KEY_SESSION, new Gson().toJson(session)); //todo should we save the whole damn session object?
                 // password is optional here, we won't keep it
                 mAccountManager.addAccountExplicitly(account, null, userData);
             }

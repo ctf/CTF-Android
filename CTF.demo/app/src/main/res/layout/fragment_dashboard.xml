@@ -5,11 +5,12 @@
     android:background="#292a3d">
 
     <LinearLayout
+        android:id="@+id/dashboard_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- row for 1b16 -->
+<!--        &lt;!&ndash; row for 1b16 &ndash;&gt;
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +64,7 @@
                 android:text="@string/north" />
         </LinearLayout>
 
-        <!-- row for 1b17 -->
+        &lt;!&ndash; row for 1b17 &ndash;&gt;
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,7 +117,7 @@
                 android:text="@string/north" />
         </LinearLayout>
 
-        <!-- row for 1b18 -->
+        &lt;!&ndash; row for 1b18 &ndash;&gt;
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -165,7 +166,7 @@
                 android:text="@string/north" />
 
             <TextView style="@style/dashboard_subheaders" />
-        </LinearLayout>
+        </LinearLayout>-->
 
         <!-- status text -->
         <TextView

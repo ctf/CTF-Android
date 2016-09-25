@@ -11,7 +11,7 @@ public class QuotaRequest extends BaseTepidRequest<String> {
 
     public QuotaRequest(String token) {
         super(String.class);
-        url = "https://tepid.sus.mcgill.ca:8443/tepid/users/" + AccountUtil.getUserName() + "/quota/";
+        url = "https://tepid.sus.mcgill.ca:8443/tepid/users/" + AccountUtil.getUsername() + "/quota/";
         this.token = token;
     }
 

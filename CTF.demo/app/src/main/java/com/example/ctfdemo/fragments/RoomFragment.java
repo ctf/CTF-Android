@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.adapter.PrintJobAdapter;
 import com.example.ctfdemo.requests.CTFSpiceService;
-import com.example.ctfdemo.requests.DestinationRequest;
+import com.example.ctfdemo.requests.DestinationsRequest;
 import com.example.ctfdemo.requests.QueueRequest;
 import com.example.ctfdemo.tepid.Destination;
 import com.example.ctfdemo.tepid.PrintJob;
@@ -169,7 +169,7 @@ public class RoomFragment extends Fragment {
             }
 
             requestManager.execute(new QueueRequest(token, room), new QueueRequestListener());
-            requestManager.execute(new DestinationRequest(token), new DestinationRequestListener());
+            requestManager.execute(new DestinationsRequest(token), new DestinationRequestListener());
 
             rootView.findViewById(R.id.map_button).setOnClickListener(new View.OnClickListener() {
                 @Override

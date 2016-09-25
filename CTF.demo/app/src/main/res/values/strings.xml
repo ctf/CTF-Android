@@ -51,7 +51,6 @@
     <string name="title_activity_user">User</string>
     <string name="authenticator_account_type">com.example.ctfdemo.StudentAccount</string>
     <string name="authenticator_token_type">com.example.ctfdemo.TepidToken</string>
-    <string name="key_username">USERNAME</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings displayed on the dashboard -->

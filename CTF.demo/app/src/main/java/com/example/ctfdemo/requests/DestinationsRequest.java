@@ -16,11 +16,11 @@ import java.util.Map;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DestinationRequest extends BaseTepidRequest<Map> {
+public class DestinationsRequest extends BaseTepidRequest<Map> {
 
     private static String token, url;
 
-    public DestinationRequest(String token) {
+    public DestinationsRequest(String token) {
         super(Map.class);
         this.token = token;
         this.url = "https://tepid.sus.mcgill.ca:8443/tepid/destinations";
@@ -35,6 +35,10 @@ public class DestinationRequest extends BaseTepidRequest<Map> {
         Response response = getOkHttpClient()
                 .newCall(request)
                 .execute();
+
+        if (!response.isSuccessful()) {
+            throw new Exception(String.valueOf(response.code()));
+        }
 
         GsonBuilder builder = new GsonBuilder();
         // Register an adapter to manage the date types as long values
