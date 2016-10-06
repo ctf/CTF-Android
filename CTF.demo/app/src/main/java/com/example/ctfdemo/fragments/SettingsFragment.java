@@ -87,7 +87,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Session session = AccountUtil.getSession();
-                requestManager.execute(new LogoutRequest(token, session.getId()), new RequestListener<String>() {
+                requestManager.execute(new LogoutRequest(token, session.getId()), new RequestListener<Void>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
                         AccountUtil.removeAccount();
@@ -95,7 +95,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
 
                     @Override
-                    public void onRequestSuccess(String s) {
+                    public void onRequestSuccess(Void v) {
                         AccountUtil.removeAccount();
                         getActivity().finish();
                     }
@@ -113,6 +113,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         super.onStop();
     }
 
+    /**
+     * helper method to change the system locale from one supported language to another
+     * @param activity a context
+     * @param lang ISO 639-1 code (e.g., "en", "fr", "zh", etc.)
+     */
     public static void setLocale(Activity activity, String lang) {
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);

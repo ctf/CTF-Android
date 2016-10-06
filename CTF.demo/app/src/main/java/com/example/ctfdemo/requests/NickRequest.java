@@ -11,19 +11,20 @@ import okhttp3.Response;
 
 public class NickRequest extends BaseTepidRequest<String> {
 
-    private static String url;
-    private String token, nick;
+    private String token, nick, url;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     public NickRequest(String token, String nick) {
         super(String.class);
         this.token = token;
         this.nick = nick;
-        this.url = "https://tepid.sus.mcgill.ca:8443/tepid/users/" + AccountUtil.getUsername() + "/nick" + "";
+        this.url = baseUrl + "users/" + AccountUtil.getShortUser() + "/nick" + "";
     }
 
     @Override
     public String loadDataFromNetwork() throws Exception {
+
+        // create a PUT request with the requested nick in json format
         Request request = new Request.Builder()
                 .header("Authorization", "Token " + token)
                 .url(url)
@@ -34,8 +35,10 @@ public class NickRequest extends BaseTepidRequest<String> {
                 .newCall(request)
                 .execute();
 
-        Boolean isok = !new JSONObject(response.body().string()).getBoolean("ok");
-        if (!response.isSuccessful() || isok) {
+        // TEPID responds to the request with a boolean indicating whether the nick was successfully changed or not
+        Boolean isok = new JSONObject(response.body().string()).getBoolean("ok");
+
+        if (!response.isSuccessful() || !isok) {
             throw new Exception("UH OH AN ERROR OCCURRED!!!!!!!!!");
         }
 

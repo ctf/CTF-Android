@@ -2,56 +2,47 @@ package com.example.ctfdemo.requests;
 
 import com.example.ctfdemo.tepid.Destination;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.Date;
 import java.util.Map;
 
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * request a HashMap<UUID, Destination> from the tepid server,
+ * each destination represents a printer in one of the labs
+ */
 public class DestinationsRequest extends BaseTepidRequest<Map> {
 
-    private static String token, url;
+    private static String token, url = baseUrl + "destinations/";
 
     public DestinationsRequest(String token) {
         super(Map.class);
         this.token = token;
-        this.url = "https://tepid.sus.mcgill.ca:8443/tepid/destinations";
     }
     @Override
     public Map<String, Destination> loadDataFromNetwork() throws Exception {
+
+        // Build a GET request with our auth token to ask TEPID for the destinations
         Request request = new Request.Builder()
                 .header("Authorization", "Token " + token)
                 .url(url)
                 .build();
 
+        // execute the request
         Response response = getOkHttpClient()
                 .newCall(request)
                 .execute();
 
+        // check the status code of TEPID's response is between 200 & 300
         if (!response.isSuccessful()) {
             throw new Exception(String.valueOf(response.code()));
         }
 
-        GsonBuilder builder = new GsonBuilder();
-        // Register an adapter to manage the date types as long values
-        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return new Date(json.getAsJsonPrimitive().getAsLong());
-            }
-        });
-        Gson gson = builder.create();
-
-        String raw = response.body().string();
+        // deserialize and return TEPID's response
         Type t = new TypeToken<Map<String, Destination>>(){}.getType();
-        Map<String, Destination> map = gson.fromJson(raw, t);
-        return map;
+        return new Gson().fromJson(response.body().string(), t);
     }
 }

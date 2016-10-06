@@ -3,26 +3,27 @@ package com.example.ctfdemo.requests;
 import com.example.ctfdemo.tepid.Session;
 import com.example.ctfdemo.tepid.SessionRequest;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-
-import java.lang.reflect.Type;
-import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * request a Session from TEPID, the Session's token will be used for making
+ * authenticated requests to TEPID
+ */
 public class LoginRequest extends BaseTepidRequest<Session> {
 
-    private static final String url = "https://tepid.sus.mcgill.ca:8443/tepid/sessions/";
+    private static final String url = baseUrl + "sessions/";
     private String username, password;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+    /**
+     * create a LoginRequest to execute
+     * @param username the username used to authenticate with TEPID (mcgill email or short user)
+     * @param password the matching password
+     */
     public LoginRequest(String username, String password) {
         super(Session.class);
         this.username = username;
@@ -32,38 +33,30 @@ public class LoginRequest extends BaseTepidRequest<Session> {
     @Override
     public Session loadDataFromNetwork() throws Exception {
 
+        // create the session request object expected by TEPID, fill with our data
         SessionRequest sr = new SessionRequest()
                 .withUsername(username)
                 .withPassword(password)
                 .withPermanent(true)
                 .withPersistent(true);
 
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(sr));
-
+        // create a POST request with our JSON serialized SessionRequest
         Request request= new Request.Builder()
                 .url(url)
-                .post(body)
+                .post(RequestBody.create(JSON, new Gson().toJson(sr)))
                 .build();
 
+        // execute the request
         Response response = getOkHttpClient()
                 .newCall(request)
                 .execute();
 
+        // check response status is between 200 & 300
         if (!response.isSuccessful()) {
             throw new Exception("UH OH AN ERROR OCCURRED!!!!!!!!!");
         }
 
-        GsonBuilder builder = new GsonBuilder();
-        // Register an adapter to manage the date types as long values
-        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return new Date(json.getAsJsonPrimitive().getAsLong());
-            }
-        });
-        Gson gson = builder.create();
-
-        Session session = gson.fromJson(response.body().string(), Session.class);
-
-        return session;
+        // deserialize and return TEPID's response
+        return new Gson().fromJson(response.body().string(), Session.class);
     }
 }

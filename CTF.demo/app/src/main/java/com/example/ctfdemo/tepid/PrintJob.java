@@ -1,5 +1,6 @@
 package com.example.ctfdemo.tepid;
 
+import com.example.ctfdemo.requests.DateJsonAdapter;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.JsonAdapter;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -18,8 +20,12 @@ public class PrintJob {
 	public final String type = "job";
 	private String name, queueName, originalHost, userIdentification, destination;
 	private int colorPages, pages;
+	@JsonAdapter(DateJsonAdapter.class)
 	public final Date started = new Date();
-	private Date processed, printed;
+	@JsonAdapter(DateJsonAdapter.class)
+	private Date processed;
+	@JsonAdapter(DateJsonAdapter.class)
+	private Date printed;
 	private long eta;
 	public String getName() {
 		return name;

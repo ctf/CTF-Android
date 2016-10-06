@@ -16,9 +16,9 @@ import com.example.ctfdemo.R;
 import com.example.ctfdemo.adapter.PrintJobAdapter;
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.requests.CTFSpiceService;
+import com.example.ctfdemo.requests.JobsRequest;
 import com.example.ctfdemo.requests.NickRequest;
 import com.example.ctfdemo.requests.QuotaRequest;
-import com.example.ctfdemo.requests.UserJobsRequest;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -99,7 +99,7 @@ public class MyAccountFragment extends Fragment {
 
     private void getUIData() {
         requestManager.execute(new QuotaRequest(token), new QuotaRequestListener());
-        requestManager.execute(new UserJobsRequest(token), new UserJobsRequestListener());
+        requestManager.execute(new JobsRequest(token), new UserJobsRequestListener());
     }
 
     private final class QuotaRequestListener implements RequestListener<String> {

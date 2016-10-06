@@ -1,23 +1,26 @@
 package com.example.ctfdemo.tepid;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.example.ctfdemo.requests.DateJsonAdapter;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.JsonAdapter;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LdapUser {
 	public String displayName, givenName, middleName, lastName, shortUser, longUser, email, faculty, permaCode, nick, realName, salutation;
 	public List<String> groups, preferredName;
+	@JsonAdapter(DateJsonAdapter.class)
 	public Date activeSince;
 	public int studentId;
 

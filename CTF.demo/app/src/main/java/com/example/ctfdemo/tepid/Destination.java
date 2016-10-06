@@ -1,5 +1,6 @@
 package com.example.ctfdemo.tepid;
 
+import com.example.ctfdemo.requests.DateJsonAdapter;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.JsonAdapter;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -272,6 +274,7 @@ public class Destination {
 		public boolean up;
 		public String reason;
 		public LdapUser user;
+		@JsonAdapter(DateJsonAdapter.class)
 		public Date reported = new Date();
 	}
 

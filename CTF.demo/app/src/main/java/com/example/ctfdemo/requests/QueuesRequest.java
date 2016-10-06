@@ -2,15 +2,9 @@ package com.example.ctfdemo.requests;
 
 import com.example.ctfdemo.tepid.PrintQueue;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.Date;
 import java.util.List;
 
 import okhttp3.Request;
@@ -18,13 +12,12 @@ import okhttp3.Response;
 
 public class QueuesRequest extends BaseTepidRequest<List> {
 
-    private static String url;
+    private static String url = baseUrl + "queues/";
     private String token;
 
     public QueuesRequest(String token) {
         super(List.class);
         this.token = token;
-        this.url = "https://tepid.sus.mcgill.ca:8443/tepid/queues/";
     }
 
     @Override
@@ -42,17 +35,8 @@ public class QueuesRequest extends BaseTepidRequest<List> {
             throw new Exception("UH OH AN ERROR OCCURRED!!!!!!!!!");
         }
 
-        GsonBuilder builder = new GsonBuilder();
-        // Register an adapter to manage the date types as long values
-        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                return new Date(json.getAsJsonPrimitive().getAsLong());
-            }
-        });
-        Gson gson = builder.create();
-        Type t = new TypeToken<List<PrintQueue>>(){}.getType();
-
-        return gson.fromJson(response.body().string(), t);
+        Type t = new TypeToken<List<PrintQueue>>(){}.getType(); // todo the param type get lost anyways when we return from the request, any way around this?
+        return new Gson().fromJson(response.body().string(), t);
     }
 
 }

@@ -7,11 +7,10 @@ import okhttp3.Response;
 
 public class QuotaRequest extends BaseTepidRequest<String> {
 
-    private String url, token;
+    private String token, url = baseUrl + "users/" + AccountUtil.getShortUser() + "/quota/";
 
     public QuotaRequest(String token) {
         super(String.class);
-        url = "https://tepid.sus.mcgill.ca:8443/tepid/users/" + AccountUtil.getUsername() + "/quota/";
         this.token = token;
     }
 

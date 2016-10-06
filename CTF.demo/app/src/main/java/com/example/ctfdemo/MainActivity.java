@@ -17,11 +17,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.ctfdemo.auth.AccountUtil;
-import com.example.ctfdemo.fragments.MainFragment;
+import com.example.ctfdemo.fragments.DashboardFragment;
 import com.example.ctfdemo.fragments.MyAccountFragment;
 import com.example.ctfdemo.fragments.ReportProblemFragment;
 import com.example.ctfdemo.fragments.RoomFragment;
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void onRequestSuccess(String str) {
                     token = str;
                     FragmentManager fm = getSupportFragmentManager();
-                    fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(token)).commit();
+                    fm.beginTransaction().replace(R.id.content_frame, DashboardFragment.newInstance(token)).commit();
                 }
             });
         }
@@ -128,37 +127,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) { // no use for this atm
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-/*        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);*/
-        return true;
-    }
-
+    /**
+     * this is where we handle click events in the navigation drawer
+     * @param item the item that was clicked
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
+        // close the navigation drawer
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
         FragmentManager fm = getSupportFragmentManager();
         int id = item.getItemId();
 
         //todo null check token before passing to frags
         switch (id) {
             case R.id.dashboard:
-                fm.beginTransaction().replace(R.id.content_frame, MainFragment.newInstance(token), MainFragment.TAG).commit();
+                fm.beginTransaction().replace(R.id.content_frame, DashboardFragment.newInstance(token), DashboardFragment.TAG).commit();
                 getSupportActionBar().setTitle(R.string.dashboard);
                 break;
             case R.id.room_info:
@@ -179,12 +166,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-
         return true;
     }
 
+    /**
+     * helper method - checks if wifi is enabled and if the phone is connected to a network
+     * we'll need wifi to talk to TEPID (although we are caching the responses, they could be very stale)
+     * @return true if we have wifi, false otherwise
+     */
     private boolean isWifiConnected() {
         WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (wm.isWifiEnabled()) {

@@ -16,9 +16,9 @@ import com.example.ctfdemo.R;
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.DestinationsRequest;
+import com.example.ctfdemo.requests.JobsRequest;
 import com.example.ctfdemo.requests.QueuesRequest;
 import com.example.ctfdemo.requests.QuotaRequest;
-import com.example.ctfdemo.requests.UserJobsRequest;
 import com.example.ctfdemo.tepid.Destination;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.example.ctfdemo.tepid.PrintQueue;
@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class MainFragment extends Fragment{
+public class DashboardFragment extends Fragment{
 
     public static final String TAG = "MAIN_FRAGMENT";
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
@@ -44,8 +44,8 @@ public class MainFragment extends Fragment{
     private static final String KEY_TOKEN = "TOKEN";
     private String token;
 
-    public static MainFragment newInstance(String token) {
-        MainFragment frag = new MainFragment();
+    public static DashboardFragment newInstance(String token) {
+        DashboardFragment frag = new DashboardFragment();
         Bundle args = new Bundle();
         args.putString(KEY_TOKEN, token);
         frag.setArguments(args);
@@ -97,7 +97,7 @@ public class MainFragment extends Fragment{
 
     private void getUIData() {
         requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
-        requestManager.execute(new UserJobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
+        requestManager.execute(new JobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
         requestManager.execute(new DestinationsRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationsRequestListener());
     }
 
