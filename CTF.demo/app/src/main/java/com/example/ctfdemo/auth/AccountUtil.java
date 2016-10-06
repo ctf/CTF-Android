@@ -27,7 +27,7 @@ public class AccountUtil {
      */
     public static void initAccount(Context context) {
         am = AccountManager.get(context);
-        if (am.getAccountsByType(accountType).length > 0) {
+        if (am.getAccountsByType(accountType).length > 0) { //TODO request account permission
             account = am.getAccountsByType(accountType)[0];
         }
     }

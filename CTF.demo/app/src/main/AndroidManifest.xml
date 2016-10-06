@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ctfdemo">
 
-    <uses-sdk
-        android:minSdkVersion="22"
-        android:targetSdkVersion="23" />
-
     <!-- to be able to add a "CTF account" to the device -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" /> <!-- for pre api22 -->
@@ -53,7 +49,7 @@
 
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
     </application>
 
 </manifest>

@@ -11,12 +11,13 @@
 
     <ImageView android:layout_width="72dp" android:layout_height="72dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/logo" android:id="@+id/imageView" />
+        android:src="@drawable/logo" android:id="@+id/imageView"
+        android:contentDescription="@string/ctf_long_name" />
     <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
         style="?android:textAppearanceSmall"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="McGill Science Computer Taskforce"
+        android:text="@string/ctf_long_name"
         android:textColor="#DE000000"
         android:textStyle="bold" />
 

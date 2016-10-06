@@ -31,8 +31,8 @@
     <string name="pref_about">About</string>
     <string name="pref_logout">Logout</string>
 
-    <!-- Srings related to problem report page -->
-    <string name="error_inst">Pick which room in causing you grievances, select the error, and press send to relay onto us your grievance.</string>
+    <!-- Strings related to problem report page -->
+    <string name="error_inst">Pick which room is causing you grievances, select the error, and press send to relay onto us your grievances.</string>
     <string name="error_report_title">Error Report</string>
     <string-array name="problem_spinner">
         <item>Printer Down</item>
@@ -63,6 +63,9 @@
     <string name="north">North</string>
     <string name="south">South</string>
     <string name="table_header_print_history">Print History</string>
+
+    <string name="send_error">Send Error</string>
+    <string name="ctf_long_name">McGill Science Computer Taskforce</string>
 
 </resources>
 

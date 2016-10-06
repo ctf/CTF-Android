@@ -29,21 +29,21 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="1B16"
+            android:text="@string/string_1b16"
             android:id="@+id/button_1b16" />
 
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="1B17"
+            android:text="@string/string_1b17"
             android:id="@+id/button_1b17" />
 
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="1B18"
+            android:text="@string/string_1b18"
             android:id="@+id/button_1b18" />
 
     </LinearLayout>
@@ -63,7 +63,7 @@
         android:layout_marginLeft="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send Error"
+        android:text="@string/send_error"
         android:id="@+id/button_send"
         android:layout_gravity="center_horizontal" />
 
