@@ -2,19 +2,9 @@ package com.example.ctfdemo.requests;
 
 import android.app.Application;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import com.example.ctfdemo.tepid.Session;
 import com.google.gson.Gson;
 import com.octo.android.robospice.SpiceService;
 import com.octo.android.robospice.persistence.CacheManager;
-import com.octo.android.robospice.persistence.ObjectPersister;
-import com.octo.android.robospice.persistence.ObjectPersisterFactory;
 import com.octo.android.robospice.persistence.exception.CacheCreationException;
 import com.octo.android.robospice.persistence.exception.CacheLoadingException;
 import com.octo.android.robospice.persistence.exception.CacheSavingException;
@@ -22,11 +12,16 @@ import com.octo.android.robospice.persistence.file.InFileObjectPersister;
 import com.octo.android.robospice.persistence.file.InFileObjectPersisterFactory;
 import com.octo.android.robospice.request.CachedSpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.octo.android.robospice.request.okhttp.OkHttpSpiceRequest;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 import okhttp3.OkHttpClient;
 import roboguice.util.temp.Ln;
@@ -164,9 +159,7 @@ public class CTFSpiceService extends SpiceService {
                         public void run() {
                             try {
                                 saveData(data, cacheKey);
-                            } catch (IOException e) {
-                                Ln.e(e, "An error occured on saving request " + cacheKey + " data asynchronously");
-                            } catch (CacheSavingException e) {
+                            } catch (IOException | CacheSavingException e) {
                                 Ln.e(e, "An error occured on saving request " + cacheKey + " data asynchronously");
                             }
                         };

@@ -1,6 +1,7 @@
 package com.example.ctfdemo.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
     // use these constants when creating the adapter to decide
     // the format of the table this adapter fills
     private int tableType;
-    public final static int ROOMS = 0;
+    public final static int ROOMS = 0; //TODO align rows for table_row_room.xml
     public final static int MY_ACCOUNT = 1;
 
     public PrintJobAdapter(Context context, List<PrintJob> data, int type){
@@ -79,7 +80,7 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
         vh.datePrinted.setText(new PrettyTime().format(printed));//new SimpleDateFormat("E, MMM d, h:m").format(printed));
 
         if (position % 2 == 0) {
-            vh.rowColor.setBackgroundColor(context.getResources().getColor(R.color.transparentBlack)); // this alternates the row colors
+            vh.rowColor.setBackgroundColor(ContextCompat.getColor(context, R.color.transparentBlack)); // this alternates the row colors
         }
     }
 

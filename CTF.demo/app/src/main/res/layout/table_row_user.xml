@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:stretchColumns="0,1,2">
+    android:stretchColumns="*">
     <TableRow android:id="@+id/table_data_user">
        <TextView
            android:id="@+id/job_name"
            android:layout_height="wrap_content"
            android:layout_width="0dp"
            android:layout_weight=".5"
-           android:padding="2dp"
+           android:padding="@dimen/table_row_padding"
            android:gravity="center_horizontal"
-           android:singleLine="true" />
+           android:maxLines="1" />
         <TextView
             android:id="@+id/job_date"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight=".5"
-            android:padding="2dp"
+            android:layout_weight="2"
+            android:padding="@dimen/table_row_padding"
             android:gravity="center_horizontal"
-            android:singleLine="true" />
+            android:maxLines="1" />
     </TableRow>
 
 </TableLayout>

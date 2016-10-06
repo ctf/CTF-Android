@@ -17,7 +17,7 @@ public class QueueRequest extends BaseTepidRequest<PrintJob[]> {
     public QueueRequest(String token, String queue) {
         super(PrintJob[].class);
         this.token = token;
-        this.url = baseUrl + "queues/" + queue + "?limit=15";
+        url = baseUrl + "queues/" + queue + "?limit=15";
     }
 
     @Override

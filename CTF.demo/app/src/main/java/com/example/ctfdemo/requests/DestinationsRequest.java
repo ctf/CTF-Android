@@ -16,7 +16,8 @@ import okhttp3.Response;
  */
 public class DestinationsRequest extends BaseTepidRequest<Map> {
 
-    private static String token, url = baseUrl + "destinations/";
+    private String token;
+    private static String url = baseUrl + "destinations/";
 
     public DestinationsRequest(String token) {
         super(Map.class);

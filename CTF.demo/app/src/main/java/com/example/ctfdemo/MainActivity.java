@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-                drawer.setDrawerListener(toggle);
+                drawer.addDrawerListener(toggle);
                 toggle.syncState();
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 navigationView.setNavigationItemSelectedListener(this);
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @return
      */
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         // close the navigation drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

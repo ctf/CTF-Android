@@ -15,8 +15,8 @@ import com.octo.android.robospice.request.SpiceRequest;
  */
 public class TokenRequest extends SpiceRequest<String> {
 
-    private static Account account;
-    private static Context context;
+    private Account account;
+    private Context context;
 
     public TokenRequest(Account account, Context context) {
         super(String.class);
