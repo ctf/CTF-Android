@@ -41,7 +41,7 @@ public class MainActivity extends CapsuleActivityFrame {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        preCapsuleOnCreate(savedInstanceState);
+        preCapsuleOnCreate(savedInstanceState); //rerouting onCreate based on what is available
 
         AccountUtil.initAccount(this);
 
@@ -53,7 +53,7 @@ public class MainActivity extends CapsuleActivityFrame {
         if (isWifiConnected()) {
             if (AccountUtil.isSignedIn()) {
                 capsuleOnCreate(savedInstanceState);
-                cFab.hide(); //we don't need this I guess
+                cFab.hide(); //we don't the fab for now
                 capsuleFrameOnCreate(savedInstanceState);
             } else {
                 //TODO make account work
@@ -148,48 +148,6 @@ public class MainActivity extends CapsuleActivityFrame {
         }
         super.onStop();
     }
-
-    /**
-     * this is where we handle click events in the navigation drawer
-     * @param item the item that was clicked
-     * @return
-
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) { //TODO port
-
-        // close the navigation drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-
-        FragmentManager fm = getSupportFragmentManager();
-        int id = item.getItemId();
-
-        //todo null check token before passing to frags
-        switch (id) {
-            case R.id.dashboard:
-                fm.beginTransaction().replace(R.id.content_frame, DashboardFragment.newInstance(token), DashboardFragment.TAG).commit();
-                getSupportActionBar().setTitle(R.string.dashboard);
-                break;
-            case R.id.room_info:
-                fm.beginTransaction().replace(R.id.content_frame, RoomFragment.newInstance(token), RoomFragment.TAG).commit();
-                getSupportActionBar().setTitle(R.string.roominfo);
-                break;
-            case R.id.user_info:
-                fm.beginTransaction().replace(R.id.content_frame, MyAccountFragment.newInstance(token), MyAccountFragment.TAG).commit();
-                getSupportActionBar().setTitle(R.string.userinfo);
-                break;
-            case R.id.settings:
-                fm.beginTransaction().replace(R.id.content_frame, SettingsFragment.newInstance(token), SettingsFragment.TAG).commit();
-                getSupportActionBar().setTitle(R.string.settings);
-                break;
-            case R.id.report_problem:
-                fm.beginTransaction().replace(R.id.content_frame, new ReportProblemFragment(), ReportProblemFragment.TAG).commit();
-                getSupportActionBar().setTitle(R.string.reportproblem);
-                break;
-        }
-
-        return true;
-    }
-    */
 
     /**
      * helper method - checks if wifi is enabled and if the phone is connected to a network

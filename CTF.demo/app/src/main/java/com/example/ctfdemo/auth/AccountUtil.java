@@ -23,7 +23,7 @@ public class AccountUtil {
 
     /**
      * called on startup to keep a global reference to the user's account
-     * @param context likely MainActivityOld or CTFApp
+     * @param context likely MainActivity or CTFApp
      */
     public static void initAccount(Context context) {
         am = AccountManager.get(context);
