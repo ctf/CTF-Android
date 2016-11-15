@@ -1,6 +1,7 @@
 package com.example.ctfdemo.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,12 +24,14 @@ import com.example.ctfdemo.tepid.PrintJob;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.pitchedapps.capsule.library.event.CFabEvent;
+import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-public class RoomFragment extends Fragment {
+public class RoomFragment extends CapsuleFragment {
 
     public static final String TAG = "ROOM_FRAGMENT";
 
@@ -85,6 +88,17 @@ public class RoomFragment extends Fragment {
         tabLayout = (TabLayout) getView().findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    @Nullable
+    @Override
+    protected CFabEvent updateFab() {
+        return null;
+    }
+
+    @Override
+    public int getTitleId() {
+        return R.string.roominfo;
     }
 
     /**

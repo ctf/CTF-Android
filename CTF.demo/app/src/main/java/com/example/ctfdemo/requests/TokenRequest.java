@@ -21,7 +21,7 @@ public class TokenRequest extends SpiceRequest<String> {
     public TokenRequest(Account account, Context context) {
         super(String.class);
         this.account = account;
-        this.context = context; // the context from which we launch the LoginActivity if no token is found, should normally be MainActivity
+        this.context = context; // the context from which we launch the LoginActivity if no token is found, should normally be MainActivityOld
     }
 
     @Override

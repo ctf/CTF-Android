@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.ctfdemo.R;
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.LoginRequest;

@@ -3,16 +3,22 @@ package com.example.ctfdemo;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.fragments.DashboardFragment;
@@ -22,26 +28,18 @@ import com.example.ctfdemo.fragments.RoomFragment;
 import com.example.ctfdemo.fragments.SettingsFragment;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.TokenRequest;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
-import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
-import com.pitchedapps.capsule.library.item.DrawerItem;
 
-public class MainActivity extends CapsuleActivityFrame {
+public class MainActivityOld extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private String token;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
-    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        preCapsuleOnCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
         AccountUtil.initAccount(this);
 
@@ -49,66 +47,36 @@ public class MainActivity extends CapsuleActivityFrame {
         String lang = preferences.getString("pref_language", "en");
         SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
 
-
         if (isWifiConnected()) {
             if (AccountUtil.isSignedIn()) {
-                capsuleOnCreate(savedInstanceState);
-                cFab.hide(); //we don't need this I guess
-                capsuleFrameOnCreate(savedInstanceState);
+                setContentView(R.layout.activity_main);
+
+                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+                setSupportActionBar(toolbar);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                drawer.addDrawerListener(toggle);
+                toggle.syncState();
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                navigationView.setNavigationItemSelectedListener(this);
+
             } else {
-                //TODO make account work
                 AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
                     @Override
                     public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
                         // switch back to main activity after user signs in
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), MainActivityOld.class);
                         startActivity(intent);
                     }
                 }, null);
             }
         } else {
             setContentView(R.layout.no_wifi);
+
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
         }
-
-    }
-
-    /**
-     * Sets up account header
-     * will not be added if null
-     *
-     * @return desired header
-     */
-    @Nullable
-    @Override
-    protected AccountHeader getAccountHeader() {
-        return new AccountHeaderBuilder().withActivity(this)
-                .withHeaderBackground(R.color.colorPrimary)
-                .withSelectionFirstLine(s(R.string.app_name))
-                .withSelectionSecondLine(BuildConfig.VERSION_NAME)
-                .withProfileImagesClickable(false)
-                .withResetDrawerOnProfileListClick(false)
-                .addProfiles(
-                        new ProfileDrawerItem().withIcon(ContextCompat.getDrawable(this, R.drawable.ctf))
-                )
-                .withSelectionListEnabled(false)
-                .withSelectionListEnabledForSingleProfile(false)
-                .build();
-    }
-
-    /**
-     * Sets up array of drawer items
-     *
-     * @return array of drawer items
-     */
-    @Override
-    protected CDrawerItem[] getDrawerItems() {
-        return new CDrawerItem[]{ //TODO add fragments
-                new DrawerItem(DashboardFragment.newInstance(token), R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, true),
-                new DrawerItem(RoomFragment.newInstance(token), R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true),
-                new DrawerItem(MyAccountFragment.newInstance(token), R.string.userinfo, GoogleMaterial.Icon.gmd_person, true),
-                new DrawerItem(SettingsFragment.newInstance(token), R.string.settings, GoogleMaterial.Icon.gmd_settings, true), //TODO No capsule based, verify
-                new DrawerItem(new ReportProblemFragment(), R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true)
-        };
     }
 
     @Override
@@ -124,7 +92,8 @@ public class MainActivity extends CapsuleActivityFrame {
                 @Override
                 public void onRequestSuccess(String str) {
                     token = str;
-                    selectDrawerItem(0); //Go to dashboard
+                    FragmentManager fm = getSupportFragmentManager();
+                    fm.beginTransaction().replace(R.id.content_frame, DashboardFragment.newInstance(token)).commit();
                 }
             });
         }
@@ -149,12 +118,23 @@ public class MainActivity extends CapsuleActivityFrame {
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     /**
      * this is where we handle click events in the navigation drawer
      * @param item the item that was clicked
      * @return
-
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) { //TODO port
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         // close the navigation drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -189,7 +169,6 @@ public class MainActivity extends CapsuleActivityFrame {
 
         return true;
     }
-    */
 
     /**
      * helper method - checks if wifi is enabled and if the phone is connected to a network

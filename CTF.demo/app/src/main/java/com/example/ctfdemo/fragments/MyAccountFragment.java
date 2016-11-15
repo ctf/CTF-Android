@@ -2,7 +2,6 @@ package com.example.ctfdemo.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,11 +22,13 @@ import com.example.ctfdemo.tepid.PrintJob;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.pitchedapps.capsule.library.event.CFabEvent;
+import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MyAccountFragment extends Fragment {
+public class MyAccountFragment extends CapsuleFragment {
 
     public static final String TAG = "MY_ACCOUNT_FRAGMENT";
 
@@ -100,6 +101,17 @@ public class MyAccountFragment extends Fragment {
     private void getUIData() {
         requestManager.execute(new QuotaRequest(token), new QuotaRequestListener());
         requestManager.execute(new JobsRequest(token), new UserJobsRequestListener());
+    }
+
+    @Nullable
+    @Override
+    protected CFabEvent updateFab() {
+        return null;
+    }
+
+    @Override
+    public int getTitleId() {
+        return R.string.userinfo;
     }
 
     private final class QuotaRequestListener implements RequestListener<String> {

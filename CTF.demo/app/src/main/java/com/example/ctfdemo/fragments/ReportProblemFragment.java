@@ -3,7 +3,6 @@ package com.example.ctfdemo.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.ctfdemo.R;
+import com.pitchedapps.capsule.library.event.CFabEvent;
+import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
 
-public class ReportProblemFragment extends Fragment {
+public class ReportProblemFragment extends CapsuleFragment {
 
     //todo:  mock up ErrorReport object to send to tepid,
     //todo:  include room, general problem info, optional additional details (station number, paper jam, etc),
@@ -135,5 +136,16 @@ public class ReportProblemFragment extends Fragment {
 
         errorReport += errorMessage;
         return errorReport;
+    }
+
+    @Nullable
+    @Override
+    protected CFabEvent updateFab() {
+        return null;
+    }
+
+    @Override
+    public int getTitleId() {
+        return R.string.reportproblem;
     }
 }

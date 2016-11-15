@@ -3,7 +3,6 @@ package com.example.ctfdemo.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +26,14 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+import com.pitchedapps.capsule.library.event.CFabEvent;
+import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class DashboardFragment extends Fragment{
+public class DashboardFragment extends CapsuleFragment{
 
     public static final String TAG = "MAIN_FRAGMENT";
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
@@ -99,6 +100,17 @@ public class DashboardFragment extends Fragment{
         requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
         requestManager.execute(new JobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
         requestManager.execute(new DestinationsRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationsRequestListener());
+    }
+
+    @Nullable
+    @Override
+    protected CFabEvent updateFab() {
+        return null;
+    }
+
+    @Override
+    public int getTitleId() {
+        return R.string.dashboard;
     }
 
     private final class QuotaRequestListener implements RequestListener<String> {
