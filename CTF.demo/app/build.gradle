@@ -9,9 +9,9 @@ tasks.whenTaskAdded { task ->
 }
 
 ext {
-    TARGET_SDK = 24
-    BUILD_TOOLS = "24.0.1"
-    ANDROID_SUPPORT_LIBS = "24.2.1"
+    TARGET_SDK = 25
+    BUILD_TOOLS = "25.0.0"
+    ANDROID_SUPPORT_LIBS = "25.0.1"
 }
 
 android {
@@ -52,6 +52,9 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$ANDROID_SUPPORT_LIBS"
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_LIBS"
     compile "com.android.support:preference-v14:$ANDROID_SUPPORT_LIBS"
+
+    compile 'com.github.AllanWang:Capsule:4fe1cb59ac'
+
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.vajro:MaterialDesignLibrary:1.6'
 
