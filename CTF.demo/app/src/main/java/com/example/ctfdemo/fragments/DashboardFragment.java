@@ -28,6 +28,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
+import com.pitchedapps.capsule.library.logging.CLog;
 
 import java.util.Date;
 import java.util.List;
@@ -84,7 +85,6 @@ public class DashboardFragment extends CapsuleFragment{
     public void onStart() {
         super.onStart();
         requestManager.start(getActivity());
-
         getUIData();
     }
 

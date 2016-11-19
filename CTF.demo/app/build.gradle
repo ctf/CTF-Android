@@ -53,7 +53,7 @@ dependencies {
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_LIBS"
     compile "com.android.support:preference-v14:$ANDROID_SUPPORT_LIBS"
 
-    compile 'com.github.AllanWang:Capsule:e21ca3bde7'
+    compile 'com.github.AllanWang:Capsule:b878a08fdf'
 
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.vajro:MaterialDesignLibrary:1.6'

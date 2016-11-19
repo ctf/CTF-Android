@@ -11,6 +11,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 
@@ -32,6 +33,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
 import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
 import com.pitchedapps.capsule.library.item.DrawerItem;
+import com.pitchedapps.capsule.library.logging.CLog;
 
 public class MainActivity extends CapsuleActivityFrame {
 
@@ -103,12 +105,24 @@ public class MainActivity extends CapsuleActivityFrame {
     @Override
     protected CDrawerItem[] getDrawerItems() {
         return new CDrawerItem[]{ //TODO add fragments
-                new DrawerItem(DashboardFragment.newInstance(token), R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, true),
-                new DrawerItem(RoomFragment.newInstance(token), R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true),
-                new DrawerItem(MyAccountFragment.newInstance(token), R.string.userinfo, GoogleMaterial.Icon.gmd_person, true),
-                new DrawerItem(SettingsFragment.newInstance(token), R.string.settings, GoogleMaterial.Icon.gmd_settings, true), //TODO No capsule based, verify
+                new DrawerItem(null, R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, true),
+                new DrawerItem(null, R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true),
+                new DrawerItem(null, R.string.userinfo, GoogleMaterial.Icon.gmd_person, true),
+                new DrawerItem(null, R.string.settings, GoogleMaterial.Icon.gmd_settings, true), //TODO No capsule based, verify
                 new DrawerItem(new ReportProblemFragment(), R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true)
         };
+    }
+
+    //TODO fix fragment reloading
+    private void addProperFragments() {
+        Fragment[] properFragments = new Fragment[]{
+                DashboardFragment.newInstance(token), RoomFragment.newInstance(token), MyAccountFragment.newInstance(token),
+                SettingsFragment.newInstance(token)
+        };
+
+        for (int i = 0; i < properFragments.length; i++) {
+            updateDrawerFragment(properFragments[i], i);
+        }
     }
 
     @Override
@@ -124,6 +138,7 @@ public class MainActivity extends CapsuleActivityFrame {
                 @Override
                 public void onRequestSuccess(String str) {
                     token = str;
+                    addProperFragments();
                     selectDrawerItem(0); //Go to dashboard
                 }
             });
@@ -152,6 +167,7 @@ public class MainActivity extends CapsuleActivityFrame {
     /**
      * helper method - checks if wifi is enabled and if the phone is connected to a network
      * we'll need wifi to talk to TEPID (although we are caching the responses, they could be very stale)
+     *
      * @return true if we have wifi, false otherwise
      */
     private boolean isWifiConnected() {
