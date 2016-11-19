@@ -26,43 +26,22 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.event.CFabEvent;
-import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
 import com.pitchedapps.capsule.library.logging.CLog;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class DashboardFragment extends CapsuleFragment{
+public class DashboardFragment extends BaseFragment{
 
     public static final String TAG = "MAIN_FRAGMENT";
-    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
     private TextView quotaView, lastJobView;
     private Map<String, Destination> destinations;
     private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB", KEY_QUEUES = "QUEUES", KEY_DESTINATIONS = "DESTINATIONS";
     private LinearLayout parentLayout;
 
-    private static final String KEY_TOKEN = "TOKEN";
-    private String token;
-
     public static DashboardFragment newInstance(String token) {
-        DashboardFragment frag = new DashboardFragment();
-        Bundle args = new Bundle();
-        args.putString(KEY_TOKEN, token);
-        frag.setArguments(args);
-        return frag;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-
-        Bundle args = getArguments();
-        if (args != null) {
-            token = args.getString(KEY_TOKEN);
-        }
+        return (DashboardFragment) fragmentWithToken(new DashboardFragment(), token);
     }
 
     @Nullable
@@ -82,30 +61,10 @@ public class DashboardFragment extends CapsuleFragment{
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        requestManager.start(getActivity());
-        getUIData();
-    }
-
-    @Override
-    public void onStop() {
-        if (requestManager.isStarted()) {
-            requestManager.shouldStop();
-        }
-        super.onStop();
-    }
-
-    private void getUIData() {
+    protected void getUIData() {
         requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
         requestManager.execute(new JobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
         requestManager.execute(new DestinationsRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationsRequestListener());
-    }
-
-    @Nullable
-    @Override
-    protected CFabEvent updateFab() {
-        return null;
     }
 
     @Override

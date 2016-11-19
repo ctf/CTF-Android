@@ -26,27 +26,23 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
+import com.pitchedapps.capsule.library.logging.CLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-public class RoomFragment extends CapsuleFragment {
+public class RoomFragment extends BaseFragment {
 
     public static final String TAG = "ROOM_FRAGMENT";
 
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
     private static final String KEY_TOKEN = "token";
-    private String token;
 
 
     public static RoomFragment newInstance(String token) {
-        RoomFragment frag = new RoomFragment();
-        Bundle args = new Bundle();
-        args.putString(KEY_TOKEN, token);
-        frag.setArguments(args);
-        return frag;
+        return (RoomFragment) fragmentWithToken(new RoomFragment(), token);
     }
 
     /**
@@ -64,41 +60,27 @@ public class RoomFragment extends CapsuleFragment {
     private ViewPager viewPager;
     private TabLayout tabLayout;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_viewpager, container, false);
+        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
+        viewPager.setAdapter(new RoomPagerAdapter(getChildFragmentManager(), token));
+
+        tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
         return rootView;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            token = args.getString(KEY_TOKEN);
-        }
-        viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
-        viewPager.setAdapter(new RoomPagerAdapter(getChildFragmentManager(), token));
-
-        tabLayout = (TabLayout) getView().findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-    }
-
-    @Nullable
-    @Override
-    protected CFabEvent updateFab() {
-        return null;
-    }
 
     @Override
     public int getTitleId() {
         return R.string.roominfo;
+    }
+
+    @Override
+    protected void getUIData() {
+        //Data retrieved from inner fragments
     }
 
     /**
@@ -183,7 +165,6 @@ public class RoomFragment extends CapsuleFragment {
             if (!room.equals("1B18")) {
                 statusSouth = (ImageView) rootView.findViewById(R.id.printer_south);
             }
-
             requestManager.execute(new QueueRequest(token, room), new QueueRequestListener());
             requestManager.execute(new DestinationsRequest(token), new DestinationRequestListener());
 

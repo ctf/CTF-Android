@@ -38,25 +38,38 @@ import com.pitchedapps.capsule.library.logging.CLog;
 public class MainActivity extends CapsuleActivityFrame {
 
     private String token;
-    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
     @SuppressLint("MissingSuperCall")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        preCapsuleOnCreate(savedInstanceState); //rerouting onCreate based on what is available
-
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cFab.hide(); //we don't the fab for now
+        cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
         AccountUtil.initAccount(this);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
         SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
-
-
+        final SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
         if (isWifiConnected()) {
             if (AccountUtil.isSignedIn()) {
-                capsuleOnCreate(savedInstanceState);
-                cFab.hide(); //we don't the fab for now
-                capsuleFrameOnCreate(savedInstanceState);
+                requestManager.start(this);
+                requestManager.execute(new TokenRequest(AccountUtil.getAccount(), this), new RequestListener<String>() {
+                    @Override
+                    public void onRequestFailure(SpiceException spiceException) {
+                        // todo wat do if we can't get token?!
+                        //should go back to sign in page - Allan
+                        snackbar("Token request failed");
+                        requestManager.shouldStop();
+                    }
+
+                    @Override
+                    public void onRequestSuccess(String str) {
+                        token = str;
+                        selectDrawerItem(0); //Go to dashboard
+                        requestManager.shouldStop();
+                    }
+                });
             } else {
                 //TODO make account work
                 AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
@@ -105,46 +118,42 @@ public class MainActivity extends CapsuleActivityFrame {
     @Override
     protected CDrawerItem[] getDrawerItems() {
         return new CDrawerItem[]{ //TODO add fragments
-                new DrawerItem(null, R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, true),
-                new DrawerItem(null, R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true),
-                new DrawerItem(null, R.string.userinfo, GoogleMaterial.Icon.gmd_person, true),
-                new DrawerItem(null, R.string.settings, GoogleMaterial.Icon.gmd_settings, true), //TODO No capsule based, verify
-                new DrawerItem(new ReportProblemFragment(), R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true)
-        };
-    }
-
-    //TODO fix fragment reloading
-    private void addProperFragments() {
-        Fragment[] properFragments = new Fragment[]{
-                DashboardFragment.newInstance(token), RoomFragment.newInstance(token), MyAccountFragment.newInstance(token),
-                SettingsFragment.newInstance(token)
-        };
-
-        for (int i = 0; i < properFragments.length; i++) {
-            updateDrawerFragment(properFragments[i], i);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        if (AccountUtil.isSignedIn()) {
-            requestManager.start(this);
-            requestManager.execute(new TokenRequest(AccountUtil.getAccount(), this), new RequestListener<String>() {
-                @Override
-                public void onRequestFailure(SpiceException spiceException) {
-                    // todo wat do if we can't get token?!
+                new DrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, true) {
+                    @Nullable
+                    @Override
+                    public Fragment getFragment() {
+                        return DashboardFragment.newInstance(token);
+                    }
+                },
+                new DrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true) {
+                    @Nullable
+                    @Override
+                    public Fragment getFragment() {
+                        return RoomFragment.newInstance(token);
+                    }
+                },
+                new DrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, true) {
+                    @Nullable
+                    @Override
+                    public Fragment getFragment() {
+                        return MyAccountFragment.newInstance(token);
+                    }
+                },
+                new DrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, true) {
+                    @Nullable
+                    @Override
+                    public Fragment getFragment() {
+                        return SettingsFragment.newInstance(token);
+                    }
+                }, //TODO Not capsule based, verify
+                new DrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true) {
+                    @Nullable
+                    @Override
+                    public Fragment getFragment() {
+                        return new ReportProblemFragment();
+                    }
                 }
-
-                @Override
-                public void onRequestSuccess(String str) {
-                    token = str;
-                    addProperFragments();
-                    selectDrawerItem(0); //Go to dashboard
-                }
-            });
-        }
-
-        super.onStart();
+        };
     }
 
     @Override
@@ -154,14 +163,6 @@ public class MainActivity extends CapsuleActivityFrame {
         SettingsFragment.setLocale(this, lang);
         //prefs.setTheme();
         super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        if (requestManager.isStarted()) {
-            requestManager.shouldStop();
-        }
-        super.onStop();
     }
 
     /**

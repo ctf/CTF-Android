@@ -3,11 +3,14 @@ package com.example.ctfdemo.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.pitchedapps.capsule.library.event.CFabEvent;
+import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
+import com.pitchedapps.capsule.library.logging.CLog;
 
 /**
  * Created by Allan Wang on 2016-11-15.
@@ -32,19 +35,28 @@ public abstract class BaseFragment extends CapsuleFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-
+        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString(KEY_TOKEN);
         }
+        if (token == null) {
+            snackbar(new SnackbarEvent("Null token"));
+        }
+
     }
+
+//    @Override
+//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+//        requestManager.start(getActivity());
+//        getUIData();
+//        requestManager.shouldStop();
+//    }
 
     @Override
     public void onStart() {
         super.onStart();
         requestManager.start(getActivity());
-
         getUIData();
     }
 
@@ -52,6 +64,8 @@ public abstract class BaseFragment extends CapsuleFragment {
 
     @Override
     public void onStop() {
+        // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
+        // ugly if statement.
         if (requestManager.isStarted()) {
             requestManager.shouldStop();
         }

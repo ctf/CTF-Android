@@ -36,8 +36,19 @@ public class PrintJobAdapter extends RecyclerView.Adapter<PrintJobAdapter.ViewHo
     public PrintJobAdapter(Context context, List<PrintJob> data, int type){
         inflater = LayoutInflater.from(context);
         this.context = context;
-        this.pastJobs = data;
+        if (data != null) {
+            this.pastJobs = data;
+        }
         tableType = type;
+    }
+
+    public void updateList(List<PrintJob> data) {
+        if (data != null) {
+            this.pastJobs = data;
+        } else {
+            this.pastJobs.clear();
+        }
+        notifyDataSetChanged();
     }
 
     /**
