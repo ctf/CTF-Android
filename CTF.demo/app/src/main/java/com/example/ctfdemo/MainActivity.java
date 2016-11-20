@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.fragments.DashboardFragment;
@@ -32,6 +34,7 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
+import com.pitchedapps.capsule.library.changelog.ChangelogDialog;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
 import com.pitchedapps.capsule.library.item.DrawerItem;
@@ -187,6 +190,31 @@ public class MainActivity extends CapsuleActivityFrame {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_changelog) {
+            ChangelogDialog.show(this, R.xml.changelog);
+            return true;
+        } else if (id == R.id.action_settings) {
+            selectDrawerItem(3); //TODO do not hardcode number
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

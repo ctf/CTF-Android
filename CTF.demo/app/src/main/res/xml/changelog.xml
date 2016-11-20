@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+    <version title="v"/>
+    <item text="" />
+    -->
+
+    <version title="v1.0RC1"/>
+    <item text="Cleaned up MainActivity and Fragments"/>
+    <item text="Integrated Capsule Framework, EventBus, Butterknife, and Material Drawer"/>
+    <item text="Added themes and materialized"/>
+    <item text="Changing settings will reload and bring you back to the same window"/>
+</resources>

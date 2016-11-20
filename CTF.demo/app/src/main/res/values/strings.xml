@@ -19,6 +19,7 @@
     <string name="computers_unavailable">No Computers Available</string>
     <string name="map_button">View Room Map</string>
 
+    <string name="action_changelog">Changelog</string>
     <string name="action_settings">Settings</string>
 
     <!-- Srings related to settings -->

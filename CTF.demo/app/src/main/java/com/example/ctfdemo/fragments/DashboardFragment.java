@@ -31,13 +31,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+
 public class DashboardFragment extends BaseFragment{
 
     public static final String TAG = "MAIN_FRAGMENT";
-    private TextView quotaView, lastJobView;
+    @BindView(R.id.dashboard_username) TextView usernameView;
+    @BindView(R.id.dashboard_quota) TextView quotaView;
+    @BindView(R.id.dashboard_last_print_job) TextView lastJobView;
+    @BindView(R.id.dashboard_container) LinearLayout parentLayout;
     private Map<String, Destination> destinations;
     private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB", KEY_QUEUES = "QUEUES", KEY_DESTINATIONS = "DESTINATIONS";
-    private LinearLayout parentLayout;
 
     public static DashboardFragment newInstance(String token) {
         return (DashboardFragment) fragmentWithToken(new DashboardFragment(), token);
@@ -48,14 +52,8 @@ public class DashboardFragment extends BaseFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
-        ((TextView) rootView.findViewById(R.id.dashboard_username)).setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
-
-        // init these views, will be filled by async request callbacks
-        quotaView = (TextView) rootView.findViewById(R.id.dashboard_quota);
-        lastJobView = (TextView) rootView.findViewById(R.id.dashboard_last_print_job);
-        parentLayout = (LinearLayout) rootView.findViewById(R.id.dashboard_container);
-
+        bindButterKnife(rootView);
+        usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
         return rootView;
     }
 
