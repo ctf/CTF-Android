@@ -46,6 +46,7 @@ public abstract class BaseFragment extends CapsuleFragment {
 
     }
 
+    //TODO check if you still need requestmanager after oncreate
 //    @Override
 //    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 //        requestManager.start(getActivity());

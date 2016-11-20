@@ -31,6 +31,7 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
+import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
 import com.pitchedapps.capsule.library.item.DrawerItem;
 import com.pitchedapps.capsule.library.logging.CLog;
@@ -42,9 +43,7 @@ public class MainActivity extends CapsuleActivityFrame {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        cFab.hide(); //we don't the fab for now
-        cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
+        preCapsuleOnCreate(savedInstanceState);
         AccountUtil.initAccount(this);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -52,6 +51,10 @@ public class MainActivity extends CapsuleActivityFrame {
         SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
         final SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
         if (isWifiConnected()) {
+            capsuleOnCreate(savedInstanceState);
+            capsuleFrameOnCreate(savedInstanceState);
+            cFab.hide(); //we don't the fab for now
+            cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
             if (AccountUtil.isSignedIn()) {
                 requestManager.start(this);
                 requestManager.execute(new TokenRequest(AccountUtil.getAccount(), this), new RequestListener<String>() {
@@ -59,7 +62,7 @@ public class MainActivity extends CapsuleActivityFrame {
                     public void onRequestFailure(SpiceException spiceException) {
                         // todo wat do if we can't get token?!
                         //should go back to sign in page - Allan
-                        snackbar("Token request failed");
+                        snackbar(new SnackbarEvent("Token request failed"));
                         requestManager.shouldStop();
                     }
 
