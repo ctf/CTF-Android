@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.auth.AccountUtil;
-import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.DestinationsRequest;
 import com.example.ctfdemo.requests.JobsRequest;
 import com.example.ctfdemo.requests.QueuesRequest;
@@ -22,11 +21,10 @@ import com.example.ctfdemo.tepid.Destination;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.example.ctfdemo.tepid.PrintQueue;
 import com.ocpsoft.pretty.time.PrettyTime;
-import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.logging.CLog;
+import com.pitchedapps.capsule.library.utils.AnimUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -81,6 +79,7 @@ public class DashboardFragment extends BaseFragment{
         @Override
         public void onRequestSuccess(String quota) {
             quotaView.setText(getString(R.string.dashboard_quota_text, quota));
+            AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
         }
     }
 
@@ -94,6 +93,7 @@ public class DashboardFragment extends BaseFragment{
             Date last = p[0].started;
             PrettyTime pt = new PrettyTime(); //todo if date is null pt uses current time
             lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
+            AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
         }
     }
 
@@ -138,7 +138,7 @@ public class DashboardFragment extends BaseFragment{
                         item.setOrientation(LinearLayout.VERTICAL);
                         TextView tv = new TextView(getContext());
                         tv.setText(destinations.get(d).getName());
-                        tv.setTextColor(Color.WHITE);
+//                        tv.setTextColor(Color.WHITE); //TODO theme
                         ImageView im = new ImageView(getContext());
                         im.setImageResource(destinations.get(d).isUp() ? R.drawable.printer_up : R.drawable.printer_down);
                         item.addView(im);
@@ -149,6 +149,8 @@ public class DashboardFragment extends BaseFragment{
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 parentLayout.addView(queueContainer, 0, params);
+//                AnimUtils.fadeIn(getContext(), queueContainer, 0, 1000);
+
             }
         }
     }

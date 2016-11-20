@@ -23,6 +23,7 @@ import com.example.ctfdemo.fragments.RoomFragment;
 import com.example.ctfdemo.fragments.SettingsFragment;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.TokenRequest;
+import com.example.ctfdemo.utils.Preferences;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -43,6 +44,9 @@ public class MainActivity extends CapsuleActivityFrame {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        Preferences prefs = new Preferences(this);
+        if (prefs.isDarkMode()) setTheme(R.style.AppTheme_Dark_NoActionBar);
+
         preCapsuleOnCreate(savedInstanceState);
         AccountUtil.initAccount(this);
 
@@ -69,7 +73,7 @@ public class MainActivity extends CapsuleActivityFrame {
                     @Override
                     public void onRequestSuccess(String str) {
                         token = str;
-                        selectDrawerItem(0); //Go to dashboard
+                        selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default
                         requestManager.shouldStop();
                     }
                 });

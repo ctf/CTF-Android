@@ -10,7 +10,9 @@ import com.octo.android.robospice.SpiceManager;
 import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
-import com.pitchedapps.capsule.library.logging.CLog;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by Allan Wang on 2016-11-15.
@@ -24,6 +26,7 @@ public abstract class BaseFragment extends CapsuleFragment {
     private static final String KEY_TOKEN = "token";
     protected String token;
     protected SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+    private Unbinder unbinder;
 
     protected static Fragment fragmentWithToken(Fragment fragment, String token) {
         Bundle args = new Bundle();
@@ -44,6 +47,16 @@ public abstract class BaseFragment extends CapsuleFragment {
             snackbar(new SnackbarEvent("Null token"));
         }
 
+    }
+
+    protected void bindButterKnife(View view) {
+        unbinder = ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) unbinder.unbind();
     }
 
     //TODO check if you still need requestmanager after oncreate

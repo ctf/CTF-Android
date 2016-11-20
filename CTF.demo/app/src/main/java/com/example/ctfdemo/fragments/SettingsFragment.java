@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import com.example.ctfdemo.MainActivity;
 import com.example.ctfdemo.R;
 import com.example.ctfdemo.auth.AccountUtil;
 import com.example.ctfdemo.requests.CTFSpiceService;
 import com.example.ctfdemo.requests.LogoutRequest;
 import com.example.ctfdemo.tepid.Session;
+import com.example.ctfdemo.utils.Preferences;
 import com.gc.materialdesign.widgets.Dialog;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -23,6 +25,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String TAG = "SETTINGS_FRAGMENT", KEY_TOKEN = "TOKEN";
     private String token;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+    private Preferences mPrefs;
 
     public static SettingsFragment newInstance(String token) {
         SettingsFragment frag = new SettingsFragment();
@@ -36,11 +39,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString(KEY_TOKEN);
         }
+
     }
 
     @Override
@@ -51,6 +54,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
+        mPrefs = new Preferences(getContext());
+        getPreferenceManager().setSharedPreferencesName("CAPSULE_PREFERENCES");
         addPreferencesFromResource(R.xml.preferences);
 
         findPreference("pref_logout").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -71,6 +76,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     //todo this brings us back to the main page, want to get back to settings page
                 }
                 return true;
+            }
+        });
+
+        findPreference("pref_theme").setDefaultValue(mPrefs.isDarkMode());
+        findPreference("pref_theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ((MainActivity) getActivity()).reload();
+                return false;
             }
         });
 
@@ -115,8 +129,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     /**
      * helper method to change the system locale from one supported language to another
+     *
      * @param activity a context
-     * @param lang ISO 639-1 code (e.g., "en", "fr", "zh", etc.)
+     * @param lang     ISO 639-1 code (e.g., "en", "fr", "zh", etc.)
      */
     public static void setLocale(Activity activity, String lang) {
         Locale locale = new Locale(lang);

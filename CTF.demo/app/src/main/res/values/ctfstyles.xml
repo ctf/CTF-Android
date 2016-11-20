@@ -1,43 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--
-    &lt;!&ndash; base activity theme - light &ndash;&gt;
-    <style name="ActivityThemeLight" parent="Theme.AppCompat.NoActionBar">
-        <item name="primaryTextColor">#F4F4F6</item>
-        <item name="secondaryTextColor">#96F4F4F6</item>
-        <item name="dividerColor">#F2F2F3</item>
-        <item name="iconPrinterUp">@drawable/</item>
-        <item name="iconPrinterDown">@drawable/</item>
-        <item name="iconComputerUp">@drawable/</item>
-        <item name="iconComputerDown">@drawable/</item>
-    </style>
-
-    &lt;!&ndash; base activity theme - dark &ndash;&gt;
-    <style name="ActivityThemeDark" parent="Theme.AppCompat.NoActionBar">
-        <item name="primaryTextColor">#F4F4F6</item>
-        <item name="secondaryTextColor">#96F4F4F6</item>
-        <item name="dividerColor">#F2F2F3</item>
-        <item name="iconPrinterUp">@drawable/</item>
-        <item name="iconPrinterDown">@drawable/</item>
-        <item name="iconComputerUp">@drawable/</item>
-        <item name="iconComputerDown">@drawable/</item>
-    </style>
-
-    &lt;!&ndash; main activity theme - light &ndash;&gt;
-    <style name="MainActivityThemeLight" parent="ActivityThemeLight">
-        <item name="android:windowBackground"></item>
-    </style>
-
-    &lt;!&ndash; main activity theme - dark &ndash;&gt;
-    <style name="MainActivityThemeDark" parent="ActivityThemeDark">
-        <item name="android:windowBackground">@color/windowBackgroundDark</item>
-    </style>-->
-
-    <style name="page">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:background">@color/windowBackground</item>
-    </style>
 
     <style name="subheader">
         <item name="android:layout_height">wrap_content</item>
@@ -72,14 +34,12 @@
         <item name="android:layout_weight">0.25</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#ffffff</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
 
     <style name="dashboard_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#ffffff</item>
         <item name="android:layout_margin">10dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:singleLine">true</item>
