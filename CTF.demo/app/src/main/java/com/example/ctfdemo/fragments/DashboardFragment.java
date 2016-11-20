@@ -21,6 +21,7 @@ import com.example.ctfdemo.tepid.Destination;
 import com.example.ctfdemo.tepid.PrintJob;
 import com.example.ctfdemo.tepid.PrintQueue;
 import com.ocpsoft.pretty.time.PrettyTime;
+import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -59,7 +60,7 @@ public class DashboardFragment extends BaseFragment{
     }
 
     @Override
-    protected void getUIData() {
+    protected void getUIData(SpiceManager requestManager) {
         requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
         requestManager.execute(new JobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
         requestManager.execute(new DestinationsRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationsRequestListener());

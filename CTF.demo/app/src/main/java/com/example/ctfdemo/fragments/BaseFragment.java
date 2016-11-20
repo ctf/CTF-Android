@@ -1,6 +1,7 @@
 package com.example.ctfdemo.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -60,29 +61,26 @@ public abstract class BaseFragment extends CapsuleFragment {
     }
 
     //TODO check if you still need requestmanager after oncreate
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-//        requestManager.start(getActivity());
-//        getUIData();
-//        requestManager.shouldStop();
-//    }
+    @Override
+    @CallSuper
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        if (!requestManager.isStarted()) requestManager.start(getActivity());
+        getUIData(requestManager);
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        requestManager.start(getActivity());
-        getUIData();
+        if (!requestManager.isStarted()) requestManager.start(getActivity());
     }
 
-    protected abstract void getUIData();
+    protected abstract void getUIData(SpiceManager requestManager);
 
     @Override
     public void onStop() {
         // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
         // ugly if statement.
-        if (requestManager.isStarted()) {
-            requestManager.shouldStop();
-        }
+        if (requestManager.isStarted()) requestManager.shouldStop();
         super.onStop();
     }
 

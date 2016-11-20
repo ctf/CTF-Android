@@ -47,13 +47,19 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIBS"
-    compile "com.android.support:design:$ANDROID_SUPPORT_LIBS"
-    compile "com.android.support:recyclerview-v7:$ANDROID_SUPPORT_LIBS"
-    compile "com.android.support:support-v4:$ANDROID_SUPPORT_LIBS"
-    compile "com.android.support:preference-v14:$ANDROID_SUPPORT_LIBS"
+//    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIBS"
+//    compile "com.android.support:design:$ANDROID_SUPPORT_LIBS"
+//    compile "com.android.support:recyclerview-v7:$ANDROID_SUPPORT_LIBS"
+//    compile "com.android.support:support-v4:$ANDROID_SUPPORT_LIBS"
+//    compile "com.android.support:preference-v14:$ANDROID_SUPPORT_LIBS"
 
-    compile 'com.github.AllanWang:Capsule:208581107d'
+    //Framework lib with android support libraries and eventbus
+    compile 'com.github.AllanWang:Capsule:7c7fab8546'
+
+    //Drawer
+    compile('com.mikepenz:materialdrawer:5.8.0@aar') {
+        transitive = true
+    }
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
@@ -64,8 +70,8 @@ dependencies {
 
     compile 'com.eclipsesource.jaxrs:jersey-all:2.22.2'
 
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+    compile 'com.google.code.gson:gson:2.8.0'
 
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
