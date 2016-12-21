@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ctfdemo">
+    package="com.ctf.mcgill">
 
     <!-- to be able to add a "CTF account" to the device -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -44,7 +44,7 @@
         </service>
 
         <service
-            android:name="com.example.ctfdemo.requests.CTFSpiceService"
+            android:name=".requests.CTFSpiceService"
             android:exported="false" />
 
         <activity

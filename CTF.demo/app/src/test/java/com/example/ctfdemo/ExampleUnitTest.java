@@ -1,4 +1,4 @@
-package com.example.ctfdemo;
+package com.ctf.mcgill;
 
 import org.junit.Test;
 

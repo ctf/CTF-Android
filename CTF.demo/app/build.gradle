@@ -18,7 +18,7 @@ android {
     compileSdkVersion TARGET_SDK
     buildToolsVersion BUILD_TOOLS
     defaultConfig {
-        applicationId 'com.example.ctf'
+        applicationId 'com.ctf.mcgill'
         minSdkVersion 22
         targetSdkVersion TARGET_SDK
         versionCode 1
@@ -47,19 +47,12 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-//    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIBS"
-//    compile "com.android.support:design:$ANDROID_SUPPORT_LIBS"
-//    compile "com.android.support:recyclerview-v7:$ANDROID_SUPPORT_LIBS"
-//    compile "com.android.support:support-v4:$ANDROID_SUPPORT_LIBS"
-//    compile "com.android.support:preference-v14:$ANDROID_SUPPORT_LIBS"
 
     //Framework lib with android support libraries and eventbus
-    compile 'com.github.AllanWang:Capsule:7c7fab8546'
+    compile 'com.github.AllanWang:Capsule:a91f012d8a'
 
-    //Drawer
-    compile('com.mikepenz:materialdrawer:5.8.0@aar') {
-        transitive = true
-    }
+    //Recyclerview animations
+    compile 'jp.wasabeef:recyclerview-animators:2.2.5'
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
@@ -70,11 +63,11 @@ dependencies {
 
     compile 'com.eclipsesource.jaxrs:jersey-all:2.22.2'
 
-    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+    compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.google.code.gson:gson:2.8.0'
 
-    compile 'com.facebook.stetho:stetho:1.4.1'
-    compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
+    compile 'com.facebook.stetho:stetho:1.4.2'
+    compile 'com.facebook.stetho:stetho-okhttp3:1.4.2'
 
     compile 'com.octo.android.robospice:robospice:1.4.14'
     compile 'com.octo.android.robospice:robospice-okhttp:1.4.14'

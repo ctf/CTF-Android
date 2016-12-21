@@ -1,4 +1,4 @@
-package com.example.ctfdemo;
+package com.ctf.mcgill;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
