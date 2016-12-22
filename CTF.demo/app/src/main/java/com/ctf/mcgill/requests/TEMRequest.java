@@ -1,4 +1,4 @@
-package com.example.ctfdemo.requests;
+package com.ctf.mcgill.requests;
 
 import org.json.JSONArray;
 
