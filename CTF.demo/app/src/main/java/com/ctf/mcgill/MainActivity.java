@@ -1,5 +1,6 @@
 package com.ctf.mcgill;
 
+import android.Manifest;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
@@ -10,6 +11,7 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,8 +19,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.ctf.mcgill.BuildConfig;
-import com.ctf.mcgill.R;
 import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.fragments.DashboardFragment;
 import com.ctf.mcgill.fragments.MyAccountFragment;
@@ -40,6 +40,8 @@ import com.pitchedapps.capsule.library.changelog.ChangelogDialog;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
 import com.pitchedapps.capsule.library.item.DrawerItem;
+import com.pitchedapps.capsule.library.permissions.CPermissionCallback;
+import com.pitchedapps.capsule.library.permissions.PermissionResult;
 
 public class MainActivity extends CapsuleActivityFrame {
 
@@ -52,7 +54,16 @@ public class MainActivity extends CapsuleActivityFrame {
         if (prefs.isDarkMode()) setTheme(R.style.AppTheme_Dark_NoActionBar);
 
         preCapsuleOnCreate(savedInstanceState);
-        AccountUtil.initAccount(this);
+//        checkAccountPermission(new CPermissionCallback() {
+//            @Override
+//            public void onResult(PermissionResult result) {
+//                if (result.isAllGranted()) {
+                    AccountUtil.initAccount(MainActivity.this);
+//                } else {
+//                    //Stop app?
+//                }
+//            }
+//        });
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
@@ -96,6 +107,10 @@ public class MainActivity extends CapsuleActivityFrame {
             setContentView(R.layout.no_wifi);
         }
 
+    }
+
+    public void checkAccountPermission(@NonNull CPermissionCallback callback) {
+        requestPermission(callback, 42, Manifest.permission.GET_ACCOUNTS);
     }
 
     /**

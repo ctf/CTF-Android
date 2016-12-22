@@ -127,7 +127,7 @@ public class RoomTabFragment extends CapsulePageFragment {
 
         @Override
         public void onRequestSuccess(PrintJob[] printJobs) {
-            mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), new ArrayList<PrintJob>(Arrays.asList(printJobs)), PrintJobAdapter.ROOMS));
+            mRecyclerView.setAdapter(new PrintJobAdapter(getActivity(), new ArrayList<PrintJob>(Arrays.asList(printJobs)), PrintJobAdapter.TableType.ROOMS));
         }
     }
 

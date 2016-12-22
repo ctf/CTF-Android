@@ -6,7 +6,15 @@
     <item text="" />
     -->
 
-    <version title="v1.0RC1"/>
+    <version title="v1.0_beta2"/>
+    <item text="Add adapter animations" />
+    <item text="Add support for kitkat" />
+    <item text="Add swiperefreshlayouts to views that need to load data" />
+    <item text="" />
+    <item text="" />
+    <item text="" />
+
+    <version title="v1.0_beta1"/>
     <item text="Cleaned up MainActivity and Fragments"/>
     <item text="Integrated Capsule Framework, EventBus, Butterknife, and Material Drawer"/>
     <item text="Added themes and materialized"/>

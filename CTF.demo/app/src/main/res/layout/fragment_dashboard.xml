@@ -1,187 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/dashboard_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:id="@+id/dashboard_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-<!--        &lt;!&ndash; row for 1b16 &ndash;&gt;
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_1B16"
-                android:layout_width="0dp"
+    <!--        &lt;!&ndash; row for 1b16 &ndash;&gt;
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".25"
-                android:height="90dp"
-                android:gravity="fill_horizontal|center_vertical|center_horizontal"
-                android:text="@string/string_1b16"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffffff"
-                android:textIsSelectable="false"
-                android:textSize="30dp" />
+                android:layout_margin="12dp"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/vacancies_1B16"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/computers_available"
-                android:src="@drawable/computers_available_true" />
+                <TextView
+                    android:id="@+id/text_1B16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25"
+                    android:height="90dp"
+                    android:gravity="fill_horizontal|center_vertical|center_horizontal"
+                    android:text="@string/string_1b16"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ffffff"
+                    android:textIsSelectable="false"
+                    android:textSize="30dp" />
 
-            <ImageView
-                android:id="@+id/printer_1B16_south"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/printer_working" />
+                <ImageView
+                    android:id="@+id/vacancies_1B16"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/computers_available"
+                    android:src="@drawable/computers_available_true" />
 
-            <ImageView
-                android:id="@+id/printer_1B16_north"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/printer_working" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/printer_1B16_south"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/printer_working" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/printer_1B16_north"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/printer_working" />
+            </LinearLayout>
 
-            <TextView style="@style/dashboard_subheaders" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView style="@style/dashboard_subheaders" />
+                <TextView style="@style/dashboard_subheaders" />
 
-            <TextView
-                style="@style/dashboard_subheaders"
-                android:text="@string/south" />
+                <TextView style="@style/dashboard_subheaders" />
 
-            <TextView
-                style="@style/dashboard_subheaders"
-                android:text="@string/north" />
-        </LinearLayout>
+                <TextView
+                    style="@style/dashboard_subheaders"
+                    android:text="@string/south" />
 
-        &lt;!&ndash; row for 1b17 &ndash;&gt;
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:orientation="horizontal">
+                <TextView
+                    style="@style/dashboard_subheaders"
+                    android:text="@string/north" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/text_1B17"
-                android:layout_width="0dp"
+            &lt;!&ndash; row for 1b17 &ndash;&gt;
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".25"
-                android:height="90dp"
-                android:gravity="fill_horizontal|center_vertical|center_horizontal"
-                android:text="@string/string_1b17"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffffff"
-                android:textSize="30dp" />
+                android:layout_margin="12dp"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/vacancies_1B17"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/computers_available"
-                android:src="@drawable/computers_available_true" />
+                <TextView
+                    android:id="@+id/text_1B17"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".25"
+                    android:height="90dp"
+                    android:gravity="fill_horizontal|center_vertical|center_horizontal"
+                    android:text="@string/string_1b17"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp" />
 
-            <ImageView
-                android:id="@+id/printer_1B17_south"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/printer_working" />
+                <ImageView
+                    android:id="@+id/vacancies_1B17"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/computers_available"
+                    android:src="@drawable/computers_available_true" />
 
-            <ImageView
-                android:id="@+id/printer_1B17_north"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/printer_working" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/printer_1B17_south"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/printer_working" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/printer_1B17_north"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/printer_working" />
+            </LinearLayout>
 
-            <TextView style="@style/dashboard_subheaders" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView style="@style/dashboard_subheaders" />
+                <TextView style="@style/dashboard_subheaders" />
 
-            <TextView
-                style="@style/dashboard_subheaders"
-                android:text="@string/south" />
+                <TextView style="@style/dashboard_subheaders" />
 
-            <TextView
-                style="@style/dashboard_subheaders"
-                android:text="@string/north" />
-        </LinearLayout>
+                <TextView
+                    style="@style/dashboard_subheaders"
+                    android:text="@string/south" />
 
-        &lt;!&ndash; row for 1b18 &ndash;&gt;
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:orientation="horizontal">
+                <TextView
+                    style="@style/dashboard_subheaders"
+                    android:text="@string/north" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/text_1B18"
-                android:layout_width="0dp"
+            &lt;!&ndash; row for 1b18 &ndash;&gt;
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight=".25"
-                android:height="90dp"
-                android:gravity="fill_horizontal|center_vertical|center_horizontal"
-                android:text="@string/string_1b18"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffffff"
-                android:textSize="30dp" />
+                android:layout_margin="12dp"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/vacancies_1B18"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/computers_available"
-                android:src="@drawable/computers_available_true" />
+                <TextView
+                    android:id="@+id/text_1B18"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight=".25"
+                    android:height="90dp"
+                    android:gravity="fill_horizontal|center_vertical|center_horizontal"
+                    android:text="@string/string_1b18"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#ffffff"
+                    android:textSize="30dp" />
 
-            <ImageView
-                android:id="@+id/printer_1B18"
-                style="@style/dashboard_icons"
-                android:contentDescription="@string/printer_working" />
+                <ImageView
+                    android:id="@+id/vacancies_1B18"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/computers_available"
+                    android:src="@drawable/computers_available_true" />
 
-            <ImageView
-                style="@style/dashboard_icons"
-                android:contentDescription="filler" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/printer_1B18"
+                    style="@style/dashboard_icons"
+                    android:contentDescription="@string/printer_working" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <ImageView
+                    style="@style/dashboard_icons"
+                    android:contentDescription="filler" />
+            </LinearLayout>
 
-            <TextView style="@style/dashboard_subheaders" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView style="@style/dashboard_subheaders" />
+                <TextView style="@style/dashboard_subheaders" />
 
-            <TextView
-                style="@style/dashboard_subheaders"
-                android:text="@string/north" />
+                <TextView style="@style/dashboard_subheaders" />
 
-            <TextView style="@style/dashboard_subheaders" />
-        </LinearLayout>-->
+                <TextView
+                    style="@style/dashboard_subheaders"
+                    android:text="@string/north" />
 
-        <!-- status text -->
-        <TextView
-            android:id="@+id/dashboard_username"
-            style="@style/dashboard_text" />
+                <TextView style="@style/dashboard_subheaders" />
+            </LinearLayout>-->
 
-        <TextView
-            android:id="@+id/dashboard_quota"
-            android:visibility="invisible"
-            style="@style/dashboard_text" />
+    <!-- status text -->
+    <TextView
+        android:id="@+id/dashboard_username"
+        style="@style/dashboard_text" />
 
-        <TextView
-            android:id="@+id/dashboard_last_print_job"
-            android:visibility="invisible"
-            style="@style/dashboard_text" />
+    <TextView
+        android:id="@+id/dashboard_quota"
+        style="@style/dashboard_text"
+        android:visibility="invisible" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/dashboard_last_print_job"
+        style="@style/dashboard_text"
+        android:visibility="invisible" />
 
-</ScrollView>
+</LinearLayout>

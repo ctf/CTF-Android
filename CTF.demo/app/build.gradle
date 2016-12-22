@@ -19,7 +19,7 @@ android {
     buildToolsVersion BUILD_TOOLS
     defaultConfig {
         applicationId 'com.ctf.mcgill'
-        minSdkVersion 22
+        minSdkVersion 16
         targetSdkVersion TARGET_SDK
         versionCode 1
         versionName "1.0RC_1"
@@ -42,6 +42,10 @@ android {
     }
     productFlavors {
     }
+
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
 }
 
 dependencies {
@@ -49,10 +53,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile 'com.github.AllanWang:Capsule:a91f012d8a'
-
-    //Recyclerview animations
-    compile 'jp.wasabeef:recyclerview-animators:2.2.5'
+    compile 'com.github.AllanWang:Capsule:98abf34a1f'
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
