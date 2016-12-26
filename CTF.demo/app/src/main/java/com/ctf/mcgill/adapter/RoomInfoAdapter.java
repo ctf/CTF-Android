@@ -79,7 +79,7 @@ public class RoomInfoAdapter extends CapsuleAdapter<RoomInformation, RoomInfoAda
         TextView roomName;
         ImageView computerAvailability;
 
-        public ViewHolder(View view, int layoutId) {
+        ViewHolder(View view, int layoutId) {
             super(view, layoutId);
             linear = (LinearLayout) view.findViewById(R.id.linear_layout);
             roomName = (TextView) view.findViewById(R.id.room_name);

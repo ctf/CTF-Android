@@ -5,7 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ctf.mcgill.R;
@@ -23,25 +23,12 @@ import java.util.List;
  */
 public class PrintJobAdapter extends CapsuleAdapter<PrintJob, PrintJobAdapter.ViewHolder> {
 
-    // use these constants when creating the adapter to decide
-    // the format of the table this adapter fills
+    //Defines display type
     private TableType tableType;
-    //    public final static int ROOMS = 0; //TODO align rows for table_row_room.xml
-//    public final static int MY_ACCOUNT = 1;
     private Context mContext;
 
     public enum TableType {
-        ROOMS(R.layout.table_row_room), MY_ACCOUNT(R.layout.table_row_user);
-
-        private int layoutId;
-
-        TableType(int i) {
-            layoutId = i;
-        }
-
-        public int getLayoutId() {
-            return layoutId;
-        }
+        ROOMS, MY_ACCOUNT
     }
 
     public PrintJobAdapter(Context context, List<PrintJob> data, TableType tableType) {
@@ -52,7 +39,7 @@ public class PrintJobAdapter extends CapsuleAdapter<PrintJob, PrintJobAdapter.Vi
 
     @Override
     protected int getLayoutRes(int position) {
-        return tableType.getLayoutId();
+        return R.layout.two_item_row;
     }
 
     @Override
@@ -74,18 +61,18 @@ public class PrintJobAdapter extends CapsuleAdapter<PrintJob, PrintJobAdapter.Vi
 
         switch (tableType) {
             case ROOMS:
-                vh.userIdentification.setText(current.getUserIdentification());
+                vh.textLeft.setText(current.getUserIdentification());
                 break;
             case MY_ACCOUNT:
-                vh.jobName.setText(current.getName());
+                vh.textLeft.setText(current.getName());
                 break;
         }
 
         Date printed = current.getPrinted() != null ? current.getPrinted() : current.started;
-        vh.datePrinted.setText(new PrettyTime().format(printed));//new SimpleDateFormat("E, MMM d, h:m").format(printed));
+        vh.textRight.setText(new PrettyTime().format(printed));//new SimpleDateFormat("E, MMM d, h:m").format(printed));
 
         if (position % 2 == 0) {
-            vh.rowColor.setBackgroundColor(ContextCompat.getColor(mContext, R.color.transparentBlack)); // this alternates the row colors
+            vh.linear.setBackgroundColor(ContextCompat.getColor(mContext, R.color.transparentBlack)); // this alternates the row colors
         }
     }
 
@@ -95,23 +82,15 @@ public class PrintJobAdapter extends CapsuleAdapter<PrintJob, PrintJobAdapter.Vi
 
     public static class ViewHolder extends CapsuleViewHolder {
 
-        TextView jobName, userIdentification, datePrinted;
-        TableRow rowColor;
+        TextView textLeft, textRight;
+        LinearLayout linear;
 
-        public ViewHolder(View view, int layoutId) {
+        ViewHolder(View view, int layoutId) {
             super(view, layoutId);
-            switch (layoutId) {
-                case R.layout.table_row_user: //MY_ACCOUNT
-                    jobName = (TextView) itemView.findViewById(R.id.job_name);
-                    datePrinted = (TextView) itemView.findViewById(R.id.job_date);
-                    rowColor = (TableRow) itemView.findViewById(R.id.table_data_user);
-                    break;
-                case R.layout.table_row_room: //ROOM
-                    userIdentification = (TextView) itemView.findViewById(R.id.queue_job_user);
-                    datePrinted = (TextView) itemView.findViewById(R.id.queue_job_date);
-                    rowColor = (TableRow) itemView.findViewById(R.id.table_data_room);
-                    break;
-            }
+
+            textLeft = (TextView) view.findViewById(R.id.text_left);
+            textRight = (TextView) view.findViewById(R.id.text_right);
+            linear = (LinearLayout) view.findViewById(R.id.linear_container);
         }
 
     }
