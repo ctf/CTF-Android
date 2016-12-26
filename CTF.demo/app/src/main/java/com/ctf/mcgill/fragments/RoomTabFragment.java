@@ -41,7 +41,7 @@ public class RoomTabFragment extends CapsulePageFragment {
     @Override
     public int getTitleId() {
         return 0;
-    } //title overriden by adapter
+    } //title overridden by adapter
 
     /**
      * The fragment argument representing the section number for this

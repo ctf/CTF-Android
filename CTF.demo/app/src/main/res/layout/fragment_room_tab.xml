@@ -10,72 +10,74 @@
 
         <ImageView
             android:id="@+id/computer_icon"
-            android:contentDescription="@string/computers_available"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_weight=".3"
+            android:contentDescription="@string/computers_available"
             android:src="@drawable/computers_available_true" />
 
         <ImageView
             android:id="@+id/printer_north"
-            android:contentDescription="@string/printer_working"
             android:layout_width="0dp"
+            android:layout_height="100dp"
             android:layout_weight=".3"
-            android:layout_height="100dp" />
+            android:contentDescription="@string/printer_working" />
 
         <ImageView
             android:id="@+id/printer_south"
-            android:contentDescription="@string/printer_working"
             android:layout_width="0dp"
             android:layout_height="100dp"
-            android:layout_weight=".3" />
+            android:layout_weight=".3"
+            android:contentDescription="@string/printer_working" />
 
     </LinearLayout>
 
-<!--    <LinearLayout
-        android:id="@+id/status_strings"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/status_icons"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:id="@+id/computer_text"
-            android:text="@string/computers_available"
-            android:textColor="#DE000000"
-            android:layout_width="wrap_content"
+    <!--    <LinearLayout
+            android:id="@+id/status_strings"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"/>
+            android:layout_below="@id/status_icons"
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/printer_text"
-            android:text="@string/printer_error"
-            android:textColor="#DE000000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/computer_text"
+                android:text="@string/computers_available"
+                android:textColor="#DE000000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"/>
 
-    </LinearLayout>-->
+            <TextView
+                android:id="@+id/printer_text"
+                android:text="@string/printer_error"
+                android:textColor="#DE000000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"/>
+
+        </LinearLayout>-->
 
     <Button
         android:id="@+id/map_button"
         style="?android:textAppearanceSmall"
-        android:textStyle="bold"
-        android:text="@string/map_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false"
         android:layout_below="@+id/status_icons"
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
-        android:layout_alignParentEnd="false" />
+        android:text="@string/map_button"
+        android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recent_jobs"
         style="@style/table"
-        android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false"
         android:layout_below="@+id/map_button" />
 
 </RelativeLayout>
