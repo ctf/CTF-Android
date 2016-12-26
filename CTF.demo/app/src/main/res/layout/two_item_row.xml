@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:stretchColumns="*">
+    android:orientation="horizontal">
 
     <TableRow android:id="@+id/table_data_room">
 
@@ -25,4 +26,4 @@
         <TextView />
     </TableRow>
 
-</TableLayout>
+</LinearLayout>

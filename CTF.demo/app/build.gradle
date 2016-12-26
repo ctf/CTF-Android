@@ -53,7 +53,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile 'com.github.AllanWang:Capsule:98abf34a1f'
+    compile 'com.github.AllanWang:Capsule:db654d2073'
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.4.0'

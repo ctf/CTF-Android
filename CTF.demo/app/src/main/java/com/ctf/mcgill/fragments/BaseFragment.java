@@ -69,7 +69,6 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
         if (unbinder != null) unbinder.unbind();
     }
 
-    //TODO check if you still need requestmanager after oncreate
     @Override
     @CallSuper
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -79,12 +78,8 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
     }
 
     @Override
-    protected RecyclerView.ItemAnimator getRecyclerAnimator() {
-        return new FadeInLeftAnimator(new FastOutLinearInInterpolator());
-    }
-
-    @Override
     protected void updateList(List<T> oldList) {
+        cAdapter.updateList(null);
         startRequestManager();
         getUIData(requestManager);
         stopRequestManager();
@@ -132,9 +127,9 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
      * RequestListener with methods that will be called for all requests
      * Keep things consistent
      *
-     * @param <T>
+     * @param <U>
      */
-    protected class MyRequestListener<T> implements RequestListener<T> {
+    protected class MyRequestListener<U> implements RequestListener<U> {
 
         @Override
         @CallSuper
@@ -144,7 +139,7 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
 
         @Override
         @CallSuper
-        public void onRequestSuccess(T t) {
+        public void onRequestSuccess(U u) {
             hideRefresh();
         }
     }

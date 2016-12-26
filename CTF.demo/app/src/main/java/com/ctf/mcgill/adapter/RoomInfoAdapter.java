@@ -67,19 +67,6 @@ public class RoomInfoAdapter extends CapsuleAdapter<RoomInformation, RoomInfoAda
             item.addView(tv);
             vh.linear.addView(item);
         }
-        for (RoomInformation.Printer printer : current.getPrinters()) {
-            LinearLayout item = new LinearLayout(mContext);
-            item.setOrientation(LinearLayout.VERTICAL);
-            TextView tv = new TextView(mContext);
-            tv.setGravity(Gravity.CENTER);
-            tv.setText(printer.name);
-//                        tv.setTextColor(Color.WHITE); //TODO theme
-            ImageView im = new ImageView(mContext);
-            im.setImageResource(printer.isUp ? R.drawable.printer_up : R.drawable.printer_down);
-            item.addView(im);
-            item.addView(tv);
-            vh.linear.addView(item);
-        }
     }
 
     /**
