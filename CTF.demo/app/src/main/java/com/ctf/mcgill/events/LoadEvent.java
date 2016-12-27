@@ -10,11 +10,11 @@ import com.ctf.mcgill.enums.DataType;
 
 public class LoadEvent {
 
-    public final DataType type;
+    public final DataType.Single type;
     public final boolean isSuccessful;
     public final Object data;
 
-    public LoadEvent(DataType type, boolean isSuccessful, Object data) {
+    public LoadEvent(DataType.Single type, boolean isSuccessful, Object data) {
         this.type = type;
         this.isSuccessful = isSuccessful;
         this.data = data;

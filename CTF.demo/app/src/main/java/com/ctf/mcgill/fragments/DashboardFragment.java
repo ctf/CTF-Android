@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.adapter.RoomInfoAdapter;
 import com.ctf.mcgill.auth.AccountUtil;
+import com.ctf.mcgill.enums.DataType;
+import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.requests.DestinationsRequest;
 import com.ctf.mcgill.requests.JobsRequest;
 import com.ctf.mcgill.requests.QueuesRequest;
@@ -28,6 +30,8 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
 import com.pitchedapps.capsule.library.utils.AnimUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,9 +39,10 @@ import java.util.Map;
 
 import butterknife.BindView;
 
+import static com.ctf.mcgill.enums.DataType.Single.Quota;
+
 public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAdapter.ViewHolder> {
 
-    public static final String TAG = "MAIN_FRAGMENT";
     @BindView(R.id.dashboard_username)
     TextView usernameView;
     @BindView(R.id.dashboard_quota)
@@ -46,11 +51,10 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     TextView lastJobView;
     @BindView(R.id.dashboard_container)
     LinearLayout parentLayout;
-    private Map<String, Destination> destinations;
-    private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB", KEY_QUEUES = "QUEUES", KEY_DESTINATIONS = "DESTINATIONS";
 
-    public static DashboardFragment newInstance(String token) {
-        return (DashboardFragment) fragmentWithToken(new DashboardFragment(), token);
+    @Override
+    protected void updateList(List<RoomInformation> oldList) {
+
     }
 
     @Override
@@ -69,45 +73,54 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     }
 
     @Override
-    protected void getUIData(SpiceManager requestManager) {
-        requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
-        requestManager.execute(new JobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
-        requestManager.execute(new DestinationsRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationsRequestListener());
-    }
-
-    @Override
     public int getTitleId() {
         return R.string.dashboard;
     }
 
-    private final class QuotaRequestListener implements RequestListener<String> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            //todo improve error handling, maybe an "error fragment" w/ sadcat?
-            Toast.makeText(getActivity(), "Quota request failed...", Toast.LENGTH_SHORT).show();
-        }
+    @Override
+    public DataType.Category getDataCategory() {
+        return DataType.Category.Dashboard;
+    }
 
-        @Override
-        public void onRequestSuccess(String quota) {
-            quotaView.setText(getString(R.string.dashboard_quota_text, quota));
-            AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
+    @Subscribe
+    @Override
+    public void onLoadEvent(LoadEvent event) {
+        switch (event.type) {
+            case Quota:
+                if (isLoadSuccessful(event)) {
+                    quotaView.setText(String.valueOf(event.data));
+                    AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
+                }
+                break;
+            case UserJobs:
+                if (isLoadSuccessful(event)) {
+                    PrintJob[] p = (PrintJob[]) event.data;
+                    Date last;
+                    if (p == null || p[0] == null) {
+                        last = new Date();
+                    } else {
+                        last = p[0].started;
+                    }
+                    PrettyTime pt = new PrettyTime();
+                    lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
+                    AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
+                }
+                break;
+            case Queues: //TODO see where you want to handle RoomInfo generation
+                break;
         }
     }
 
-    private final class UserJobsRequestListener implements RequestListener<PrintJob[]> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "User jobs request failed...", Toast.LENGTH_SHORT).show();
-        }
+    @Override
+    public void updateData() {
 
-        @Override
-        public void onRequestSuccess(PrintJob[] p) {
-            Date last = p[0].started;
-            PrettyTime pt = new PrettyTime(); //todo if date is null pt uses current time
-            lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
-            AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
-        }
     }
+
+    @Override
+    public void getArgs(Bundle args) {
+
+    }
+
 
     private final class DestinationsRequestListener implements RequestListener<Map> {
 

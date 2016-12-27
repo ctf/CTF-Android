@@ -29,23 +29,18 @@ import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.requests.TokenRequest;
 import com.ctf.mcgill.utils.Preferences;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.*;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
 import com.pitchedapps.capsule.library.changelog.ChangelogDialog;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
 import com.pitchedapps.capsule.library.item.DrawerItem;
 import com.pitchedapps.capsule.library.permissions.CPermissionCallback;
-import com.pitchedapps.capsule.library.permissions.PermissionResult;
 
-public class MainActivity extends CapsuleActivityFrame {
-
-    private String token;
+public class MainActivity extends RequestActivity {
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -87,7 +82,7 @@ public class MainActivity extends CapsuleActivityFrame {
 
                     @Override
                     public void onRequestSuccess(String str) {
-                        token = str;
+                        mToken = str;
                         selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default
                         requestManager.shouldStop();
                     }
@@ -147,28 +142,28 @@ public class MainActivity extends CapsuleActivityFrame {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return DashboardFragment.newInstance(token);
+                        return DashboardFragment.newInstance(mToken);
                     }
                 },
                 new DrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true) {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return RoomFragment.newInstance(token);
+                        return RoomFragment.newInstance(mToken);
                     }
                 },
                 new DrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, true) {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return MyAccountFragment.newInstance(token);
+                        return MyAccountFragment.newInstance(mToken);
                     }
                 },
                 new DrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, true) {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return SettingsFragment.newInstance(token);
+                        return SettingsFragment.newInstance(mToken);
                     }
                 }, //TODO Not capsule based, verify
                 new DrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true) {
