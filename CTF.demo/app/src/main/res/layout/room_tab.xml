@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.pitchedapps.capsule.library.views.SwipeRefreshRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:id="@+id/inner_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/status_icons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/computer_icon"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight=".3"
+                android:contentDescription="@string/computers_available"
+                android:src="@drawable/computers_available_true" />
+
+            <ImageView
+                android:id="@+id/printer_north"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight=".3"
+                android:contentDescription="@string/printer_working" />
+
+            <ImageView
+                android:id="@+id/printer_south"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight=".3"
+                android:contentDescription="@string/printer_working" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/map_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/map_button"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/inner_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</com.pitchedapps.capsule.library.views.SwipeRefreshRecyclerView>
+

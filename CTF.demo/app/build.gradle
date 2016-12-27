@@ -10,8 +10,8 @@ tasks.whenTaskAdded { task ->
 
 ext {
     TARGET_SDK = 25
-    BUILD_TOOLS = "25.0.0"
-    ANDROID_SUPPORT_LIBS = "25.0.1"
+    BUILD_TOOLS = "25.0.2"
+    ANDROID_SUPPORT_LIBS = "25.1.0"
 }
 
 android {

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.ctf.mcgill.R;
+import com.ctf.mcgill.enums.Room;
 import com.pitchedapps.capsule.library.adapters.ViewPagerAdapter;
 import com.pitchedapps.capsule.library.fragments.ViewPagerFragment;
 import com.pitchedapps.capsule.library.interfaces.CPage;
@@ -34,9 +35,9 @@ public class RoomFragment extends ViewPagerFragment {
     @Override
     protected List<CPage> setPages() {
         return Arrays.asList(new CPage[]{
-                new PageItem(RoomTabFragment.newInstance("1B16", token), 0),
-                new PageItem(RoomTabFragment.newInstance("1B17", token), 0),
-                new PageItem(RoomTabFragment.newInstance("1B18", token), 0)
+                new PageItem(RoomTabFragment.newInstance(Room._1B16, token), 0),
+                new PageItem(RoomTabFragment.newInstance(Room._1B17, token), 0),
+                new PageItem(RoomTabFragment.newInstance(Room._1B18, token), 0)
         });
     }
 

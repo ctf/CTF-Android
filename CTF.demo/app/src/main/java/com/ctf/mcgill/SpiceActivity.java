@@ -1,22 +1,17 @@
-package com.ctf.mcgill.fragments;
+package com.ctf.mcgill;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ctf.mcgill.R;
-import com.ctf.mcgill.adapter.RoomInfoAdapter;
-import com.ctf.mcgill.auth.AccountUtil;
+import com.ctf.mcgill.enums.DataType;
+import com.ctf.mcgill.events.LoadEvent;
+import com.ctf.mcgill.fragments.BaseFragment;
+import com.ctf.mcgill.fragments.DashboardFragment;
+import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.requests.DestinationsRequest;
 import com.ctf.mcgill.requests.JobsRequest;
 import com.ctf.mcgill.requests.QueuesRequest;
 import com.ctf.mcgill.requests.QuotaRequest;
-import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.ctf.mcgill.tepid.PrintQueue;
 import com.ctf.mcgill.tepid.RoomInformation;
@@ -25,60 +20,50 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
+import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
 import com.pitchedapps.capsule.library.utils.AnimUtils;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
+/**
+ * Created by Allan Wang on 26/12/2016.
+ * <p>
+ * Requests should be loaded asap, not just when we switch to the tab.
+ */
 
-public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAdapter.ViewHolder> {
+public abstract class SpiceActivity extends CapsuleActivityFrame {
 
-    public static final String TAG = "MAIN_FRAGMENT";
-    @BindView(R.id.dashboard_username)
-    TextView usernameView;
-    @BindView(R.id.dashboard_quota)
-    TextView quotaView;
-    @BindView(R.id.dashboard_last_print_job)
-    TextView lastJobView;
-    @BindView(R.id.dashboard_container)
-    LinearLayout parentLayout;
-    private Map<String, Destination> destinations;
+    private String mToken;
+    private Context mContext;
+    private SpiceManager mRequestManager = new SpiceManager(CTFSpiceService.class);
     private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB", KEY_QUEUES = "QUEUES", KEY_DESTINATIONS = "DESTINATIONS";
 
-    public static DashboardFragment newInstance(String token) {
-        return (DashboardFragment) fragmentWithToken(new DashboardFragment(), token);
+    @Subscribe
+    public void loadData(DataType.Category type) {
+        for (DataType.Single s : type.getContent()) loadData(s);
     }
 
-    @Override
-    @CallSuper
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        LinearLayout linear = (LinearLayout) inflate(R.layout.fragment_dashboard);
-        bindButterKnife(linear);
-        cLinear.addView(linear, 0);
-        usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
+    @Subscribe
+    public void loadData(DataType.Single type) {
+        switch (type) {
+            mRequestManager.execute(new QuotaRequest(mToken), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
+            mRequestManager.execute(new JobsRequest(mToken), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new DashboardFragment.UserJobsRequestListener());
+            mRequestManager.execute(new DestinationsRequest(mToken), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DashboardFragment.DestinationsRequestListener());
+        }
     }
 
-    @Override
-    protected CapsuleAdapter<RoomInformation, RoomInfoAdapter.ViewHolder> getAdapter(Context context) {
-        return new RoomInfoAdapter(context, null);
+    private void postLoadEvent(DataType type, boolean isSuccessful, Object data) {
+        postEvent(new LoadEvent(type, isSuccessful, data));
     }
 
-    @Override
-    protected void getUIData(SpiceManager requestManager) {
-        requestManager.execute(new QuotaRequest(token), KEY_QUOTA, DurationInMillis.ONE_MINUTE, new QuotaRequestListener());
-        requestManager.execute(new JobsRequest(token), KEY_LAST_JOB, DurationInMillis.ONE_MINUTE, new UserJobsRequestListener());
-        requestManager.execute(new DestinationsRequest(token), KEY_DESTINATIONS, DurationInMillis.ONE_MINUTE, new DestinationsRequestListener());
-    }
-
-    @Override
-    public int getTitleId() {
-        return R.string.dashboard;
-    }
+     /*
+     * All the listeners used with the request manager
+     */
 
     private final class QuotaRequestListener implements RequestListener<String> {
         @Override
@@ -119,10 +104,11 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         @Override
         public void onRequestSuccess(Map map) {
             destinations = map;
-            requestManager.execute(new QueuesRequest(token), KEY_QUEUES, DurationInMillis.ONE_MINUTE, new QueuesRequestListener());
+            requestManager.execute(new QueuesRequest(token), KEY_QUEUES, DurationInMillis.ONE_MINUTE, new DashboardFragment.QueuesRequestListener());
         }
     }
 
+    //Called from within Destinations Request Listener
     private final class QueuesRequestListener implements RequestListener<List> {
 
         @Override
