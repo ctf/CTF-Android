@@ -58,6 +58,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
 
     @Subscribe
     public void onLoadEvent(@NonNull LoadEvent event) {
+        if (event.isFragmentOnly()) return;
         if (!event.isSuccessful || event.data == null) {
             if (event.type == Destinations) { //Queue won't be loaded, send empty post
                 postEvent(new LoadEvent(Queues, false, null));
@@ -76,7 +77,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 rDestinationMap = (Map<String, Destination>) event.data;
                 loadData(DataType.Single.Queues); //destinations found; load and parse queues
                 break;
-            case Queues:
+            case Queues: //Process into RoomInfo first; then send
                 rRoomInfoList = new ArrayList<>();
                 for (PrintQueue q : (List<PrintQueue>) event.data) {
                     String name = q.name;
@@ -89,6 +90,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                     }
                     rRoomInfoList.add(roomInfo);
                 }
+                postEvent(new LoadEvent(Queues, true, rRoomInfoList).fragmentOnly());
                 break;
         }
     }

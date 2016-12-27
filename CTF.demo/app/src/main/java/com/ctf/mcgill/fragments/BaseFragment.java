@@ -17,6 +17,8 @@ import com.pitchedapps.capsule.library.item.CapsuleViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
@@ -83,6 +85,11 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
         return false;
     }
 
+    @Override
+    protected void updateList(List<T> oldList) {
+        requestData(getDataCategory());
+    }
+
 
     @Nullable
     @Override
@@ -90,11 +97,4 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
         return null;
     }
 
-    /**
-     * Called when a swipe gesture triggers a refresh.
-     */
-    @Override
-    public void onRefresh() {
-        updateData();
-    }
 }

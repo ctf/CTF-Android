@@ -7,26 +7,15 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.adapter.RoomInfoAdapter;
 import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.LoadEvent;
-import com.ctf.mcgill.requests.DestinationsRequest;
-import com.ctf.mcgill.requests.JobsRequest;
-import com.ctf.mcgill.requests.QueuesRequest;
-import com.ctf.mcgill.requests.QuotaRequest;
-import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
-import com.ctf.mcgill.tepid.PrintQueue;
 import com.ctf.mcgill.tepid.RoomInformation;
 import com.ocpsoft.pretty.time.PrettyTime;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.DurationInMillis;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
 import com.pitchedapps.capsule.library.utils.AnimUtils;
 
@@ -34,12 +23,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
-
-import static com.ctf.mcgill.enums.DataType.Single.Quota;
 
 public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAdapter.ViewHolder> {
 
@@ -52,9 +37,37 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     @BindView(R.id.dashboard_container)
     LinearLayout parentLayout;
 
-    @Override
-    protected void updateList(List<RoomInformation> oldList) {
+    private String mQuota;
+    private PrintJob[] mPrintJobs;
+    private ArrayList<RoomInformation> mRoomInfo;
 
+    private static final String BUNDLE_QUOTA = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_ROOM_INFO = "room_info", BUNDLE_COMPLETE = "complete";
+
+    public static DashboardFragment newInstance(String quota, PrintJob[] printJobs, ArrayList<RoomInformation> roomInfo) {
+        DashboardFragment f = new DashboardFragment();
+        Bundle args = new Bundle();
+        if (quota == null || printJobs == null || roomInfo == null) {
+            args.putBoolean(BUNDLE_COMPLETE, false);
+        } else {
+            args.putBoolean(BUNDLE_COMPLETE, true);
+            args.putString(BUNDLE_QUOTA, quota);
+            args.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs);
+            args.putParcelableArrayList(BUNDLE_ROOM_INFO, roomInfo);
+        }
+        f.setArguments(args);
+        return f;
+    }
+
+    @Override
+    public void getArgs(Bundle args) {
+        if (args == null || !args.getBoolean(BUNDLE_COMPLETE, false)) {
+            updateList(null);
+            showRefresh();
+            return;
+        }
+        mQuota = args.getString(BUNDLE_QUOTA);
+        mPrintJobs = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
+        mRoomInfo = args.getParcelableArrayList(BUNDLE_ROOM_INFO);
     }
 
     @Override
@@ -65,6 +78,7 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         bindButterKnife(linear);
         cLinear.addView(linear, 0);
         usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
+        updateContent(getDataCategory().getContent());
     }
 
     @Override
@@ -85,79 +99,53 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     @Subscribe
     @Override
     public void onLoadEvent(LoadEvent event) {
+        if (event.isActivityOnly()) return;
+        hideRefresh(); //TODO hide after all events loaded
         switch (event.type) {
             case Quota:
                 if (isLoadSuccessful(event)) {
-                    quotaView.setText(String.valueOf(event.data));
-                    AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
+                    mQuota = String.valueOf(event.data);
                 }
                 break;
             case UserJobs:
                 if (isLoadSuccessful(event)) {
-                    PrintJob[] p = (PrintJob[]) event.data;
+                    mPrintJobs = (PrintJob[]) event.data;
+                }
+                break;
+            case Queues: //Already changed into List<RoomInformation> through RequestActivity
+                if (isLoadSuccessful(event)) {
+                    mRoomInfo = (ArrayList<RoomInformation>) event.data;
+                }
+                break;
+        }
+        updateContent(event.type);
+    }
+
+    @Override
+    public void updateContent(DataType.Single... types) {
+        for (DataType.Single type : types) {
+            switch (type) {
+                case Quota:
+                    if (mQuota == null) continue;
+                    quotaView.setText(String.valueOf(mQuota));
+                    AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
+                    break;
+                case UserJobs:
                     Date last;
-                    if (p == null || p[0] == null) {
+                    if (mPrintJobs == null || mPrintJobs[0] == null) {
                         last = new Date();
                     } else {
-                        last = p[0].started;
+                        last = mPrintJobs[0].started;
                     }
                     PrettyTime pt = new PrettyTime();
                     lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
                     AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
-                }
-                break;
-            case Queues: //TODO see where you want to handle RoomInfo generation
-                break;
-        }
-    }
-
-    @Override
-    public void updateData() {
-
-    }
-
-    @Override
-    public void getArgs(Bundle args) {
-
-    }
-
-
-    private final class DestinationsRequestListener implements RequestListener<Map> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Destinations request failed...", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onRequestSuccess(Map map) {
-            destinations = map;
-            requestManager.execute(new QueuesRequest(token), KEY_QUEUES, DurationInMillis.ONE_MINUTE, new QueuesRequestListener());
-        }
-    }
-
-    private final class QueuesRequestListener implements RequestListener<List> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            Toast.makeText(getActivity(), "Queues request failed...", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onRequestSuccess(List list) { //todo clean this up, e.g., getView() methods for each type of item that sets the correct params, do the same thing in room fragment
-            List<RoomInformation> rooms = new ArrayList<>();
-            for (Object q : list) {
-                String name = ((PrintQueue) q).name;
-                RoomInformation roomInfo = new RoomInformation(name, true); //TODO put actual computer status
-
-                if (destinations != null) {
-                    for (String d : ((PrintQueue) q).destinations) {
-                        roomInfo.addPrinter(destinations.get(d).getName(), destinations.get(d).isUp());
-                    }
-                }
-                rooms.add(roomInfo);
+                    break;
+                case Queues: //Already changed into List<RoomInformation> through RequestActivity
+                    if (mRoomInfo == null) continue;
+                    cAdapter.updateList(mRoomInfo);
+                    break;
             }
-            cAdapter.updateList(rooms);
         }
     }
 

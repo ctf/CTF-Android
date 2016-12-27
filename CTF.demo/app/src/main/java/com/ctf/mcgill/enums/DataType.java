@@ -125,6 +125,10 @@ public class DataType {
         EventUtils.post(new LoadEvent(type, true, data));
     }
 
+    private static void postLoadEventActivityOnly(DataType.Single type, Object data) {
+        EventUtils.post(new LoadEvent(type, true, data).activityOnly());
+    }
+
     private static void postErrorEvent(DataType.Single type, String error) {
         EventUtils.post(new LoadEvent(type, false, error));
     }
@@ -150,16 +154,6 @@ public class DataType {
         @Override
         public void onRequestSuccess(PrintJob[] p) {
             postLoadEvent(UserJobs, p);
-            //TODO implement null check in actual fragment
-//            Date last;
-//            if (p == null || p[0] == null) {
-//                last = new Date();
-//            } else {
-//                last = p[0].started;
-//            }
-//            PrettyTime pt = new PrettyTime(); //todo if date is null pt uses current time
-//            lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
-//            AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
         }
     }
 
@@ -186,7 +180,7 @@ public class DataType {
 
         @Override
         public void onRequestSuccess(List list) { //todo clean this up, e.g., getView() methods for each type of item that sets the correct params, do the same thing in room fragment
-            postLoadEvent(Queues, list);
+            postLoadEventActivityOnly(Queues, list);
         }
     }
 }
