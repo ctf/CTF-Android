@@ -59,28 +59,33 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     /**
      * Helper method for Category loading
      * Will load all of the inner Single DataTypes
-     * @param type Category DataType
+     *
+     * @param type   Category DataType
+     * @param extras Optional variables needed to complete certain requests
      */
     @Subscribe
-    public void loadData(DataType.Category type) {
-        for (DataType.Single s : type.getContent()) loadData(s);
+    public void loadData(DataType.Category type, Object... extras) {
+        for (DataType.Single s : type.getContent()) loadData(s, extras);
     }
 
     /**
      * Listener for single data type loading
      * Will only trigger a new request if one is not already in session
-     * @param type Single DataType
+     *
+     * @param type   Single DataType
+     * @param extras Optional variables needed to complete certain requests
      */
     @Subscribe
-    public void loadData(DataType.Single type) {
+    public void loadData(DataType.Single type, Object... extras) {
         if (isInProgress(type)) {
             CLog.d("%s request is already in session", type);
             return;
         }
+        CLog.d("Sending request for %s", type);
         setInProgress(type);
         if (type.getCacheKey() != null)
-            mRequestManager.execute(type.getRequest(mToken), type.getCacheKey(), DurationInMillis.ONE_MINUTE, type.getListener());
-        else mRequestManager.execute(type.getRequest(mToken), type.getListener());
+            mRequestManager.execute(type.getRequest(mToken, extras), type.getCacheKey(), DurationInMillis.ONE_MINUTE, type.getListener());
+        else mRequestManager.execute(type.getRequest(mToken, extras), type.getListener());
     }
 
     @Subscribe
@@ -129,12 +134,18 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         mUpdateMap.put(type, System.currentTimeMillis());
     }
 
+    /**
+     * Sets timemap value to -1 to signify that it is loading
+     *
+     * @param type Single DataType
+     */
     private void setInProgress(DataType.Single type) {
         mUpdateMap.put(type, -1L);
     }
 
     /**
      * Check if timestamp is -1
+     *
      * @param type Single Data type
      * @return update status
      */

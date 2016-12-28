@@ -14,6 +14,7 @@ import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.SwipeRecyclerFragmentAnimated;
 import com.pitchedapps.capsule.library.item.CapsuleViewHolder;
+import com.pitchedapps.capsule.library.logging.CLog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -80,7 +81,6 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
     protected boolean isLoadSuccessful(LoadEvent event) {
         if (event.isSuccessful) return true;
         if (event.data == null) return false; //Error String is null -> Silent error
-        Timber.e(String.valueOf(event.data));
         snackbar(new SnackbarEvent(String.valueOf(event.data)));
         return false;
     }

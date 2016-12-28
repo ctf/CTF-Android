@@ -72,8 +72,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
 
     /**
-     * Returns a new instance of this fragment for the given section
-     * number.
+     * Returns a new instance of this fragment for the given section number.
      */
     public static RoomTabFragment newInstance(Room roomNumber, String token) {
         RoomTabFragment fragment = new RoomTabFragment();
@@ -87,7 +86,6 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
     protected void bindButterKnife(View view) {
         unbinder = ButterKnife.bind(this, view);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
