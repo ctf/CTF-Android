@@ -1,35 +1,26 @@
 package com.ctf.mcgill.enums;
 
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.widget.Toast;
-
 import com.ctf.mcgill.R;
+import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.events.LoadEvent;
-import com.ctf.mcgill.fragments.DashboardFragment;
 import com.ctf.mcgill.requests.DestinationsRequest;
 import com.ctf.mcgill.requests.JobsRequest;
+import com.ctf.mcgill.requests.NickRequest;
 import com.ctf.mcgill.requests.QueuesRequest;
 import com.ctf.mcgill.requests.QuotaRequest;
-import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
-import com.ctf.mcgill.tepid.PrintQueue;
-import com.ctf.mcgill.tepid.RoomInformation;
-import com.ocpsoft.pretty.time.PrettyTime;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.utils.AnimUtils;
+import com.pitchedapps.capsule.library.event.SnackbarEvent;
+import com.pitchedapps.capsule.library.logging.CLog;
 import com.pitchedapps.capsule.library.utils.EventUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import static com.ctf.mcgill.enums.DataType.Single.Destinations;
+import static com.ctf.mcgill.enums.DataType.Single.Nickname;
 import static com.ctf.mcgill.enums.DataType.Single.Queues;
 import static com.ctf.mcgill.enums.DataType.Single.Quota;
 import static com.ctf.mcgill.enums.DataType.Single.UserJobs;
@@ -43,7 +34,8 @@ public class DataType {
      * Sets of requests; usually reflects the requests of an entire fragment
      */
     public enum Category {
-        Dashboard(Quota, UserJobs, Destinations); //Destinations leads to Queues
+        Dashboard(Quota, UserJobs, Destinations), //Destinations leads to Queues
+        MyAccount(Quota, UserJobs, Nickname);
 
         private final Single[] content;
 
@@ -61,22 +53,23 @@ public class DataType {
     /**
      * Single unique request
      * Contains the cacheKey, request, and listener
+     * If cacheKey is null, result is not cached
      * Beware of correcting casting
      */
     public enum Single {
         Quota(KEY_QUOTA) {
             @Override
-            public SpiceRequest getRequest(String token) {
+            public SpiceRequest getRequest(String token, Object... extras) {
                 return new QuotaRequest(token);
             }
 
             @Override
             public RequestListener getListener() {
-                return new QueuesRequestListener();
+                return new QuotaRequestListener();
             }
         }, UserJobs(KEY_LAST_JOB) {
             @Override
-            public SpiceRequest getRequest(String token) {
+            public SpiceRequest getRequest(String token, Object... extras) {
                 return new JobsRequest(token);
             }
 
@@ -86,7 +79,7 @@ public class DataType {
             }
         }, Destinations(KEY_DESTINATIONS) {
             @Override
-            public SpiceRequest getRequest(String token) {
+            public SpiceRequest getRequest(String token, Object... extras) {
                 return new DestinationsRequest(token);
             }
 
@@ -96,13 +89,25 @@ public class DataType {
             }
         }, Queues(KEY_QUEUES) {
             @Override
-            public SpiceRequest getRequest(String token) {
+            public SpiceRequest getRequest(String token, Object... extras) {
                 return new QueuesRequest(token);
             }
 
             @Override
             public RequestListener getListener() {
                 return new QueuesRequestListener();
+            }
+        }, Nickname(null) {
+            @Override
+            public SpiceRequest getRequest(String token, Object... extras) {
+                if (extras == null || extras[0] == null)
+                    throw new IllegalArgumentException("Nickname request must send the nickname");
+                return new NickRequest(token, String.valueOf(extras[0]));
+            }
+
+            @Override
+            public RequestListener getListener() {
+                return new NickRequestListener();
             }
         };
 
@@ -116,7 +121,7 @@ public class DataType {
             return cacheKey;
         }
 
-        public abstract SpiceRequest getRequest(String token);
+        public abstract SpiceRequest getRequest(String token, Object... extras);
 
         public abstract RequestListener getListener();
     }
@@ -132,6 +137,10 @@ public class DataType {
     private static void postErrorEvent(DataType.Single type, String error) {
         EventUtils.post(new LoadEvent(type, false, error));
     }
+
+    /*
+     * Dashboard Listeners
+     */
 
     private static class QuotaRequestListener implements RequestListener<String> {
         @Override
@@ -181,6 +190,19 @@ public class DataType {
         @Override
         public void onRequestSuccess(List list) { //todo clean this up, e.g., getView() methods for each type of item that sets the correct params, do the same thing in room fragment
             postLoadEventActivityOnly(Queues, list);
+        }
+    }
+
+    private static class NickRequestListener implements RequestListener<String> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            postErrorEvent(Nickname, "Nick request failed...");
+        }
+
+        @Override
+        public void onRequestSuccess(String nick) {
+            postLoadEvent(Nickname, nick);
         }
     }
 }

@@ -1,8 +1,8 @@
 package com.ctf.mcgill;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.LoadEvent;
@@ -14,9 +14,9 @@ import com.ctf.mcgill.tepid.RoomInformation;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
+import com.pitchedapps.capsule.library.logging.CLog;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -36,24 +36,51 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
 
     protected String mToken;
     private SpiceManager mRequestManager = new SpiceManager(CTFSpiceService.class);
-    private EnumMap<DataType.Single, Long> mUpdateMap;
+    /*
+     * Map that keeps track of latest update time
+     * If time shows as -1, it is currently in progress
+     */
+    private EnumMap<DataType.Single, Long> mUpdateMap = new EnumMap<>(DataType.Single.class);
 
     /*
      * Collection of requested data
      */
-    private String rQuota;
-    private PrintJob[] rPrintJobArray;
-    private Map<String, Destination> rDestinationMap;
-    private List<RoomInformation> rRoomInfoList;
+    protected String rQuota, rNickname;
+    protected PrintJob[] rPrintJobArray;
+    protected Map<String, Destination> rDestinationMap;
+    protected ArrayList<RoomInformation> rRoomInfoList;
 
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        mRequestManager.start(this);
+    }
+
+    /**
+     * Helper method for Category loading
+     * Will load all of the inner Single DataTypes
+     * @param type Category DataType
+     */
     @Subscribe
     public void loadData(DataType.Category type) {
         for (DataType.Single s : type.getContent()) loadData(s);
     }
 
+    /**
+     * Listener for single data type loading
+     * Will only trigger a new request if one is not already in session
+     * @param type Single DataType
+     */
     @Subscribe
     public void loadData(DataType.Single type) {
-        mRequestManager.execute(type.getRequest(mToken), type.getCacheKey(), DurationInMillis.ONE_MINUTE, type.getListener());
+        if (isInProgress(type)) {
+            CLog.d("%s request is already in session", type);
+            return;
+        }
+        setInProgress(type);
+        if (type.getCacheKey() != null)
+            mRequestManager.execute(type.getRequest(mToken), type.getCacheKey(), DurationInMillis.ONE_MINUTE, type.getListener());
+        else mRequestManager.execute(type.getRequest(mToken), type.getListener());
     }
 
     @Subscribe
@@ -92,11 +119,27 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 }
                 postEvent(new LoadEvent(Queues, true, rRoomInfoList).fragmentOnly());
                 break;
+            case Nickname:
+                rNickname = String.valueOf(event.data);
+                break;
         }
     }
 
     private void updateTime(DataType.Single type) {
         mUpdateMap.put(type, System.currentTimeMillis());
+    }
+
+    private void setInProgress(DataType.Single type) {
+        mUpdateMap.put(type, -1L);
+    }
+
+    /**
+     * Check if timestamp is -1
+     * @param type Single Data type
+     * @return update status
+     */
+    private boolean isInProgress(DataType.Single type) {
+        return mUpdateMap.containsKey(type) && mUpdateMap.get(type) == -1L;
     }
 
 }

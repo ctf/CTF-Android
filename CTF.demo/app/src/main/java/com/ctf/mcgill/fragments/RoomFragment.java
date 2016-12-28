@@ -16,8 +16,6 @@ import com.pitchedapps.capsule.library.item.PageItem;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.ctf.mcgill.fragments.BaseFragment.fragmentWithToken;
-
 public class RoomFragment extends ViewPagerFragment {
 
     public static final String TAG = "ROOM_FRAGMENT";
@@ -29,7 +27,7 @@ public class RoomFragment extends ViewPagerFragment {
 
 
     public static RoomFragment newInstance(String token) {
-        return (RoomFragment) fragmentWithToken(new RoomFragment(), token);
+        return new RoomFragment();
     }
 
     @Override

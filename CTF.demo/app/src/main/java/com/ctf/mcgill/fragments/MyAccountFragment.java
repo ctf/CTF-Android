@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.adapter.PrintJobAdapter;
 import com.ctf.mcgill.auth.AccountUtil;
+import com.ctf.mcgill.enums.DataType;
+import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.requests.JobsRequest;
 import com.ctf.mcgill.requests.NickRequest;
 import com.ctf.mcgill.requests.QuotaRequest;
@@ -22,6 +24,8 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,8 +45,36 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
     @BindView(R.id.change_nick)
     Button changeNickView;
 
-    public static MyAccountFragment newInstance(String token) {
-        return (MyAccountFragment) fragmentWithToken(new MyAccountFragment(), token);
+    private String rNickname, rQuota;
+    private PrintJob[] rPrintJobs;
+
+    private static final String BUNDLE_QUOTA = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_NICKNAME = "nickname", BUNDLE_COMPLETE = "complete";
+
+    public static MyAccountFragment newInstance(String quota, PrintJob[] printJobs, String nickname) {
+        MyAccountFragment f = new MyAccountFragment();
+        Bundle args = new Bundle();
+        if (quota == null || printJobs == null || nickname == null) {
+            args.putBoolean(BUNDLE_COMPLETE, false);
+        } else {
+            args.putBoolean(BUNDLE_COMPLETE, true);
+            args.putString(BUNDLE_QUOTA, quota);
+            args.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs);
+            args.putString(BUNDLE_NICKNAME, nickname);
+        }
+        f.setArguments(args);
+        return f;
+    }
+
+    @Override
+    public void getArgs(Bundle args) {
+        if (args == null || !args.getBoolean(BUNDLE_COMPLETE, false)) {
+            updateList(null);
+            showRefresh();
+            return;
+        }
+        rQuota = args.getString(BUNDLE_QUOTA);
+        rPrintJobs = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
+        rNickname = args.getString(BUNDLE_NICKNAME);
     }
 
     @Override
@@ -57,18 +89,13 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
         changeNickView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nick = nickView.getText().toString();
-                if (!nick.isEmpty()) {
-                    requestManager.execute(new NickRequest(token, nick), new NickRequestListener());
+                rNickname = nickView.getText().toString();
+                if (!rNickname.isEmpty()) {
+                    updateContent(DataType.Single.Nickname);
                 }
             }
         });
-    }
-
-    @Override
-    protected void getUIData(SpiceManager requestManager) {
-        requestManager.execute(new QuotaRequest(token), new QuotaRequestListener());
-        requestManager.execute(new JobsRequest(token), new UserJobsRequestListener());
+        updateContent(getDataCategory().getContent());
     }
 
     @Override
@@ -81,51 +108,53 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
         return new PrintJobAdapter(context, null, PrintJobAdapter.TableType.MY_ACCOUNT);
     }
 
-    private final class QuotaRequestListener extends MyRequestListener<String> {
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            super.onRequestFailure(spiceException);
-            Toast.makeText(getActivity(), "Error: failed to load data from TEPID server.", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onRequestSuccess(String quota) {
-            super.onRequestSuccess(quota);
-//            MyAccountFragment.this.getActivity().setProgressBarIndeterminateVisibility(false); //TODO check if necessary
-
-            quotaView.setText(getString(R.string.dashboard_quota_text, quota));
-        }
+    @Override
+    public DataType.Category getDataCategory() {
+        return DataType.Category.MyAccount;
     }
 
-    private final class UserJobsRequestListener extends MyRequestListener<PrintJob[]> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            super.onRequestFailure(spiceException);
-            Toast.makeText(getActivity(), "Error: failed to load data from TEPID server.", Toast.LENGTH_SHORT).show();
+    @Override
+    @Subscribe
+    public void onLoadEvent(LoadEvent event) {
+        if (event.isActivityOnly()) return;
+        hideRefresh(); //TODO hide after all events loaded
+        switch (event.type) {
+            case Nickname:
+                if (isLoadSuccessful(event)) {
+                    rNickname = String.valueOf(event.data);
+                } else return;
+                break;
+            case Quota:
+                if (isLoadSuccessful(event)) {
+                    rQuota = String.valueOf(event.data);
+                } else return;
+                break;
+            case UserJobs:
+                if (isLoadSuccessful(event)) {
+                    rPrintJobs = (PrintJob[]) event.data;
+                } else return;
+                break;
         }
-
-        @Override
-        public void onRequestSuccess(PrintJob[] printJobs) {
-            super.onRequestSuccess(printJobs);
-            cAdapter.updateList(new ArrayList<PrintJob>(Arrays.asList(printJobs)));
-        }
+        updateContent(event.type);
     }
 
-    private final class NickRequestListener extends MyRequestListener<String> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            super.onRequestFailure(spiceException);
-            snackbar(new SnackbarEvent("Nick request failed..."));
-//            Toast.makeText(getActivity(), "Nick request failed...", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onRequestSuccess(String nick) {
-            super.onRequestSuccess(nick);
-            AccountUtil.updateNick(nick);
-            usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
+    @Override
+    public void updateContent(DataType.Single... types) {
+        for (DataType.Single type : types) {
+            switch (type) {
+                case Nickname:
+                    if (rNickname == null) continue;
+                    AccountUtil.updateNick(rNickname);
+                    usernameView.setText(getString(R.string.dashboard_username_text, rNickname));
+                    break;
+                case Quota:
+                    if (rQuota == null) continue;
+                    quotaView.setText(getString(R.string.dashboard_quota_text, rQuota));
+                    break;
+                case UserJobs:
+                    cAdapter.updateList(new ArrayList<>(Arrays.asList(rPrintJobs)));
+                    break;
+            }
         }
     }
 

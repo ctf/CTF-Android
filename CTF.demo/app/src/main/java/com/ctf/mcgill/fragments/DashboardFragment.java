@@ -17,6 +17,7 @@ import com.ctf.mcgill.tepid.PrintJob;
 import com.ctf.mcgill.tepid.RoomInformation;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
+import com.pitchedapps.capsule.library.logging.CLog;
 import com.pitchedapps.capsule.library.utils.AnimUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -37,9 +38,9 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     @BindView(R.id.dashboard_container)
     LinearLayout parentLayout;
 
-    private String mQuota;
-    private PrintJob[] mPrintJobs;
-    private ArrayList<RoomInformation> mRoomInfo;
+    private String rQuota;
+    private PrintJob[] rPrintJobs;
+    private ArrayList<RoomInformation> rRoomInfo;
 
     private static final String BUNDLE_QUOTA = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_ROOM_INFO = "room_info", BUNDLE_COMPLETE = "complete";
 
@@ -62,12 +63,11 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     public void getArgs(Bundle args) {
         if (args == null || !args.getBoolean(BUNDLE_COMPLETE, false)) {
             updateList(null);
-            showRefresh();
             return;
         }
-        mQuota = args.getString(BUNDLE_QUOTA);
-        mPrintJobs = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
-        mRoomInfo = args.getParcelableArrayList(BUNDLE_ROOM_INFO);
+        rQuota = args.getString(BUNDLE_QUOTA);
+        rPrintJobs = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
+        rRoomInfo = args.getParcelableArrayList(BUNDLE_ROOM_INFO);
     }
 
     @Override
@@ -76,8 +76,10 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         super.onViewCreated(view, savedInstanceState);
         LinearLayout linear = (LinearLayout) inflate(R.layout.fragment_dashboard);
         bindButterKnife(linear);
+        showRefresh();
         cLinear.addView(linear, 0);
         usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
+        CLog.e("Call Load");
         updateContent(getDataCategory().getContent());
     }
 
@@ -104,18 +106,18 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         switch (event.type) {
             case Quota:
                 if (isLoadSuccessful(event)) {
-                    mQuota = String.valueOf(event.data);
-                }
+                    rQuota = String.valueOf(event.data);
+                } else return;
                 break;
             case UserJobs:
                 if (isLoadSuccessful(event)) {
-                    mPrintJobs = (PrintJob[]) event.data;
-                }
+                    rPrintJobs = (PrintJob[]) event.data;
+                } else return;
                 break;
             case Queues: //Already changed into List<RoomInformation> through RequestActivity
                 if (isLoadSuccessful(event)) {
-                    mRoomInfo = (ArrayList<RoomInformation>) event.data;
-                }
+                    rRoomInfo = (ArrayList<RoomInformation>) event.data;
+                } else return;
                 break;
         }
         updateContent(event.type);
@@ -126,24 +128,24 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         for (DataType.Single type : types) {
             switch (type) {
                 case Quota:
-                    if (mQuota == null) continue;
-                    quotaView.setText(String.valueOf(mQuota));
+                    if (rQuota == null) continue;
+                    quotaView.setText(String.valueOf(rQuota));
                     AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
                     break;
                 case UserJobs:
                     Date last;
-                    if (mPrintJobs == null || mPrintJobs[0] == null) {
+                    if (rPrintJobs == null || rPrintJobs[0] == null) {
                         last = new Date();
                     } else {
-                        last = mPrintJobs[0].started;
+                        last = rPrintJobs[0].started;
                     }
                     PrettyTime pt = new PrettyTime();
                     lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
                     AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
                     break;
                 case Queues: //Already changed into List<RoomInformation> through RequestActivity
-                    if (mRoomInfo == null) continue;
-                    cAdapter.updateList(mRoomInfo);
+                    if (rRoomInfo == null) continue;
+                    cAdapter.updateList(rRoomInfo);
                     break;
             }
         }

@@ -42,9 +42,9 @@ import com.pitchedapps.capsule.library.permissions.CPermissionCallback;
 
 public class MainActivity extends RequestActivity {
 
-    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Preferences prefs = new Preferences(this);
         if (prefs.isDarkMode()) setTheme(R.style.AppTheme_Dark_NoActionBar);
 
@@ -83,7 +83,7 @@ public class MainActivity extends RequestActivity {
                     @Override
                     public void onRequestSuccess(String str) {
                         mToken = str;
-                        selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default
+                        selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default TODO fix commitAllowingStateLoss ->   java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
                         requestManager.shouldStop();
                     }
                 });
@@ -142,7 +142,7 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return DashboardFragment.newInstance(mToken);
+                        return DashboardFragment.newInstance(rQuota, rPrintJobArray, rRoomInfoList);
                     }
                 },
                 new DrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true) {
@@ -156,7 +156,7 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return MyAccountFragment.newInstance(mToken);
+                        return MyAccountFragment.newInstance(rQuota, rPrintJobArray, rNickname);
                     }
                 },
                 new DrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, true) {
