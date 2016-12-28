@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class RoomFragment extends ViewPagerFragment {
 
-    public static final String TAG = "ROOM_FRAGMENT";
+    public static final String TAG = "ROOM_FRAGMENT"; //TODO remove
 
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
@@ -54,7 +54,7 @@ public class RoomFragment extends ViewPagerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
+        setRetainInstance(true);
         getArgs(getArguments());
     }
 
@@ -96,7 +96,7 @@ public class RoomFragment extends ViewPagerFragment {
         }
 
         @Override
-        public String getPageTitle(int position) {
+        public String getPageTitle(int position) { //TODO change to R.string
             switch (position) {
                 case 0:
                     return "1B16";
@@ -114,7 +114,7 @@ public class RoomFragment extends ViewPagerFragment {
         if (event.isActivityOnly()) return;
         switch (event.type) {
             case DESTINATIONS:
-                rDesinationMap = new DestinationMap((Map<String, Destination>) event.data);
+                rDesinationMap = new DestinationMap((Map<String, Destination>) event.data); //TODO check if worth saving
         }
     }
 
