@@ -1,6 +1,7 @@
 package com.ctf.mcgill.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,18 +12,19 @@ import android.widget.ImageView;
 
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.adapter.PrintJobAdapter;
+import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.enums.Room;
-import com.ctf.mcgill.requests.CTFSpiceService;
-import com.ctf.mcgill.requests.DestinationsRequest;
-import com.ctf.mcgill.requests.QueueRequest;
+import com.ctf.mcgill.events.LoadEvent;
+import com.ctf.mcgill.interfaces.RoboFragmentContract;
+import com.ctf.mcgill.items.DestinationMap;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.event.CFabEvent;
+import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.CapsulePageFragment;
 import com.pitchedapps.capsule.library.views.SwipeRefreshRecyclerView;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +38,7 @@ import butterknife.Unbinder;
  * Created by Allan Wang on 2016-11-20.
  */
 
-public class RoomTabFragment extends CapsulePageFragment implements SwipeRefreshRecyclerView.OnRefreshListener {
-
+public class RoomTabFragment extends CapsulePageFragment implements SwipeRefreshRecyclerView.OnRefreshListener, RoboFragmentContract {
 
     @Nullable
     @Override
@@ -54,10 +55,8 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String ARG_SECTION_NUMBER = "section_number", KEY_TOKEN = "token";
-    private String token;
-    private Room room;
-    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+    private static final String BUNDLE_ROOM = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_DESTINATION_MAP = "destination_map", BUNDLE_COMPLETE = "complete";
+
     @BindView(R.id.swipe_recycler)
     SwipeRefreshRecyclerView mRefresher;
     @BindView(R.id.inner_recycler)
@@ -70,17 +69,44 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
     private Unbinder unbinder;
 
+    private Room rRoom;
+    private PrintJob[] rPrintJobArray;
+    private DestinationMap rDesinationMap;
+
 
     /**
      * Returns a new instance of this fragment for the given section number.
      */
-    public static RoomTabFragment newInstance(Room roomNumber, String token) {
-        RoomTabFragment fragment = new RoomTabFragment();
+    public static RoomTabFragment newInstance(@NonNull Room roomNumber, PrintJob[] printJobs, DestinationMap destinationMap) {
+        RoomTabFragment f = new RoomTabFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_SECTION_NUMBER, roomNumber);
-        args.putString(KEY_TOKEN, token);
-        fragment.setArguments(args);
-        return fragment;
+        args.putSerializable(BUNDLE_ROOM, roomNumber);
+        if (printJobs == null || destinationMap == null) {
+            args.putBoolean(BUNDLE_COMPLETE, false);
+        } else {
+            args.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs);
+            args.putParcelable(BUNDLE_DESTINATION_MAP, destinationMap);
+        }
+        f.setArguments(args);
+        return f;
+    }
+
+    @Override
+    public void getArgs(Bundle args) { //Should never be null
+        rRoom = (Room) args.getSerializable(BUNDLE_ROOM);
+        if (!args.getBoolean(BUNDLE_COMPLETE, false)) {
+            requestData();
+            return;
+        }
+        rPrintJobArray = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
+        rDesinationMap = args.getParcelable(BUNDLE_DESTINATION_MAP);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
+        getArgs(getArguments());
     }
 
     protected void bindButterKnife(View view) {
@@ -89,17 +115,12 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        room = (Room) args.getSerializable(ARG_SECTION_NUMBER); // corresponds to room number 1B16, etc.
-        token = args.getString(KEY_TOKEN);
-
         View rootView = inflater.inflate(R.layout.room_tab, container, false);
         bindButterKnife(rootView);
         mAdapter = new PrintJobAdapter(getContext(), null, PrintJobAdapter.TableType.ROOMS);
         mAdapter.bindRecyclerView(mRecycler);
         mRefresher.setInternalRecyclerView(mRecycler);
         mRefresher.setOnRefreshListener(this);
-        updateData();
         rootView.findViewById(R.id.map_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,32 +131,10 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
         return rootView;
     }
 
-    private void updateData() {
-        requestManager.execute(new QueueRequest(token, room.getName()), new RoomTabFragment.QueueRequestListener());
-        requestManager.execute(new DestinationsRequest(token), new RoomTabFragment.DestinationRequestListener());
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        requestManager.start(getActivity());
-    }
-
-    @Override
-    public void onStop() {
-        // Please review https://github.com/octo-online/robospice/issues/96 for the reason of that
-        // ugly if statement.
-        if (requestManager.isStarted()) {
-            requestManager.shouldStop();
-        }
-        super.onStop();
-    }
-
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         if (unbinder != null) unbinder.unbind();
+        super.onDestroyView();
     }
 
     private void showRoomMapDialog() {
@@ -146,59 +145,83 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        updateData();
+        requestData();
     }
 
-    private final class QueueRequestListener implements RequestListener<PrintJob[]> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            mRefresher.setRefreshing(false);
-        }
-
-        @Override
-        public void onRequestSuccess(PrintJob[] printJobs) {
-            mRefresher.setRefreshing(false);
-            mAdapter.updateList(new ArrayList<>(Arrays.asList(printJobs)));
-        }
+    @Override
+    public DataType.Category getDataCategory() {
+        return DataType.Category.ROOM_TAB;
     }
 
-    private final class DestinationRequestListener implements RequestListener<Map> {
+    @Override
+    public void requestData() {
+        postEvent(getDataCategory());
+    }
 
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            mRefresher.setRefreshing(false);
-            System.out.println("FAILURE");
+    @Override
+    @Subscribe
+    public void onLoadEvent(LoadEvent event) {
+        if (event.isActivityOnly()) return;
+        mRefresher.setRefreshing(false); //TODO hide after all events loaded
+        switch (event.type) {
+            case ROOM_JOBS:
+                if (isLoadSuccessful(event)) {
+                    rPrintJobArray = (PrintJob[]) event.data;
+                } else return;
+                break;
+            case DESTINATIONS:
+                if (isLoadSuccessful(event)) {
+                    rDesinationMap = new DestinationMap((Map<String, Destination>) event.data);
+                } else return;
+            default: //Event is not one of the ones we wish to see; don't bother updating content for it
+                return;
         }
+        updateContent(event.type);
+    }
 
-        @Override
-        public void onRequestSuccess(Map destinations) {
-            mRefresher.setRefreshing(false);
+    protected boolean isLoadSuccessful(LoadEvent event) {
+        if (event.isSuccessful) return true;
+        if (event.data == null) return false; //Error String is null -> Silent error
+        snackbar(new SnackbarEvent(String.valueOf(event.data)));
+        return false;
+    }
 
-            for (Object d : destinations.values()) {
-                String[] id = ((Destination) d).getName().split("-");
-                boolean isUp = ((Destination) d).isUp();
-                if (id[0].equals(room.getName())) {
-                    switch (id[1]) {
-                        case "North":
-                            if (isUp) {
-                                statusNorth.setImageResource(R.drawable.printer_up);
-                            } else {
-                                statusNorth.setImageResource(R.drawable.printer_down);
+    @Override
+    public void updateContent(DataType.Single... types) {
+        for (DataType.Single type : types) {
+            switch (type) {
+                case DESTINATIONS:
+                    for (Destination d : rDesinationMap.map.values()) {
+                        String[] id = d.getName().split("-");
+                        boolean isUp = d.isUp();
+                        if (id[0].equals(rRoom.getName())) {
+                            switch (id[1]) {
+                                case "North":
+                                    if (isUp) {
+                                        statusNorth.setImageResource(R.drawable.printer_up);
+                                    } else {
+                                        statusNorth.setImageResource(R.drawable.printer_down);
+                                    }
+                                    break;
+                                case "South":
+                                    if (isUp) {
+                                        statusSouth.setImageResource(R.drawable.printer_up);
+                                    } else {
+                                        statusSouth.setImageResource(R.drawable.printer_down);
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
-                            break;
-                        case "South":
-                            if (isUp) {
-                                statusSouth.setImageResource(R.drawable.printer_up);
-                            } else {
-                                statusSouth.setImageResource(R.drawable.printer_down);
-                            }
-                            break;
-                        default:
-                            break;
+                            return; //We've found the room, no need to keep looking
+                        }
                     }
-                }
+                    break;
+                case ROOM_JOBS:
+                    mAdapter.updateList(new ArrayList<PrintJob>(Arrays.asList(rPrintJobArray))); //TODO see if you need to wrap it, since we aren't really changing the data
+                    break;
             }
         }
     }
+
 }

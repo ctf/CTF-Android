@@ -29,6 +29,11 @@ public interface RoboFragmentContract {
     DataType.Category getDataCategory();
 
     /**
+     * Posts an event requesting the data for the current DataType Category
+     */
+    void requestData();
+
+    /**
      * Eventbus call when event is sent
      * Be sure to add @Subscribe annotation to the submost class
      * This method should save all data, then call updateContent on that event.type

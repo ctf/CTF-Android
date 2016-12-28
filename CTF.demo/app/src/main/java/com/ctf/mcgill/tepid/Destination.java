@@ -1,5 +1,8 @@
 package com.ctf.mcgill.tepid;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.ctf.mcgill.requests.DateJsonAdapter;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -20,7 +23,7 @@ import javax.annotation.Generated;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({ "_id", "_rev", "type", "name", "protocol", "username", "password", "path", "domain" })
-public class Destination {
+public class Destination implements Parcelable {
 
 	@JsonProperty("_id")
 	private String _id;
@@ -47,7 +50,7 @@ public class Destination {
 	@JsonProperty("ppm")
 	private int ppm;
 	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	private transient Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
 	/**
 	 * 
@@ -270,12 +273,98 @@ public class Destination {
 	
 	@JsonInclude(Include.NON_NULL)
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static class DestinationTicket {
+	public static class DestinationTicket implements Parcelable {
 		public boolean up;
 		public String reason;
 		public LdapUser user;
 		@JsonAdapter(DateJsonAdapter.class)
 		public Date reported = new Date();
+
+		@Override
+		public int describeContents() {
+			return 0;
+		}
+
+		@Override
+		public void writeToParcel(Parcel dest, int flags) {
+			dest.writeByte(this.up ? (byte) 1 : (byte) 0);
+			dest.writeString(this.reason);
+			dest.writeParcelable(this.user, flags);
+			dest.writeLong(this.reported != null ? this.reported.getTime() : -1);
+		}
+
+		public DestinationTicket() {
+		}
+
+		protected DestinationTicket(Parcel in) {
+			this.up = in.readByte() != 0;
+			this.reason = in.readString();
+			this.user = in.readParcelable(LdapUser.class.getClassLoader());
+			long tmpReported = in.readLong();
+			this.reported = tmpReported == -1 ? new Date() : new Date(tmpReported);
+		}
+
+		public static final Creator<DestinationTicket> CREATOR = new Creator<DestinationTicket>() {
+			@Override
+			public DestinationTicket createFromParcel(Parcel source) {
+				return new DestinationTicket(source);
+			}
+
+			@Override
+			public DestinationTicket[] newArray(int size) {
+				return new DestinationTicket[size];
+			}
+		};
 	}
 
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this._id);
+		dest.writeString(this._rev);
+		dest.writeString(this.type);
+		dest.writeString(this.name);
+		dest.writeString(this.protocol);
+		dest.writeString(this.username);
+		dest.writeString(this.password);
+		dest.writeString(this.path);
+		dest.writeString(this.domain);
+		dest.writeParcelable(this.ticket, flags);
+		dest.writeByte(this.up ? (byte) 1 : (byte) 0);
+		dest.writeInt(this.ppm);
+	}
+
+	public Destination() {
+	}
+
+	protected Destination(Parcel in) {
+		this._id = in.readString();
+		this._rev = in.readString();
+		this.type = in.readString();
+		this.name = in.readString();
+		this.protocol = in.readString();
+		this.username = in.readString();
+		this.password = in.readString();
+		this.path = in.readString();
+		this.domain = in.readString();
+		this.ticket = in.readParcelable(DestinationTicket.class.getClassLoader());
+		this.up = in.readByte() != 0;
+		this.ppm = in.readInt();
+	}
+
+	public static final Parcelable.Creator<Destination> CREATOR = new Parcelable.Creator<Destination>() {
+		@Override
+		public Destination createFromParcel(Parcel source) {
+			return new Destination(source);
+		}
+
+		@Override
+		public Destination[] newArray(int size) {
+			return new Destination[size];
+		}
+	};
 }

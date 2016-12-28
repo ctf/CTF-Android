@@ -16,12 +16,12 @@ import com.pitchedapps.capsule.library.utils.EventUtils;
 import java.util.List;
 import java.util.Map;
 
-import static com.ctf.mcgill.enums.DataType.Single.Destinations;
-import static com.ctf.mcgill.enums.DataType.Single.Nickname;
-import static com.ctf.mcgill.enums.DataType.Single.Queues;
-import static com.ctf.mcgill.enums.DataType.Single.Quota;
-import static com.ctf.mcgill.enums.DataType.Single.RoomJobs;
-import static com.ctf.mcgill.enums.DataType.Single.UserJobs;
+import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
+import static com.ctf.mcgill.enums.DataType.Single.NICKNAME;
+import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
+import static com.ctf.mcgill.enums.DataType.Single.QUOTA;
+import static com.ctf.mcgill.enums.DataType.Single.ROOM_JOBS;
+import static com.ctf.mcgill.enums.DataType.Single.USER_JOBS;
 
 /**
  * Created by Allan Wang on 26/12/2016.
@@ -35,9 +35,9 @@ public class DataType {
      * Contains the list of individual inner requests necessary for that category
      */
     public enum Category {
-        Dashboard(Quota, UserJobs, Destinations), //Destinations leads to Queues
-        MyAccount(Quota, UserJobs, Nickname),
-        RoomTab();
+        DASHBOARD(QUOTA, USER_JOBS, DESTINATIONS), //DESTINATIONS leads to QUEUES
+        MY_ACCOUNT(QUOTA, USER_JOBS, NICKNAME),
+        ROOM_TAB();
 
         private final Single[] content;
 
@@ -60,11 +60,11 @@ public class DataType {
      */
     public enum Single {
         /**
-         * Quota request
+         * QUOTA request
          * Gets count for current user
          * Returns String
          */
-        Quota(KEY_QUOTA) {
+        QUOTA(KEY_QUOTA) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new QuotaRequest(token);
@@ -76,11 +76,11 @@ public class DataType {
             }
         },
         /**
-         * UserJobs request
+         * USER_JOBS request
          * Gets list of print jobs for current user
          * Returns PrintJob[]
          */
-        UserJobs(KEY_LAST_JOB) {
+        USER_JOBS(KEY_LAST_JOB) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new JobsRequest(token);
@@ -97,7 +97,7 @@ public class DataType {
          * Extras must contain the specified room enum
          * Returns PrintJob[]
          */
-        RoomJobs(null) {
+        ROOM_JOBS(null) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 if (extras == null || extras[0] == null || !(extras[0] instanceof Room))
@@ -115,7 +115,7 @@ public class DataType {
          * Destination request
          * Returns Map<String, Destination>
          */
-        Destinations(KEY_DESTINATIONS) {
+        DESTINATIONS(KEY_DESTINATIONS) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new DestinationsRequest(token);
@@ -129,9 +129,9 @@ public class DataType {
         /**
          * Queue request
          * returns List<PrintQueue>
-         * //TODO add more documentation; this one is called only after Destinations
+         * //TODO add more documentation; this one is called only after DESTINATIONS
          */
-        Queues(KEY_QUEUES) {
+        QUEUES(KEY_QUEUES) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new QueuesRequest(token);
@@ -143,16 +143,16 @@ public class DataType {
             }
         },
         /**
-         * Nickname request
+         * NICKNAME request
          * Extras must contain a String specifying the desired name change
          * //TODO if necessary, add length/char check to see that nickname is appropriate
          * Returns String
          */
-        Nickname(null) {
+        NICKNAME(null) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 if (extras == null || extras[0] == null)
-                    throw new IllegalArgumentException("Nickname request must send the nickname");
+                    throw new IllegalArgumentException("NICKNAME request must send the nickname");
                 return new NickRequest(token, String.valueOf(extras[0]));
             }
 
@@ -216,24 +216,24 @@ public class DataType {
     private static class QuotaRequestListener implements RequestListener<String> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(Quota, "Quota request failed...");
+            postErrorEvent(QUOTA, "Quota request failed...");
         }
 
         @Override
         public void onRequestSuccess(String quota) {
-            postLoadEvent(Quota, quota);
+            postLoadEvent(QUOTA, quota);
         }
     }
 
     private static class UserJobsRequestListener implements RequestListener<PrintJob[]> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(UserJobs, "User jobs request failed...");
+            postErrorEvent(USER_JOBS, "User jobs request failed...");
         }
 
         @Override
         public void onRequestSuccess(PrintJob[] printJobs) {
-            postLoadEvent(UserJobs, printJobs);
+            postLoadEvent(USER_JOBS, printJobs);
         }
     }
 
@@ -241,12 +241,12 @@ public class DataType {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(RoomJobs, "Room jobs request failed...");
+            postErrorEvent(ROOM_JOBS, "Room jobs request failed...");
         }
 
         @Override
         public void onRequestSuccess(PrintJob[] printJobs) {
-            postLoadEvent(RoomJobs, printJobs);
+            postLoadEvent(ROOM_JOBS, printJobs);
         }
     }
 
@@ -254,26 +254,26 @@ public class DataType {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(Destinations, "Destinations request failed...");
+            postErrorEvent(DESTINATIONS, "Destinations request failed...");
         }
 
         @Override
         public void onRequestSuccess(Map map) {
-            postLoadEvent(Destinations, map);
+            postLoadEvent(DESTINATIONS, map);
         }
     }
 
-    //Called from within Destinations Request Listener
+    //Called from within DESTINATIONS Request Listener
     private static class QueuesRequestListener implements RequestListener<List> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(Queues, "Queues request failed...");
+            postErrorEvent(QUEUES, "Queues request failed...");
         }
 
         @Override
         public void onRequestSuccess(List list) { //todo clean this up, e.g., getView() methods for each type of item that sets the correct params, do the same thing in room fragment
-            postLoadEventActivityOnly(Queues, list);
+            postLoadEventActivityOnly(QUEUES, list);
         }
     }
 
@@ -281,12 +281,12 @@ public class DataType {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(Nickname, "Nick request failed...");
+            postErrorEvent(NICKNAME, "Nick request failed...");
         }
 
         @Override
         public void onRequestSuccess(String nick) {
-            postLoadEvent(Nickname, nick);
+            postLoadEvent(NICKNAME, nick);
         }
     }
 }

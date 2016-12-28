@@ -1,5 +1,8 @@
 package com.ctf.mcgill.tepid;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.ctf.mcgill.requests.DateJsonAdapter;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -17,7 +20,7 @@ import java.util.Map;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LdapUser {
+public class LdapUser implements Parcelable {
 	public String displayName, givenName, middleName, lastName, shortUser, longUser, email, faculty, permaCode, nick, realName, salutation;
 	public List<String> groups, preferredName;
 	@JsonAdapter(DateJsonAdapter.class)
@@ -26,9 +29,9 @@ public class LdapUser {
 
 	private String _id, _rev;
 	@JsonProperty("type")
-	public final String type = "user";
+	public transient final String type = "user";
 	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	private transient Map<String, Object> additionalProperties = new HashMap<String, Object>();
 	@JsonProperty("_id")
 	public String getId() {
 		return _id;
@@ -186,5 +189,68 @@ public class LdapUser {
 			return false;
 		return true;
 	}
-	
+
+	public LdapUser() {
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.displayName);
+		dest.writeString(this.givenName);
+		dest.writeString(this.middleName);
+		dest.writeString(this.lastName);
+		dest.writeString(this.shortUser);
+		dest.writeString(this.longUser);
+		dest.writeString(this.email);
+		dest.writeString(this.faculty);
+		dest.writeString(this.permaCode);
+		dest.writeString(this.nick);
+		dest.writeString(this.realName);
+		dest.writeString(this.salutation);
+		dest.writeStringList(this.groups);
+		dest.writeStringList(this.preferredName);
+		dest.writeLong(this.activeSince != null ? this.activeSince.getTime() : -1);
+		dest.writeInt(this.studentId);
+		dest.writeString(this._id);
+		dest.writeString(this._rev);
+	}
+
+	protected LdapUser(Parcel in) {
+		this.displayName = in.readString();
+		this.givenName = in.readString();
+		this.middleName = in.readString();
+		this.lastName = in.readString();
+		this.shortUser = in.readString();
+		this.longUser = in.readString();
+		this.email = in.readString();
+		this.faculty = in.readString();
+		this.permaCode = in.readString();
+		this.nick = in.readString();
+		this.realName = in.readString();
+		this.salutation = in.readString();
+		this.groups = in.createStringArrayList();
+		this.preferredName = in.createStringArrayList();
+		long tmpActiveSince = in.readLong();
+		this.activeSince = tmpActiveSince == -1 ? null : new Date(tmpActiveSince);
+		this.studentId = in.readInt();
+		this._id = in.readString();
+		this._rev = in.readString();
+	}
+
+	public static final Creator<LdapUser> CREATOR = new Creator<LdapUser>() {
+		@Override
+		public LdapUser createFromParcel(Parcel source) {
+			return new LdapUser(source);
+		}
+
+		@Override
+		public LdapUser[] newArray(int size) {
+			return new LdapUser[size];
+		}
+	};
 }

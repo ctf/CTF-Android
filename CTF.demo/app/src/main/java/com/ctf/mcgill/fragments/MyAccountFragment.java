@@ -9,21 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.adapter.PrintJobAdapter;
 import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.LoadEvent;
-import com.ctf.mcgill.requests.JobsRequest;
-import com.ctf.mcgill.requests.NickRequest;
-import com.ctf.mcgill.requests.QuotaRequest;
 import com.ctf.mcgill.tepid.PrintJob;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
-import com.pitchedapps.capsule.library.event.SnackbarEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -91,7 +84,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
             public void onClick(View view) {
                 rNickname = nickView.getText().toString();
                 if (!rNickname.isEmpty()) {
-                    updateContent(DataType.Single.Nickname);
+                    updateContent(DataType.Single.NICKNAME);
                 }
             }
         });
@@ -110,7 +103,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
 
     @Override
     public DataType.Category getDataCategory() {
-        return DataType.Category.MyAccount;
+        return DataType.Category.MY_ACCOUNT;
     }
 
     @Override
@@ -119,21 +112,23 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
         if (event.isActivityOnly()) return;
         hideRefresh(); //TODO hide after all events loaded
         switch (event.type) {
-            case Nickname:
+            case NICKNAME:
                 if (isLoadSuccessful(event)) {
                     rNickname = String.valueOf(event.data);
                 } else return;
                 break;
-            case Quota:
+            case QUOTA:
                 if (isLoadSuccessful(event)) {
                     rQuota = String.valueOf(event.data);
                 } else return;
                 break;
-            case UserJobs:
+            case USER_JOBS:
                 if (isLoadSuccessful(event)) {
                     rPrintJobs = (PrintJob[]) event.data;
                 } else return;
                 break;
+            default: //Event is not one of the ones we wish to see; don't bother updating content for it
+                return;
         }
         updateContent(event.type);
     }
@@ -142,16 +137,16 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
     public void updateContent(DataType.Single... types) {
         for (DataType.Single type : types) {
             switch (type) {
-                case Nickname:
+                case NICKNAME:
                     if (rNickname == null) continue;
                     AccountUtil.updateNick(rNickname);
                     usernameView.setText(getString(R.string.dashboard_username_text, rNickname));
                     break;
-                case Quota:
+                case QUOTA:
                     if (rQuota == null) continue;
                     quotaView.setText(getString(R.string.dashboard_quota_text, rQuota));
                     break;
-                case UserJobs:
+                case USER_JOBS:
                     cAdapter.updateList(new ArrayList<>(Arrays.asList(rPrintJobs)));
                     break;
             }

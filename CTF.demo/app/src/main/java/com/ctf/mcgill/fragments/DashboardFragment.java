@@ -95,7 +95,7 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
 
     @Override
     public DataType.Category getDataCategory() {
-        return DataType.Category.Dashboard;
+        return DataType.Category.DASHBOARD;
     }
 
     @Subscribe
@@ -104,21 +104,23 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         if (event.isActivityOnly()) return;
         hideRefresh(); //TODO hide after all events loaded
         switch (event.type) {
-            case Quota:
+            case QUOTA:
                 if (isLoadSuccessful(event)) {
                     rQuota = String.valueOf(event.data);
                 } else return;
                 break;
-            case UserJobs:
+            case USER_JOBS:
                 if (isLoadSuccessful(event)) {
                     rPrintJobs = (PrintJob[]) event.data;
                 } else return;
                 break;
-            case Queues: //Already changed into List<RoomInformation> through RequestActivity
+            case QUEUES: //Already changed into List<RoomInformation> through RequestActivity
                 if (isLoadSuccessful(event)) {
                     rRoomInfo = (ArrayList<RoomInformation>) event.data;
                 } else return;
                 break;
+            default: //Event is not one of the ones we wish to see; don't bother updating content for it
+                return;
         }
         updateContent(event.type);
     }
@@ -127,12 +129,12 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     public void updateContent(DataType.Single... types) {
         for (DataType.Single type : types) {
             switch (type) {
-                case Quota:
+                case QUOTA:
                     if (rQuota == null) continue;
                     quotaView.setText(String.valueOf(rQuota));
                     AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
                     break;
-                case UserJobs:
+                case USER_JOBS:
                     Date last;
                     if (rPrintJobs == null || rPrintJobs[0] == null) {
                         last = new Date();
@@ -143,7 +145,7 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
                     lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
                     AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
                     break;
-                case Queues: //Already changed into List<RoomInformation> through RequestActivity
+                case QUEUES: //Already changed into List<RoomInformation> through RequestActivity
                     if (rRoomInfo == null) continue;
                     cAdapter.updateList(rRoomInfo);
                     break;

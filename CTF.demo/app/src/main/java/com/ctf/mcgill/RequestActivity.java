@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.LoadEvent;
+import com.ctf.mcgill.items.DestinationMap;
 import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
@@ -23,8 +24,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ctf.mcgill.enums.DataType.Single.Destinations;
-import static com.ctf.mcgill.enums.DataType.Single.Queues;
+import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
+import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
 
 /**
  * Created by Allan Wang on 26/12/2016.
@@ -36,6 +37,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
 
     protected String mToken;
     private SpiceManager mRequestManager = new SpiceManager(CTFSpiceService.class);
+    private static final long FROM_LOCAL_THRESHOLD = 15L; //Seconds from last update where you should pull from local
     /*
      * Map that keeps track of latest update time
      * If time shows as -1, it is currently in progress
@@ -47,7 +49,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      */
     protected String rQuota, rNickname;
     protected PrintJob[] rPrintJobArray;
-    protected Map<String, Destination> rDestinationMap;
+    protected DestinationMap rDestinationMap;
     protected ArrayList<RoomInformation> rRoomInfoList;
 
     @SuppressLint("MissingSuperCall")
@@ -84,6 +86,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         CLog.d("Sending request for %s", type);
         setInProgress(type);
         if (type.getCacheKey() != null)
+            //TODO test between execute and local save to see if time difference is worth keeping data inside this activity
             mRequestManager.execute(type.getRequest(mToken, extras), type.getCacheKey(), DurationInMillis.ONE_MINUTE, type.getListener());
         else mRequestManager.execute(type.getRequest(mToken, extras), type.getListener());
     }
@@ -92,24 +95,24 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     public void onLoadEvent(@NonNull LoadEvent event) {
         if (event.isFragmentOnly()) return;
         if (!event.isSuccessful || event.data == null) {
-            if (event.type == Destinations) { //Queue won't be loaded, send empty post
-                postEvent(new LoadEvent(Queues, false, null));
+            if (event.type == DESTINATIONS) { //Queue won't be loaded, send empty post
+                postEvent(new LoadEvent(QUEUES, false, null));
             }
             return;
         }
         updateTime(event.type);
         switch (event.type) {
-            case Quota:
+            case QUOTA:
                 rQuota = String.valueOf(event.data);
                 break;
-            case UserJobs:
+            case USER_JOBS:
                 rPrintJobArray = (PrintJob[]) event.data;
                 break;
-            case Destinations:
-                rDestinationMap = (Map<String, Destination>) event.data;
-                loadData(DataType.Single.Queues); //destinations found; load and parse queues
+            case DESTINATIONS:
+                rDestinationMap = new DestinationMap((Map<String, Destination>) event.data);
+                loadData(DataType.Single.QUEUES); //destinations found; load and parse queues
                 break;
-            case Queues: //Process into RoomInfo first; then send
+            case QUEUES: //Process into RoomInfo first; then send
                 rRoomInfoList = new ArrayList<>();
                 for (PrintQueue q : (List<PrintQueue>) event.data) {
                     String name = q.name;
@@ -117,14 +120,14 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
 
                     if (rDestinationMap != null) {
                         for (String d : ((PrintQueue) q).destinations) {
-                            roomInfo.addPrinter(rDestinationMap.get(d).getName(), rDestinationMap.get(d).isUp());
+                            roomInfo.addPrinter(rDestinationMap.map.get(d).getName(), rDestinationMap.map.get(d).isUp());
                         }
                     }
                     rRoomInfoList.add(roomInfo);
                 }
-                postEvent(new LoadEvent(Queues, true, rRoomInfoList).fragmentOnly());
+                postEvent(new LoadEvent(QUEUES, true, rRoomInfoList).fragmentOnly());
                 break;
-            case Nickname:
+            case NICKNAME:
                 rNickname = String.valueOf(event.data);
                 break;
         }
@@ -151,6 +154,12 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      */
     private boolean isInProgress(DataType.Single type) {
         return mUpdateMap.containsKey(type) && mUpdateMap.get(type) == -1L;
+    }
+
+    private boolean isWithinSeconds(DataType.Single type, long seconds) {
+        if (!mUpdateMap.containsKey(type)) return false;
+        long diff = System.currentTimeMillis() - mUpdateMap.get(type);
+        return diff < (seconds * 1000);
     }
 
 }

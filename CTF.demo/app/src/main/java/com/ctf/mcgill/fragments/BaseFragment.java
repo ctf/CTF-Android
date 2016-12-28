@@ -66,8 +66,9 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
         super.onPause();
     }
 
-    protected void requestData(DataType.Category type) {
-        postEvent(type);
+    @Override
+    public void requestData() {
+        postEvent(getDataCategory());
     }
 
     @Override
@@ -87,7 +88,7 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
 
     @Override
     protected void updateList(List<T> oldList) {
-        requestData(getDataCategory());
+        requestData();
     }
 
 
