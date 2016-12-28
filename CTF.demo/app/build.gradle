@@ -21,8 +21,8 @@ android {
         applicationId 'com.ctf.mcgill'
         minSdkVersion 16
         targetSdkVersion TARGET_SDK
-        versionCode 1
-        versionName "1.0RC_1"
+        versionCode 2
+        versionName "1.0_beta2"
         multiDexEnabled true
     }
 
@@ -53,7 +53,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile 'com.github.AllanWang:Capsule:7f767100d0'
+    compile 'com.github.AllanWang:Capsule:9ad1d5d141'
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.4.0'

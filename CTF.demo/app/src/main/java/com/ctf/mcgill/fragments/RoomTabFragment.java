@@ -1,7 +1,6 @@
 package com.ctf.mcgill.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -18,12 +17,13 @@ import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.interfaces.RoboFragmentContract;
-import com.ctf.mcgill.items.DestinationMap;
+import com.ctf.mcgill.items.DestinationHashMap;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.CapsulePageFragment;
+import com.pitchedapps.capsule.library.utils.ParcelUtils;
 import com.pitchedapps.capsule.library.views.SwipeRefreshRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,7 +31,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,24 +74,20 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
     private Room rRoom;
     private PrintJob[] rPrintJobArray;
-    private DestinationMap rDesinationMap;
+    private HashMap<String, Destination> rDesinationMap;
 
 
     /**
      * Returns a new instance of this fragment for the given section number.
      */
-    public static RoomTabFragment newInstance(@NonNull Room roomNumber, PrintJob[] printJobs, DestinationMap destinationMap) {
-        RoomTabFragment f = new RoomTabFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(BUNDLE_ROOM, roomNumber);
-        if (printJobs == null || destinationMap == null) {
-            args.putBoolean(BUNDLE_COMPLETE, false);
-        } else {
-            args.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs);
-            args.putParcelable(BUNDLE_DESTINATION_MAP, destinationMap);
+    public static RoomTabFragment newInstance(@NonNull Room roomNumber, PrintJob[] printJobs, HashMap<String, Destination> destinationMap) {
+        ParcelUtils parcelUtils = new ParcelUtils<>(new RoomTabFragment());
+        parcelUtils.getBundle().putSerializable(BUNDLE_ROOM, roomNumber);
+        if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, printJobs, destinationMap)) {
+            parcelUtils.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
+                    .putHashMap(BUNDLE_DESTINATION_MAP, new DestinationHashMap(destinationMap));
         }
-        f.setArguments(args);
-        return f;
+        return (RoomTabFragment) parcelUtils.create();
     }
 
     @Override
@@ -102,7 +98,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
             return;
         }
         rPrintJobArray = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
-        rDesinationMap = args.getParcelable(BUNDLE_DESTINATION_MAP);
+        rDesinationMap = ParcelUtils.getHashMap(args, BUNDLE_DESTINATION_MAP, DestinationHashMap.class);
     }
 
     @Override
@@ -174,7 +170,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
                 break;
             case DESTINATIONS:
                 if (isLoadSuccessful(event)) {
-                    rDesinationMap = new DestinationMap((Map<String, Destination>) event.data);
+                    rDesinationMap = ((HashMap<String, Destination>) event.data);
                 } else return;
             default: //Event is not one of the ones we wish to see; don't bother updating content for it
                 return;
@@ -194,7 +190,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
         for (DataType.Single type : types) {
             switch (type) {
                 case DESTINATIONS:
-                    for (Destination d : rDesinationMap.map.values()) {
+                    for (Destination d : rDesinationMap.values()) {
                         String[] id = d.getName().split("-");
                         boolean isUp = d.isUp();
                         if (id[0].equals(rRoom.getName())) {

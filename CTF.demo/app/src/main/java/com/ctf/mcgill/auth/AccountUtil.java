@@ -1,11 +1,8 @@
 package com.ctf.mcgill.auth;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
 
 import com.ctf.mcgill.CTFApp;
 import com.ctf.mcgill.R;

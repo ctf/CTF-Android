@@ -17,7 +17,6 @@ import com.ctf.mcgill.tepid.PrintJob;
 import com.ctf.mcgill.tepid.RoomInformation;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
-import com.pitchedapps.capsule.library.logging.CLog;
 import com.pitchedapps.capsule.library.utils.AnimUtils;
 import com.pitchedapps.capsule.library.utils.ParcelUtils;
 
@@ -46,19 +45,13 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
     private static final String BUNDLE_QUOTA = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_ROOM_INFO = "room_info", BUNDLE_COMPLETE = "complete";
 
     public static DashboardFragment newInstance(String quota, PrintJob[] printJobs, ArrayList<RoomInformation> roomInfo) {
-        ParcelUtils parcelUtils = new ParcelUtils(new DashboardFragment());
-        DashboardFragment f = new DashboardFragment();
-        Bundle args = new Bundle();
-        if (quota == null || printJobs == null || roomInfo == null) {
-            parcelUtils.putBoolean(BUNDLE_COMPLETE, false);
-        } else {
-            parcelUtils.putBoolean(BUNDLE_COMPLETE, true)
-            .putString(BUNDLE_QUOTA, quota)
-            .putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
-            .putParcelableArrayList(BUNDLE_ROOM_INFO, roomInfo);
+        ParcelUtils parcelUtils = new ParcelUtils<>(new DashboardFragment());
+        if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, quota, printJobs, roomInfo)) {
+            parcelUtils.putString(BUNDLE_QUOTA, quota)
+                    .putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
+                    .putParcelableArrayList(BUNDLE_ROOM_INFO, roomInfo);
         }
-        f.setArguments(args);
-        return f;
+        return (DashboardFragment) parcelUtils.create();
     }
 
     @Override

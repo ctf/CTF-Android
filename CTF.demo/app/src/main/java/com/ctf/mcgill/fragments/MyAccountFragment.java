@@ -18,6 +18,7 @@ import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.events.SingleDataEvent;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
+import com.pitchedapps.capsule.library.utils.ParcelUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -45,18 +46,13 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
     private static final String BUNDLE_QUOTA = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_NICKNAME = "nickname", BUNDLE_COMPLETE = "complete";
 
     public static MyAccountFragment newInstance(String quota, PrintJob[] printJobs, String nickname) {
-        MyAccountFragment f = new MyAccountFragment();
-        Bundle args = new Bundle();
-        if (quota == null || printJobs == null || nickname == null) {
-            args.putBoolean(BUNDLE_COMPLETE, false);
-        } else {
-            args.putBoolean(BUNDLE_COMPLETE, true);
-            args.putString(BUNDLE_QUOTA, quota);
-            args.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs);
-            args.putString(BUNDLE_NICKNAME, nickname);
+        ParcelUtils parcelUtils = new ParcelUtils<>(new MyAccountFragment());
+        if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, quota, printJobs, nickname)) {
+            parcelUtils.putString(BUNDLE_QUOTA, quota)
+                    .putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
+                    .putString(BUNDLE_NICKNAME, nickname);
         }
-        f.setArguments(args);
-        return f;
+        return (MyAccountFragment) parcelUtils.create();
     }
 
     @Override

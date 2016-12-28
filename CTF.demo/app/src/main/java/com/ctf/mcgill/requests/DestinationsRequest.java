@@ -23,6 +23,7 @@ public class DestinationsRequest extends BaseTepidRequest<Map> {
         super(Map.class);
         this.token = token;
     }
+
     @Override
     public Map<String, Destination> loadDataFromNetwork() throws Exception {
 

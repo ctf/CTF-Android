@@ -7,11 +7,11 @@
     -->
 
     <version title="v1.0_beta2"/>
-    <item text="Add adapter animations" />
-    <item text="Add support for kitkat" />
-    <item text="Add swiperefreshlayouts to views that need to load data" />
-    <item text="" />
-    <item text="" />
+    <item text="Added adapter animations" />
+    <item text="Added support for kitkat" />
+    <item text="Added SwipeRefreshLayouts to views that need to load data" />
+    <item text="Created RequestActivity to manage all requests asynchronously" />
+    <item text="Made data parcelable" />
     <item text="" />
 
     <version title="v1.0_beta1"/>

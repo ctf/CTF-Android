@@ -8,7 +8,6 @@ import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.events.SingleDataEvent;
-import com.ctf.mcgill.items.DestinationMap;
 import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
@@ -23,6 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      */
     protected String rQuota, rNickname;
     protected PrintJob[] rPrintJobArray;
-    protected DestinationMap rDestinationMap;
+    protected HashMap<String, Destination> rDestinationMap;
     protected ArrayList<RoomInformation> rRoomInfoList;
 
     @SuppressLint("MissingSuperCall")
@@ -117,11 +117,11 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 rPrintJobArray = (PrintJob[]) event.data;
                 break;
             case DESTINATIONS_TO_QUEUE:
-                rDestinationMap = new DestinationMap((Map<String, Destination>) event.data);
+                rDestinationMap = (HashMap<String, Destination> ) event.data;
                 loadData(new SingleDataEvent(DataType.Single.QUEUES)); //destinations found; load and parse queues
                 break;
             case DESTINATIONS:
-                rDestinationMap = new DestinationMap((Map<String, Destination>) event.data);
+                rDestinationMap = (HashMap<String, Destination> ) event.data;
                 break;
             case QUEUES: //Process into RoomInfo first; then send
                 rRoomInfoList = new ArrayList<>();
@@ -131,7 +131,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
 
                     if (rDestinationMap != null) {
                         for (String d : ((PrintQueue) q).destinations) {
-                            roomInfo.addPrinter(rDestinationMap.map.get(d).getName(), rDestinationMap.map.get(d).isUp());
+                            roomInfo.addPrinter(rDestinationMap.get(d).getName(), rDestinationMap.get(d).isUp());
                         }
                     }
                     rRoomInfoList.add(roomInfo);

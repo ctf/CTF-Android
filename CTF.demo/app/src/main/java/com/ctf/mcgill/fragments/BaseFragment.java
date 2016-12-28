@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.ctf.mcgill.R;
-import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.interfaces.RoboFragmentContract;
@@ -15,7 +14,6 @@ import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.SwipeRecyclerFragmentAnimated;
 import com.pitchedapps.capsule.library.item.CapsuleViewHolder;
-import com.pitchedapps.capsule.library.logging.CLog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,7 +21,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 /**
  * Created by Allan Wang on 2016-11-15.

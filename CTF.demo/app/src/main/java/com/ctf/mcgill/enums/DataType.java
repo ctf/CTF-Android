@@ -14,6 +14,7 @@ import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.utils.EventUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -285,7 +286,7 @@ public class DataType {
         }
     }
 
-    private static class DestinationsRequestListenerToQueue implements RequestListener<Map> {
+    private static class DestinationsRequestListenerToQueue implements RequestListener<Map> { //TODO check if Map should be replaced with HashMap<String, Destination>
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             postErrorEvent(DESTINATIONS_TO_QUEUE, "Destinations request failed...");

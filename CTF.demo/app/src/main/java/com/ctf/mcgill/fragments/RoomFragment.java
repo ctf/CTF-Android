@@ -2,7 +2,6 @@ package com.ctf.mcgill.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,20 +10,19 @@ import android.support.v4.view.ViewPager;
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.events.LoadEvent;
-import com.ctf.mcgill.items.DestinationMap;
 import com.ctf.mcgill.tepid.Destination;
-import com.ctf.mcgill.tepid.PrintJob;
 import com.pitchedapps.capsule.library.adapters.ViewPagerAdapter;
 import com.pitchedapps.capsule.library.fragments.ViewPagerFragment;
 import com.pitchedapps.capsule.library.interfaces.CPage;
 import com.pitchedapps.capsule.library.item.PageItem;
+import com.pitchedapps.capsule.library.utils.ParcelUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RoomFragment extends ViewPagerFragment {
 
@@ -33,22 +31,17 @@ public class RoomFragment extends ViewPagerFragment {
     // the number of tabs on the room info page
     private static final int FRAGMENT_COUNT = 3;
 
-    private DestinationMap rDesinationMap;
+    private HashMap<String, Destination> rDesinationMap;
 
     private static final String BUNDLE_DESTINATION_MAP = "destination_map", BUNDLE_COMPLETE = "complete";
 
 
-    public static RoomFragment newInstance(DestinationMap destinationMap) {
-        RoomFragment f = new RoomFragment();
-        Bundle args = new Bundle();
-        if (destinationMap == null) {
-            args.putBoolean(BUNDLE_COMPLETE, false);
-        } else {
-            args.putBoolean(BUNDLE_COMPLETE, true);
-            args.putParcelable(BUNDLE_DESTINATION_MAP, destinationMap);
+    public static RoomFragment newInstance(HashMap<String, Destination> destinationMap) {
+        ParcelUtils parcelUtils = new ParcelUtils<>(new RoomFragment());
+        if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, destinationMap)) {
+            parcelUtils.putHashMap(BUNDLE_DESTINATION_MAP, destinationMap, String.class, Destination.class);
         }
-        f.setArguments(args);
-        return f;
+        return (RoomFragment) parcelUtils.create();
     }
 
     @Override
@@ -114,7 +107,7 @@ public class RoomFragment extends ViewPagerFragment {
         if (event.isActivityOnly()) return;
         switch (event.type) {
             case DESTINATIONS:
-                rDesinationMap = new DestinationMap((Map<String, Destination>) event.data); //TODO check if worth saving
+                rDesinationMap = (HashMap<String, Destination>) event.data; //TODO check if worth saving
         }
     }
 
