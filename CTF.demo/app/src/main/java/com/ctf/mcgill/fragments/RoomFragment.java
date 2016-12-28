@@ -33,9 +33,9 @@ public class RoomFragment extends ViewPagerFragment {
     @Override
     protected List<CPage> setPages() {
         return Arrays.asList(new CPage[]{
-                new PageItem(RoomTabFragment.newInstance(Room._1B16, token), 0),
-                new PageItem(RoomTabFragment.newInstance(Room._1B17, token), 0),
-                new PageItem(RoomTabFragment.newInstance(Room._1B18, token), 0)
+                new PageItem(RoomTabFragment.newInstance(Room._1B16, null, null), 0), //TODO change newInstance; this is for testing
+                new PageItem(RoomTabFragment.newInstance(Room._1B17, null, null), 0),
+                new PageItem(RoomTabFragment.newInstance(Room._1B18, null, null), 0)
         });
     }
 

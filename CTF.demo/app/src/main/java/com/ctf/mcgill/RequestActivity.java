@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.ctf.mcgill.enums.DataType;
+import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
+import com.ctf.mcgill.events.SingleDataEvent;
 import com.ctf.mcgill.items.DestinationMap;
 import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.tepid.Destination;
@@ -62,23 +64,25 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * Helper method for Category loading
      * Will load all of the inner Single DataTypes
      *
-     * @param type   Category DataType
-     * @param extras Optional variables needed to complete certain requests
+     * @param event Category DataType and optional variables needed to complete certain requests
      */
     @Subscribe
-    public void loadData(DataType.Category type, Object... extras) {
-        for (DataType.Single s : type.getContent()) loadData(s, extras);
+    public void loadData(CategoryDataEvent event) {
+        for (DataType.Single s : event.type.getContent())
+            loadData(new SingleDataEvent(s, event.extras));
     }
 
     /**
      * Listener for single data type loading
      * Will only trigger a new request if one is not already in session
      *
-     * @param type   Single DataType
-     * @param extras Optional variables needed to complete certain requests
+     * @param event Single DataType and optional variables needed to complete certain requests
      */
     @Subscribe
-    public void loadData(DataType.Single type, Object... extras) {
+    public void loadData(SingleDataEvent event) {
+        startSpice();
+        DataType.Single type = event.type;
+        Object[] extras = event.extras;
         if (isInProgress(type)) {
             CLog.d("%s request is already in session", type);
             return;
@@ -95,6 +99,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     public void onLoadEvent(@NonNull LoadEvent event) {
         if (event.isFragmentOnly()) return;
         if (!event.isSuccessful || event.data == null) {
+            CLog.e("Unsuccessful or null load event: %s", event);
             if (event.type == DESTINATIONS) { //Queue won't be loaded, send empty post
                 postEvent(new LoadEvent(QUEUES, false, null));
             }
@@ -110,7 +115,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 break;
             case DESTINATIONS:
                 rDestinationMap = new DestinationMap((Map<String, Destination>) event.data);
-                loadData(DataType.Single.QUEUES); //destinations found; load and parse queues
+                loadData(new SingleDataEvent(DataType.Single.QUEUES)); //destinations found; load and parse queues
                 break;
             case QUEUES: //Process into RoomInfo first; then send
                 rRoomInfoList = new ArrayList<>();
@@ -161,5 +166,27 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         long diff = System.currentTimeMillis() - mUpdateMap.get(type);
         return diff < (seconds * 1000);
     }
+
+    private void startSpice() {
+        if (!mRequestManager.isStarted()) mRequestManager.start(this);
+    }
+
+    private void stopSpice() {
+        if (mRequestManager.isStarted()) mRequestManager.shouldStop();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startSpice();
+    }
+
+    @Override
+    protected void onStop() {
+        stopSpice();
+        super.onStop();
+    }
+
 
 }

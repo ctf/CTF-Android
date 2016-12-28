@@ -76,10 +76,9 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         super.onViewCreated(view, savedInstanceState);
         LinearLayout linear = (LinearLayout) inflate(R.layout.fragment_dashboard);
         bindButterKnife(linear);
-        showRefresh();
+        if (rQuota == null || rPrintJobs == null || rRoomInfo == null) showRefresh();
         cLinear.addView(linear, 0);
         usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
-        CLog.e("Call Load");
         updateContent(getDataCategory().getContent());
     }
 

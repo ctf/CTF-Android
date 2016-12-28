@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.enums.DataType;
+import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.interfaces.RoboFragmentContract;
 import com.pitchedapps.capsule.library.event.CFabEvent;
@@ -68,7 +69,7 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
 
     @Override
     public void requestData() {
-        postEvent(getDataCategory());
+        postEvent(new CategoryDataEvent(getDataCategory()));
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.ctf.mcgill.adapter.PrintJobAdapter;
 import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.LoadEvent;
+import com.ctf.mcgill.events.SingleDataEvent;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
 
@@ -62,7 +63,6 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
     public void getArgs(Bundle args) {
         if (args == null || !args.getBoolean(BUNDLE_COMPLETE, false)) {
             updateList(null);
-            showRefresh();
             return;
         }
         rQuota = args.getString(BUNDLE_QUOTA);
@@ -76,6 +76,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
         super.onViewCreated(view, savedInstanceState);
         LinearLayout linear = (LinearLayout) inflate(R.layout.fragment_my_account);
         bindButterKnife(linear);
+        if (rQuota == null || rPrintJobs == null || rNickname == null) showRefresh();
         cLinear.addView(linear, 0);
 
         usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
@@ -84,7 +85,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
             public void onClick(View view) {
                 rNickname = nickView.getText().toString();
                 if (!rNickname.isEmpty()) {
-                    updateContent(DataType.Single.NICKNAME);
+                    postEvent(new SingleDataEvent(DataType.Single.NICKNAME, rNickname)); //Send load request; text will change if accepted
                 }
             }
         });
