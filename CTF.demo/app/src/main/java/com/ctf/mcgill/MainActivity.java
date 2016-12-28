@@ -149,7 +149,7 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return RoomFragment.newInstance(mToken);
+                        return RoomFragment.newInstance(rDestinationMap);
                     }
                 },
                 new DrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, true) {

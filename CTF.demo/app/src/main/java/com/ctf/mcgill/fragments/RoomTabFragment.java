@@ -158,7 +158,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
     @Override
     public void requestData() {
-        postEvent(new CategoryDataEvent(getDataCategory()));
+        postEvent(new CategoryDataEvent(getDataCategory(), rRoom));
     }
 
     @Override

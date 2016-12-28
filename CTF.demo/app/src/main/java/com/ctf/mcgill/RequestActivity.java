@@ -28,6 +28,7 @@ import java.util.Map;
 
 import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
 import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
+import static com.ctf.mcgill.enums.DataType.Single.ROOM_JOBS;
 
 /**
  * Created by Allan Wang on 26/12/2016.
@@ -83,12 +84,14 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         startSpice();
         DataType.Single type = event.type;
         Object[] extras = event.extras;
-        if (isInProgress(type)) {
-            CLog.d("%s request is already in session", type);
-            return;
+        if (event.type != ROOM_JOBS) { //TODO change this
+            if (isInProgress(type)) {
+                CLog.d("%s request is already in session", type);
+                return;
+            }
+            setInProgress(type);
         }
         CLog.d("Sending request for %s", type);
-        setInProgress(type);
         if (type.getCacheKey() != null)
             //TODO test between execute and local save to see if time difference is worth keeping data inside this activity
             mRequestManager.execute(type.getRequest(mToken, extras), type.getCacheKey(), DurationInMillis.ONE_MINUTE, type.getListener());
@@ -113,9 +116,12 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             case USER_JOBS:
                 rPrintJobArray = (PrintJob[]) event.data;
                 break;
-            case DESTINATIONS:
+            case DESTINATIONS_TO_QUEUE:
                 rDestinationMap = new DestinationMap((Map<String, Destination>) event.data);
                 loadData(new SingleDataEvent(DataType.Single.QUEUES)); //destinations found; load and parse queues
+                break;
+            case DESTINATIONS:
+                rDestinationMap = new DestinationMap((Map<String, Destination>) event.data);
                 break;
             case QUEUES: //Process into RoomInfo first; then send
                 rRoomInfoList = new ArrayList<>();
@@ -139,7 +145,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     }
 
     private void updateTime(DataType.Single type) {
-        mUpdateMap.put(type, System.currentTimeMillis());
+        mUpdateMap.put(type.getTrueDataType(), System.currentTimeMillis());
     }
 
     /**
@@ -148,7 +154,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * @param type Single DataType
      */
     private void setInProgress(DataType.Single type) {
-        mUpdateMap.put(type, -1L);
+        mUpdateMap.put(type.getTrueDataType(), -1L);
     }
 
     /**
@@ -158,12 +164,12 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * @return update status
      */
     private boolean isInProgress(DataType.Single type) {
-        return mUpdateMap.containsKey(type) && mUpdateMap.get(type) == -1L;
+        return mUpdateMap.containsKey(type.getTrueDataType()) && mUpdateMap.get(type.getTrueDataType()) == -1L;
     }
 
     private boolean isWithinSeconds(DataType.Single type, long seconds) {
-        if (!mUpdateMap.containsKey(type)) return false;
-        long diff = System.currentTimeMillis() - mUpdateMap.get(type);
+        if (!mUpdateMap.containsKey(type.getTrueDataType())) return false;
+        long diff = System.currentTimeMillis() - mUpdateMap.get(type.getTrueDataType());
         return diff < (seconds * 1000);
     }
 

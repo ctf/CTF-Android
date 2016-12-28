@@ -7,6 +7,7 @@ import com.ctf.mcgill.requests.NickRequest;
 import com.ctf.mcgill.requests.QueueRequest;
 import com.ctf.mcgill.requests.QueuesRequest;
 import com.ctf.mcgill.requests.QuotaRequest;
+import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
+import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS_TO_QUEUE;
 import static com.ctf.mcgill.enums.DataType.Single.NICKNAME;
 import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
 import static com.ctf.mcgill.enums.DataType.Single.QUOTA;
@@ -35,9 +37,9 @@ public class DataType {
      * Contains the list of individual inner requests that should be loaded on start
      */
     public enum Category {
-        DASHBOARD(QUOTA, USER_JOBS, DESTINATIONS), //DESTINATIONS leads to QUEUES
-        MY_ACCOUNT(QUOTA, USER_JOBS), //TODO check if NICKNAME should be added
-        ROOM_TAB();
+        DASHBOARD(Single.QUOTA, Single.USER_JOBS, Single.DESTINATIONS_TO_QUEUE),
+        MY_ACCOUNT(Single.QUOTA, Single.USER_JOBS), //TODO check if NICKNAME should be added
+        ROOM_TAB(Single.DESTINATIONS, Single.ROOM_JOBS);
 
         private final Single[] content;
 
@@ -108,7 +110,7 @@ public class DataType {
 
             @Override
             public RequestListener getListener() {
-                return null;
+                return new RoomJobsRequestListener();
             }
         },
         /**
@@ -124,6 +126,22 @@ public class DataType {
             @Override
             public RequestListener getListener() {
                 return new DestinationsRequestListener();
+            }
+        },
+        DESTINATIONS_TO_QUEUE(KEY_DESTINATIONS) {
+            @Override
+            public SpiceRequest getRequest(String token, Object... extras) {
+                return new DestinationsRequest(token);
+            }
+
+            @Override
+            public RequestListener getListener() {
+                return new DestinationsRequestListenerToQueue();
+            }
+
+            @Override
+            public Single getTrueDataType() {
+                return DESTINATIONS;
             }
         },
         /**
@@ -170,6 +188,10 @@ public class DataType {
 
         public String getCacheKey() {
             return cacheKey;
+        }
+
+        public Single getTrueDataType() {
+            return this;
         }
 
         public abstract SpiceRequest getRequest(String token, Object... extras);
@@ -237,7 +259,7 @@ public class DataType {
         }
     }
 
-    private final class RoomJobsRequestListener implements RequestListener<PrintJob[]> {
+    private static class RoomJobsRequestListener implements RequestListener<PrintJob[]> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -263,6 +285,18 @@ public class DataType {
         }
     }
 
+    private static class DestinationsRequestListenerToQueue implements RequestListener<Map> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            postErrorEvent(DESTINATIONS_TO_QUEUE, "Destinations request failed...");
+        }
+
+        @Override
+        public void onRequestSuccess(Map map) {
+            postLoadEventActivityOnly(DESTINATIONS_TO_QUEUE, map);
+        }
+    }
+
     //Called from within DESTINATIONS Request Listener
     private static class QueuesRequestListener implements RequestListener<List> {
 
@@ -273,7 +307,7 @@ public class DataType {
 
         @Override
         public void onRequestSuccess(List list) { //todo clean this up, e.g., getView() methods for each type of item that sets the correct params, do the same thing in room fragment
-            postLoadEventActivityOnly(QUEUES, list);
+            postLoadEvent(QUEUES, list);
         }
     }
 
