@@ -15,6 +15,7 @@ import com.ctf.mcgill.R;
 import com.ctf.mcgill.adapter.PrintJobAdapter;
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.enums.Room;
+import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.interfaces.RoboFragmentContract;
 import com.ctf.mcgill.items.DestinationMap;
@@ -157,7 +158,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
     @Override
     public void requestData() {
-        postEvent(getDataCategory());
+        postEvent(new CategoryDataEvent(getDataCategory()));
     }
 
     @Override

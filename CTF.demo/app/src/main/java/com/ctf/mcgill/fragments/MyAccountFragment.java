@@ -148,6 +148,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
                     quotaView.setText(getString(R.string.dashboard_quota_text, rQuota));
                     break;
                 case USER_JOBS:
+                    if (rPrintJobs == null) continue;
                     cAdapter.updateList(new ArrayList<>(Arrays.asList(rPrintJobs)));
                     break;
             }

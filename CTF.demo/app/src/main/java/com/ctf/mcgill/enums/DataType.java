@@ -32,11 +32,11 @@ import static com.ctf.mcgill.enums.DataType.Single.USER_JOBS;
 public class DataType {
     /**
      * Sets of requests; usually reflects the requests of an entire fragment
-     * Contains the list of individual inner requests necessary for that category
+     * Contains the list of individual inner requests that should be loaded on start
      */
     public enum Category {
         DASHBOARD(QUOTA, USER_JOBS, DESTINATIONS), //DESTINATIONS leads to QUEUES
-        MY_ACCOUNT(QUOTA, USER_JOBS, NICKNAME),
+        MY_ACCOUNT(QUOTA, USER_JOBS), //TODO check if NICKNAME should be added
         ROOM_TAB();
 
         private final Single[] content;
@@ -100,7 +100,7 @@ public class DataType {
         ROOM_JOBS(null) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
-                if (extras == null || extras[0] == null || !(extras[0] instanceof Room))
+                if (extras == null || extras.length != 1 || extras[0] == null || !(extras[0] instanceof Room))
                     throw new IllegalArgumentException("Room request must send a Room number (see enums)");
                 Room room = (Room) extras[0];
                 return new QueueRequest(token, room.getName());
@@ -151,7 +151,7 @@ public class DataType {
         NICKNAME(null) {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
-                if (extras == null || extras[0] == null)
+                if (extras == null || extras.length != 1 || extras[0] == null)
                     throw new IllegalArgumentException("NICKNAME request must send the nickname");
                 return new NickRequest(token, String.valueOf(extras[0]));
             }
