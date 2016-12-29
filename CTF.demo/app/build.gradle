@@ -19,7 +19,7 @@ android {
     buildToolsVersion BUILD_TOOLS
     defaultConfig {
         applicationId 'com.ctf.mcgill'
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion TARGET_SDK
         versionCode 2
         versionName "1.0_beta2"

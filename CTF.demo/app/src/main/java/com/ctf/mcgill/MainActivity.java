@@ -43,6 +43,7 @@ public class MainActivity extends RequestActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        if (!BuildConfig.DEBUG) disableCLog(); //Make things cleaner; don't log unless specified
         super.onCreate(savedInstanceState);
         Preferences prefs = new Preferences(this);
         if (prefs.isDarkMode()) setTheme(R.style.AppTheme_Dark_NoActionBar);
@@ -52,7 +53,7 @@ public class MainActivity extends RequestActivity {
 //            @Override
 //            public void onResult(PermissionResult result) {
 //                if (result.isAllGranted()) {
-                    AccountUtil.initAccount(MainActivity.this);
+        AccountUtil.initAccount(MainActivity.this);
 //                } else {
 //                    //Stop app?
 //                }

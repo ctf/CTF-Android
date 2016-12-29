@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
+import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS_TO_QUEUE;
 import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
 import static com.ctf.mcgill.enums.DataType.Single.ROOM_JOBS;
 
@@ -81,9 +82,16 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      */
     @Subscribe
     public void loadData(SingleDataEvent event) {
-        startSpice();
         DataType.Single type = event.type;
+        if (isWithinSeconds(type, FROM_LOCAL_THRESHOLD)) {
+            CLog.d("Send %s from local data", type);
+            if (type == DESTINATIONS_TO_QUEUE) type = QUEUES; //TODO get better workaround; queue request starts from destinations_to_queue
+            postEvent(new LoadEvent(type, true, getLocalData(type)).fragmentOnly());
+            return;
+        }
+        startSpice();
         Object[] extras = event.extras;
+        CLog.d("Sending request for %s", type);
         if (event.type != ROOM_JOBS) { //TODO change this
             if (isInProgress(type)) {
                 CLog.d("%s request is already in session", type);
@@ -91,24 +99,22 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             }
             setInProgress(type);
         }
-        CLog.d("Sending request for %s", type);
-        if (type.getCacheKey() != null)
-            //TODO test between execute and local save to see if time difference is worth keeping data inside this activity
-            mRequestManager.execute(type.getRequest(mToken, extras), type.getCacheKey(), DurationInMillis.ONE_MINUTE, type.getListener());
-        else mRequestManager.execute(type.getRequest(mToken, extras), type.getListener());
+
+        mRequestManager.execute(type.getRequest(mToken, extras), type.getListener());
     }
 
     @Subscribe
     public void onLoadEvent(@NonNull LoadEvent event) {
         if (event.isFragmentOnly()) return;
+        CLog.d("%s has loaded", event.type);
+        updateTime(event.type);
         if (!event.isSuccessful || event.data == null) {
             CLog.e("Unsuccessful or null load event: %s", event);
-            if (event.type == DESTINATIONS) { //Queue won't be loaded, send empty post
+            if (event.type == DESTINATIONS_TO_QUEUE) { //Queue won't be loaded, send empty post
                 postEvent(new LoadEvent(QUEUES, false, null));
             }
             return;
         }
-        updateTime(event.type);
         switch (event.type) {
             case QUOTA:
                 rQuota = String.valueOf(event.data);
@@ -117,11 +123,11 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 rPrintJobArray = (PrintJob[]) event.data;
                 break;
             case DESTINATIONS_TO_QUEUE:
-                rDestinationMap = (HashMap<String, Destination> ) event.data;
+                rDestinationMap = (HashMap<String, Destination>) event.data;
                 loadData(new SingleDataEvent(DataType.Single.QUEUES)); //destinations found; load and parse queues
                 break;
             case DESTINATIONS:
-                rDestinationMap = (HashMap<String, Destination> ) event.data;
+                rDestinationMap = (HashMap<String, Destination>) event.data;
                 break;
             case QUEUES: //Process into RoomInfo first; then send
                 rRoomInfoList = new ArrayList<>();
@@ -130,7 +136,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                     RoomInformation roomInfo = new RoomInformation(name, true); //TODO put actual computer status
 
                     if (rDestinationMap != null) {
-                        for (String d : ((PrintQueue) q).destinations) {
+                        for (String d : q.destinations) {
                             roomInfo.addPrinter(rDestinationMap.get(d).getName(), rDestinationMap.get(d).isUp());
                         }
                     }
@@ -141,6 +147,26 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             case NICKNAME:
                 rNickname = String.valueOf(event.data);
                 break;
+        }
+    }
+
+    private Object getLocalData(DataType.Single type) {
+        switch (type) {
+            case QUOTA:
+                return rQuota;
+            case USER_JOBS:
+                return rPrintJobArray;
+            case DESTINATIONS_TO_QUEUE:
+                return rDestinationMap;
+            case DESTINATIONS:
+                return rDestinationMap;
+            case QUEUES: //Process into RoomInfo first; then send
+                return rRoomInfoList;
+            case NICKNAME:
+                return rNickname;
+            default:
+                CLog.e("No local data specified for %s", type);
+                return null;
         }
     }
 

@@ -9,6 +9,7 @@ import com.ctf.mcgill.requests.QueuesRequest;
 import com.ctf.mcgill.requests.QuotaRequest;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
+import com.ctf.mcgill.tepid.PrintQueue;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -53,12 +54,11 @@ public class DataType {
         }
     }
 
-    private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB", KEY_QUEUES = "QUEUES", KEY_DESTINATIONS = "DESTINATIONS";
+//    private static final String KEY_QUOTA = "QUOTA", KEY_LAST_JOB = "LAST JOB", KEY_QUEUES = "QUEUES", KEY_DESTINATIONS = "DESTINATIONS";
 
     /**
      * Single unique request
-     * Contains the cacheKey, request, and listener
-     * If cacheKey is null, result is not cached
+     * Contains the request and listener retrieval
      * Beware of correcting casting
      */
     public enum Single {
@@ -67,7 +67,7 @@ public class DataType {
          * Gets count for current user
          * Returns String
          */
-        QUOTA(KEY_QUOTA) {
+        QUOTA() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new QuotaRequest(token);
@@ -83,7 +83,7 @@ public class DataType {
          * Gets list of print jobs for current user
          * Returns PrintJob[]
          */
-        USER_JOBS(KEY_LAST_JOB) {
+        USER_JOBS() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new JobsRequest(token);
@@ -100,7 +100,7 @@ public class DataType {
          * Extras must contain the specified room enum
          * Returns PrintJob[]
          */
-        ROOM_JOBS(null) {
+        ROOM_JOBS() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 if (extras == null || extras.length != 1 || extras[0] == null || !(extras[0] instanceof Room))
@@ -118,7 +118,7 @@ public class DataType {
          * Destination request
          * Returns Map<String, Destination>
          */
-        DESTINATIONS(KEY_DESTINATIONS) {
+        DESTINATIONS() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new DestinationsRequest(token);
@@ -129,7 +129,7 @@ public class DataType {
                 return new DestinationsRequestListener();
             }
         },
-        DESTINATIONS_TO_QUEUE(KEY_DESTINATIONS) {
+        DESTINATIONS_TO_QUEUE() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new DestinationsRequest(token);
@@ -148,9 +148,9 @@ public class DataType {
         /**
          * Queue request
          * returns List<PrintQueue>
-         * //TODO add more documentation; this one is called only after DESTINATIONS
+         * //TODO add more documentation; this one is called only after DESTINATIONS_TO_QUEUE
          */
-        QUEUES(KEY_QUEUES) {
+        QUEUES() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 return new QueuesRequest(token);
@@ -167,7 +167,7 @@ public class DataType {
          * //TODO if necessary, add length/char check to see that nickname is appropriate
          * Returns String
          */
-        NICKNAME(null) {
+        NICKNAME() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
                 if (extras == null || extras.length != 1 || extras[0] == null)
@@ -180,16 +180,6 @@ public class DataType {
                 return new NickRequestListener();
             }
         };
-
-        private final String cacheKey;
-
-        Single(String cacheKey) {
-            this.cacheKey = cacheKey;
-        }
-
-        public String getCacheKey() {
-            return cacheKey;
-        }
 
         public Single getTrueDataType() {
             return this;
@@ -286,20 +276,20 @@ public class DataType {
         }
     }
 
-    private static class DestinationsRequestListenerToQueue implements RequestListener<Map> { //TODO check if Map should be replaced with HashMap<String, Destination>
+    private static class DestinationsRequestListenerToQueue implements RequestListener<HashMap<String, Destination>> { //TODO check if Map should be replaced with HashMap<String, Destination>
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             postErrorEvent(DESTINATIONS_TO_QUEUE, "Destinations request failed...");
         }
 
         @Override
-        public void onRequestSuccess(Map map) {
+        public void onRequestSuccess(HashMap<String, Destination> map) {
             postLoadEventActivityOnly(DESTINATIONS_TO_QUEUE, map);
         }
     }
 
     //Called from within DESTINATIONS Request Listener
-    private static class QueuesRequestListener implements RequestListener<List> {
+    private static class QueuesRequestListener implements RequestListener<List<PrintQueue>> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -307,8 +297,8 @@ public class DataType {
         }
 
         @Override
-        public void onRequestSuccess(List list) { //todo clean this up, e.g., getView() methods for each type of item that sets the correct params, do the same thing in room fragment
-            postLoadEvent(QUEUES, list);
+        public void onRequestSuccess(List<PrintQueue> list) {
+            postLoadEventActivityOnly(QUEUES, list); //Received PrintQueue, but we want to change it to RoomInformation TODO add separate Room Info request listener
         }
     }
 

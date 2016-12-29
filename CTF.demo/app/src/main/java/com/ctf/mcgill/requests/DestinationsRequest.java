@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.Request;
@@ -14,18 +15,18 @@ import okhttp3.Response;
  * request a HashMap<UUID, Destination> from the tepid server,
  * each destination represents a printer in one of the labs
  */
-public class DestinationsRequest extends BaseTepidRequest<Map> {
+public class DestinationsRequest extends BaseTepidRequest<HashMap> {
 
     private String token;
     private static String url = baseUrl + "destinations/";
 
     public DestinationsRequest(String token) {
-        super(Map.class);
+        super(HashMap.class);
         this.token = token;
     }
 
     @Override
-    public Map<String, Destination> loadDataFromNetwork() throws Exception {
+    public HashMap<String, Destination> loadDataFromNetwork() throws Exception {
 
         // Build a GET request with our auth token to ask TEPID for the destinations
         Request request = new Request.Builder()
@@ -44,7 +45,7 @@ public class DestinationsRequest extends BaseTepidRequest<Map> {
         }
 
         // deserialize and return TEPID's response
-        Type t = new TypeToken<Map<String, Destination>>(){}.getType();
+        Type t = new TypeToken<HashMap<String, Destination>>(){}.getType();
         return new Gson().fromJson(response.body().string(), t);
     }
 }

@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.events.LoadEvent;
+import com.ctf.mcgill.items.DestinationHashMap;
 import com.ctf.mcgill.tepid.Destination;
 import com.pitchedapps.capsule.library.adapters.ViewPagerAdapter;
 import com.pitchedapps.capsule.library.fragments.ViewPagerFragment;
@@ -39,7 +40,7 @@ public class RoomFragment extends ViewPagerFragment {
     public static RoomFragment newInstance(HashMap<String, Destination> destinationMap) {
         ParcelUtils parcelUtils = new ParcelUtils<>(new RoomFragment());
         if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, destinationMap)) {
-            parcelUtils.putHashMap(BUNDLE_DESTINATION_MAP, destinationMap, String.class, Destination.class);
+            parcelUtils.putHashMap(BUNDLE_DESTINATION_MAP, new DestinationHashMap(destinationMap));
         }
         return (RoomFragment) parcelUtils.create();
     }
@@ -55,7 +56,7 @@ public class RoomFragment extends ViewPagerFragment {
         if (args == null || !args.getBoolean(BUNDLE_COMPLETE, false)) {
             return;
         }
-        rDesinationMap = args.getParcelable(BUNDLE_DESTINATION_MAP);
+        rDesinationMap = ParcelUtils.getHashMap(args, BUNDLE_DESTINATION_MAP, DestinationHashMap.class);
     }
 
     @Override

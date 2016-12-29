@@ -12,6 +12,7 @@
     <item text="Added SwipeRefreshLayouts to views that need to load data" />
     <item text="Created RequestActivity to manage all requests asynchronously" />
     <item text="Made data parcelable" />
+    <item text="Removed Spice caching in favour of RequestActivity data" />
     <item text="" />
 
     <version title="v1.0_beta1"/>

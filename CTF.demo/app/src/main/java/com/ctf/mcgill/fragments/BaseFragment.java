@@ -1,5 +1,6 @@
 package com.ctf.mcgill.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
@@ -69,12 +70,13 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
         postEvent(new CategoryDataEvent(getDataCategory()));
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     @CallSuper
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         cSwipeRefreshRecyclerView.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
         cSwipeRefreshRecyclerView.setRefreshing(true); //TODO figure out why first refresh does not show indicator (only blank circle)
-        super.onViewCreated(view, savedInstanceState);
+//        super.onViewCreated(view, savedInstanceState); //We are managing list loading ourselves
     }
 
     protected boolean isLoadSuccessful(LoadEvent event) {

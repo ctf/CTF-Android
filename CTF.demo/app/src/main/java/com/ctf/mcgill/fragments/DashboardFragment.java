@@ -142,6 +142,10 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
                 case QUEUES: //Already changed into List<RoomInformation> through RequestActivity
                     if (rRoomInfo == null) continue;
                     cAdapter.updateList(rRoomInfo);
+                    /*
+                     * TODO figure out why adapter doesn't refresh properly
+                     * It is set to null whenever onRefresh is called, but the Eventbus post doesn't reach here some times; it seems to work for th eother adapters though
+                     */
                     break;
             }
         }

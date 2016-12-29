@@ -25,7 +25,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String TAG = "SETTINGS_FRAGMENT", KEY_TOKEN = "TOKEN";
     private String token;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
-    private Preferences mPrefs;
 
     public static SettingsFragment newInstance(String token) {
         SettingsFragment frag = new SettingsFragment();
@@ -54,7 +53,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        mPrefs = new Preferences(getContext());
         getPreferenceManager().setSharedPreferencesName("CAPSULE_PREFERENCES");
         addPreferencesFromResource(R.xml.preferences);
 
@@ -72,14 +70,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceChange(Preference preference, Object o) {
                 if (o instanceof String) {
                     setLocale(getActivity(), (String) o);
-                    getActivity().recreate();
-                    //todo this brings us back to the main page, want to get back to settings page
+                    ((MainActivity) getActivity()).reload();
+                    //todo this brings us back to the main page, want to get back to settings page (fixed 2016/12/28)
                 }
                 return true;
             }
         });
 
-        findPreference("pref_theme").setDefaultValue(mPrefs.isDarkMode());
         findPreference("pref_theme").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
