@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="load_data_no_event_request">%s loadData failed; EventRequest not specified</string>
+    <string name="no_local_data">No local data specified for %s</string>
+
+</resources>
+
+

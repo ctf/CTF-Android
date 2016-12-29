@@ -9,16 +9,21 @@ import com.ctf.mcgill.enums.DataType;
 public class SingleDataEvent {
     public final DataType.Single type;
     public boolean forceReload = false; //Default to lenient
-    public final Object[] extras;
+    public final Object extra;
 
-    public SingleDataEvent(DataType.Single type, Object... extras) {
+    public SingleDataEvent(DataType.Single type) {
         this.type = type;
-        this.extras = extras;
+        this.extra = null;
     }
 
-    public SingleDataEvent(DataType.Single type, boolean forceReload, Object... extras) {
+    public SingleDataEvent(DataType.Single type, Object extra) {
+        this.type = type;
+        this.extra = extra;
+    }
+
+    public SingleDataEvent(DataType.Single type, boolean forceReload, Object extra) {
         this.type = type;
         this.forceReload = forceReload;
-        this.extras = extras;
+        this.extra = extra;
     }
 }

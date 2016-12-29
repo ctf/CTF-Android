@@ -5,16 +5,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.ctf.mcgill.enums.DataType;
+import com.ctf.mcgill.eventRequests.BaseEventRequest;
+import com.ctf.mcgill.eventRequests.DestinationEventRequest;
+import com.ctf.mcgill.eventRequests.NicknameEventRequest;
+import com.ctf.mcgill.eventRequests.QuotaEventRequest;
+import com.ctf.mcgill.eventRequests.RoomInfoEventRequest;
+import com.ctf.mcgill.eventRequests.RoomJobsEventRequest;
+import com.ctf.mcgill.eventRequests.UserJobsEventRequest;
 import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.events.SingleDataEvent;
 import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
-import com.ctf.mcgill.tepid.PrintQueue;
 import com.ctf.mcgill.tepid.RoomInformation;
 import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.DurationInMillis;
 import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
 import com.pitchedapps.capsule.library.logging.CLog;
 
@@ -23,11 +28,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
-import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS_TO_QUEUE;
 import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
 import static com.ctf.mcgill.enums.DataType.Single.ROOM_JOBS;
 
@@ -47,6 +49,8 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * If time shows as -1, it is currently in progress
      */
     private EnumMap<DataType.Single, Long> mUpdateMap = new EnumMap<>(DataType.Single.class);
+
+    private boolean waitingForRoomInfo = false;
 
     /*
      * Collection of requested data
@@ -71,7 +75,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     @Subscribe
     public void loadData(CategoryDataEvent event) {
         for (DataType.Single s : event.type.getContent())
-            loadData(new SingleDataEvent(s, event.extras));
+            loadData(new SingleDataEvent(s, event.extra));
     }
 
     /**
@@ -90,16 +94,13 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
          */
         if (!event.forceReload && isWithinSeconds(type, FROM_LOCAL_THRESHOLD)) {
             CLog.d("Send %s from local data", type);
-            if (type == DESTINATIONS_TO_QUEUE)
-                type = QUEUES; //TODO get better workaround; queue request starts from destinations_to_queue
             Object data = getLocalData(type);
             if (data != null) {
                 postEvent(new LoadEvent(type, true, getLocalData(type)).fragmentOnly());
                 return;
             } //data should never be null, unless the timeMap is out of sync
         }
-        startSpice(); //For precautions; eventually stopSpice will implemented more where necessary
-        Object[] extras = event.extras;
+        startSpice(); //For precautions; eventually stopSpice will be implemented more where necessary
         CLog.d("Sending request for %s", type);
         if (event.type != ROOM_JOBS) { //TODO change this (room_jobs is currently not saved)
             if (isInProgress(type)) {
@@ -109,7 +110,27 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             setInProgress(type);
         }
 
-        mRequestManager.execute(type.getRequest(mToken, extras), type.getListener()); //Call a new request with a new listener for the given type
+        if (type == QUEUES && event.extra == null) type = DESTINATIONS; //Load destinations first
+        getEventRequest(type).execute(mRequestManager, this, mToken, event.extra); //Call a new request with a new listener for the given type
+    }
+
+    private BaseEventRequest getEventRequest(DataType.Single type) {
+        switch (type) {
+            case QUOTA:
+                return new QuotaEventRequest();
+            case USER_JOBS:
+                return new UserJobsEventRequest();
+            case ROOM_JOBS:
+                return new RoomJobsEventRequest();
+            case DESTINATIONS:
+                return new DestinationEventRequest();
+            case QUEUES:
+                return new RoomInfoEventRequest();
+            case NICKNAME:
+                return new NicknameEventRequest();
+            default:
+                throw new RuntimeException(sf(R.string.load_data_no_event_request, type));
+        }
     }
 
     /**
@@ -124,9 +145,6 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         updateTime(event.type);
         if (!event.isSuccessful || event.data == null) {
             CLog.e("Unsuccessful or null load event: %s", event);
-            if (event.type == DESTINATIONS_TO_QUEUE) { //Queue won't be loaded, send empty post
-                postEvent(new LoadEvent(QUEUES, false, null));
-            }
             return;
         }
         switch (event.type) {
@@ -136,27 +154,13 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             case USER_JOBS:
                 rPrintJobArray = (PrintJob[]) event.data;
                 break;
-            case DESTINATIONS_TO_QUEUE:
-                rDestinationMap = (HashMap<String, Destination>) event.data;
-                loadData(new SingleDataEvent(DataType.Single.QUEUES)); //destinations found; load and parse queues
-                break;
             case DESTINATIONS:
                 rDestinationMap = (HashMap<String, Destination>) event.data;
+                if (waitingForRoomInfo) loadData(new SingleDataEvent(QUEUES, rDestinationMap)); //Submit new QUEUE request with given destinationMap
                 break;
             case QUEUES: //Process into RoomInfo first; then send
-                rRoomInfoList = new ArrayList<>();
-                for (PrintQueue q : (List<PrintQueue>) event.data) {
-                    String name = q.name;
-                    RoomInformation roomInfo = new RoomInformation(name, true); //TODO put actual computer status
-
-                    if (rDestinationMap != null) {
-                        for (String d : q.destinations) {
-                            roomInfo.addPrinter(rDestinationMap.get(d).getName(), rDestinationMap.get(d).isUp());
-                        }
-                    }
-                    rRoomInfoList.add(roomInfo);
-                }
-                postEvent(new LoadEvent(QUEUES, true, rRoomInfoList).fragmentOnly());
+                waitingForRoomInfo = false;
+                rRoomInfoList = (ArrayList<RoomInformation>) event.data;
                 break;
             case NICKNAME:
                 rNickname = String.valueOf(event.data);
@@ -171,8 +175,6 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 return rQuota;
             case USER_JOBS:
                 return rPrintJobArray;
-            case DESTINATIONS_TO_QUEUE:
-                return rDestinationMap;
             case DESTINATIONS:
                 return rDestinationMap;
             case QUEUES: //Process into RoomInfo first; then send
@@ -180,14 +182,14 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             case NICKNAME:
                 return rNickname;
             default:
-                CLog.e("No local data specified for %s", type);
+                CLog.e(sf(R.string.no_local_data, type));
                 return null;
         }
     }
 
     //Set map time of current type to current time
     private void updateTime(DataType.Single type) {
-        mUpdateMap.put(type.getTrueDataType(), System.currentTimeMillis());
+        mUpdateMap.put(type, System.currentTimeMillis());
     }
 
     /**
@@ -196,7 +198,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * @param type Single DataType
      */
     private void setInProgress(DataType.Single type) {
-        mUpdateMap.put(type.getTrueDataType(), -1L);
+        mUpdateMap.put(type, -1L);
     }
 
     /**
@@ -206,12 +208,12 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * @return update status
      */
     private boolean isInProgress(DataType.Single type) {
-        return mUpdateMap.containsKey(type.getTrueDataType()) && mUpdateMap.get(type.getTrueDataType()) == -1L;
+        return mUpdateMap.containsKey(type) && mUpdateMap.get(type) == -1L;
     }
 
     private boolean isWithinSeconds(DataType.Single type, long seconds) {
-        if (!mUpdateMap.containsKey(type.getTrueDataType())) return false;
-        long diff = System.currentTimeMillis() - mUpdateMap.get(type.getTrueDataType());
+        if (!mUpdateMap.containsKey(type)) return false;
+        long diff = System.currentTimeMillis() - mUpdateMap.get(type);
         return diff < (seconds * 1000);
     }
 

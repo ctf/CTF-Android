@@ -27,6 +27,9 @@ public class UserJobsEventRequest extends BaseEventRequest<PrintJob[]> {
         return DataType.Single.USER_JOBS;
     }
 
+    /**
+     * request to get a list of user's jobs from TEPID
+     */
     private static class UserJobsRequest extends BaseTepidRequest<PrintJob[]> {
 
         private static final String url = baseUrl + "jobs/" + AccountUtil.getShortUser() + "/";

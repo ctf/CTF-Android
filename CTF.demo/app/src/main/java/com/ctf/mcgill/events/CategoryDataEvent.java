@@ -8,16 +8,21 @@ import com.ctf.mcgill.enums.DataType;
 public class CategoryDataEvent {
     public final DataType.Category type;
     public boolean forceReload = false; //Default to lenient
-    public final Object[] extras;
+    public final Object extra;
 
-    public CategoryDataEvent(DataType.Category type, Object... extras) {
+    public CategoryDataEvent(DataType.Category type) {
         this.type = type;
-        this.extras = extras;
+        this.extra = null;
     }
 
-    public CategoryDataEvent(DataType.Category type, boolean forceReload, Object... extras) {
+    public CategoryDataEvent(DataType.Category type, Object extra) {
+        this.type = type;
+        this.extra = extra;
+    }
+
+    public CategoryDataEvent(DataType.Category type, boolean forceReload, Object extra) {
         this.type = type;
         this.forceReload = forceReload;
-        this.extras = extras;
+        this.extra = extra;
     }
 }

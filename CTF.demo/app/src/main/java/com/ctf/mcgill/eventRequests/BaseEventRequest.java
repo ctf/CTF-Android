@@ -15,7 +15,7 @@ import com.pitchedapps.capsule.library.utils.EventUtils;
  * Created by Allan Wang on 28/12/2016.
  */
 
-abstract class BaseEventRequest<T> {
+public abstract class BaseEventRequest<T> {
 
     public void execute(SpiceManager manager, Context context, String token, @Nullable Object extra) {
         if (!manager.isStarted()) manager.start(context);
