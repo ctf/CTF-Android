@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.ctf.mcgill.R;
+import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.interfaces.RoboFragmentContract;
@@ -16,7 +17,9 @@ import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.SwipeRecyclerFragmentAnimated;
 import com.pitchedapps.capsule.library.item.CapsuleViewHolder;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -27,6 +30,7 @@ import butterknife.Unbinder;
  * Created by Allan Wang on 2016-11-15.
  * <p>
  * Combine some common functions of the other fragments
+ * TODO figure out a way to save data on rotate/start; the data is only passed via bundles when creating the fragment, but if it recreates itself the data will be outdated
  */
 
 public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends SwipeRecyclerFragmentAnimated<T, V> implements RoboFragmentContract {
@@ -65,6 +69,34 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
         super.onPause();
     }
 
+    /**
+     * Wrapper for abstract load event so we don't need to worry about the Subscription annotation
+     *
+     * @param event loading event sent
+     */
+    @Subscribe
+    @Override
+    public final void onLoadEventSubscription(LoadEvent event) {
+        if (event.isActivityOnly()) return;
+        hideRefresh(); //TODO hide only after all pending events are received
+        if (onLoadEvent(event)) updateContent(event.type);
+    }
+
+    /**
+     * Specified whether or not eventSubscription should count as a loaded event
+     *
+     * @param event data event
+     * @param types types that are valid subscriptions
+     * @return true if event contains a valid type and valid data
+     */
+    protected final boolean isLoadValid(LoadEvent event, DataType.Single... types) {
+        if (!ArrayUtils.contains(types, event.type)) return false;
+        if (event.isSuccessful) return true;
+        if (event.data == null) return false; //Error String is null -> Silent error
+        snackbar(new SnackbarEvent(String.valueOf(event.data)));
+        return false;
+    }
+
     @Override
     public void requestData() {
         postEvent(new CategoryDataEvent(getDataCategory()));
@@ -75,15 +107,7 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
     @CallSuper
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         cSwipeRefreshRecyclerView.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
-        cSwipeRefreshRecyclerView.setRefreshing(true); //TODO figure out why first refresh does not show indicator (only blank circle)
 //        super.onViewCreated(view, savedInstanceState); //We are managing list loading ourselves
-    }
-
-    protected boolean isLoadSuccessful(LoadEvent event) {
-        if (event.isSuccessful) return true;
-        if (event.data == null) return false; //Error String is null -> Silent error
-        snackbar(new SnackbarEvent(String.valueOf(event.data)));
-        return false;
     }
 
     @Override

@@ -17,15 +17,17 @@ import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.interfaces.RoboFragmentContract;
-import com.ctf.mcgill.items.DestinationHashMap;
+import com.ctf.mcgill.wrappers.DestinationHashMap;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
+import com.ctf.mcgill.wrappers.RoomPrintJob;
 import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.fragments.CapsulePageFragment;
 import com.pitchedapps.capsule.library.utils.ParcelUtils;
 import com.pitchedapps.capsule.library.views.SwipeRefreshRecyclerView;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -89,6 +91,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
         }
         return (RoomTabFragment) parcelUtils.create();
     }
+
 
     @Override
     public void getArgs(Bundle args) { //Should never be null
@@ -157,28 +160,45 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
         postEvent(new CategoryDataEvent(getDataCategory(), rRoom));
     }
 
-    @Override
+    /**
+     * Wrapper for abstract load event so we don't need to worry about the Subscription annotation
+     *
+     * @param event loading event sent
+     */
     @Subscribe
-    public void onLoadEvent(LoadEvent event) {
+    @Override
+    public final void onLoadEventSubscription(LoadEvent event) {
         if (event.isActivityOnly()) return;
-        mRefresher.setRefreshing(false); //TODO hide after all events loaded
-        switch (event.type) {
-            case ROOM_JOBS:
-                if (isLoadSuccessful(event)) {
-                    rPrintJobArray = (PrintJob[]) event.data;
-                } else return;
-                break;
-            case DESTINATIONS:
-                if (isLoadSuccessful(event)) {
-                    rDesinationMap = ((HashMap<String, Destination>) event.data);
-                } else return;
-            default: //Event is not one of the ones we wish to see; don't bother updating content for it
-                return;
-        }
-        updateContent(event.type);
+        mRefresher.setRefreshing(false); //TODO hide only after all pending events are received
+        if (onLoadEvent(event)) updateContent(event.type);
     }
 
-    protected boolean isLoadSuccessful(LoadEvent event) {
+
+    @Override
+    public boolean onLoadEvent(LoadEvent event) {
+        if (!isLoadValid(event, DataType.Single.ROOM_JOBS, DataType.Single.DESTINATIONS))
+            return false;
+        switch (event.type) {
+            case ROOM_JOBS:
+                RoomPrintJob roomPrintJob = (RoomPrintJob) event.data;
+                if (roomPrintJob.room != rRoom) break;
+                rPrintJobArray = roomPrintJob.printJobs;
+                break;
+            case DESTINATIONS:
+                rDesinationMap = ((HashMap<String, Destination>) event.data);
+        }
+        return true;
+    }
+
+    /**
+     * Specified whether or not eventSubscription should count as a loaded event
+     *
+     * @param event data event
+     * @param types types that are valid subscriptions
+     * @return true if event contains a valid type and valid data
+     */
+    protected final boolean isLoadValid(LoadEvent event, DataType.Single... types) {
+        if (!ArrayUtils.contains(types, event.type)) return false;
         if (event.isSuccessful) return true;
         if (event.data == null) return false; //Error String is null -> Silent error
         snackbar(new SnackbarEvent(String.valueOf(event.data)));

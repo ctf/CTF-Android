@@ -16,6 +16,7 @@ public interface RoboFragmentContract {
 
     /**
      * Get all potential data from RequestActivity
+     *
      * @param args getArguments(), may be null
      */
     void getArgs(@Nullable Bundle args);
@@ -24,6 +25,7 @@ public interface RoboFragmentContract {
 
     /**
      * Returns unique DataType Category containing all the appropriate requests
+     *
      * @return enum
      */
     DataType.Category getDataCategory();
@@ -37,13 +39,23 @@ public interface RoboFragmentContract {
      * Eventbus call when event is sent
      * Be sure to add @Subscribe annotation to the submost class
      * This method should save all data, then call updateContent on that event.type
+     *
      * @param event loading event sent
      */
-    void onLoadEvent(LoadEvent event);
+    void onLoadEventSubscription(LoadEvent event);
+
+    /**
+     * Nested method from onLoadEventSubscription
+     *
+     * @param event event received
+     * @return true if content should be updated, false otherwise
+     */
+    boolean onLoadEvent(LoadEvent event);
 
     /**
      * Update a specified content given that the data retrieval has happened
      * However, the data may still be null or invalid, so check for that too
+     *
      * @param types types to update
      */
     void updateContent(DataType.Single... types);

@@ -104,30 +104,21 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
     }
 
     @Override
-    @Subscribe
-    public void onLoadEvent(LoadEvent event) {
-        if (event.isActivityOnly()) return;
-        hideRefresh(); //TODO hide after all events loaded
+    public boolean onLoadEvent(LoadEvent event) {
+        if (!isLoadValid(event, DataType.Single.NICKNAME, DataType.Single.QUOTA, DataType.Single.USER_JOBS))
+            return false;
         switch (event.type) {
             case NICKNAME:
-                if (isLoadSuccessful(event)) {
-                    rNickname = String.valueOf(event.data);
-                } else return;
+                rNickname = String.valueOf(event.data);
                 break;
             case QUOTA:
-                if (isLoadSuccessful(event)) {
-                    rQuota = String.valueOf(event.data);
-                } else return;
+                rQuota = String.valueOf(event.data);
                 break;
             case USER_JOBS:
-                if (isLoadSuccessful(event)) {
-                    rPrintJobs = (PrintJob[]) event.data;
-                } else return;
+                rPrintJobs = (PrintJob[]) event.data;
                 break;
-            default: //Event is not one of the ones we wish to see; don't bother updating content for it
-                return;
         }
-        updateContent(event.type);
+        return true;
     }
 
     @Override

@@ -2,14 +2,15 @@ package com.ctf.mcgill.enums;
 
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.requests.DestinationsRequest;
-import com.ctf.mcgill.requests.JobsRequest;
+import com.ctf.mcgill.requests.UserJobsRequest;
 import com.ctf.mcgill.requests.NickRequest;
-import com.ctf.mcgill.requests.QueueRequest;
+import com.ctf.mcgill.requests.RoomJobsRequest;
 import com.ctf.mcgill.requests.QueuesRequest;
 import com.ctf.mcgill.requests.QuotaRequest;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.ctf.mcgill.tepid.PrintQueue;
+import com.ctf.mcgill.wrappers.RoomPrintJob;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -18,14 +19,6 @@ import com.pitchedapps.capsule.library.utils.EventUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
-import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS_TO_QUEUE;
-import static com.ctf.mcgill.enums.DataType.Single.NICKNAME;
-import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
-import static com.ctf.mcgill.enums.DataType.Single.QUOTA;
-import static com.ctf.mcgill.enums.DataType.Single.ROOM_JOBS;
-import static com.ctf.mcgill.enums.DataType.Single.USER_JOBS;
 
 /**
  * Created by Allan Wang on 26/12/2016.
@@ -86,7 +79,7 @@ public class DataType {
         USER_JOBS() {
             @Override
             public SpiceRequest getRequest(String token, Object... extras) {
-                return new JobsRequest(token);
+                return new UserJobsRequest(token);
             }
 
             @Override
@@ -106,7 +99,7 @@ public class DataType {
                 if (extras == null || extras.length != 1 || extras[0] == null || !(extras[0] instanceof Room))
                     throw new IllegalArgumentException("Room request must send a Room number (see enums)");
                 Room room = (Room) extras[0];
-                return new QueueRequest(token, room.getName());
+                return new RoomJobsRequest(token, room);
             }
 
             @Override
@@ -229,37 +222,37 @@ public class DataType {
     private static class QuotaRequestListener implements RequestListener<String> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(QUOTA, "Quota request failed...");
+            postErrorEvent(Single.QUOTA, "Quota request failed...");
         }
 
         @Override
         public void onRequestSuccess(String quota) {
-            postLoadEvent(QUOTA, quota);
+            postLoadEvent(Single.QUOTA, quota);
         }
     }
 
     private static class UserJobsRequestListener implements RequestListener<PrintJob[]> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(USER_JOBS, "User jobs request failed...");
+            postErrorEvent(Single.USER_JOBS, "User jobs request failed...");
         }
 
         @Override
         public void onRequestSuccess(PrintJob[] printJobs) {
-            postLoadEvent(USER_JOBS, printJobs);
+            postLoadEvent(Single.USER_JOBS, printJobs);
         }
     }
 
-    private static class RoomJobsRequestListener implements RequestListener<PrintJob[]> {
+    private static class RoomJobsRequestListener implements RequestListener<RoomPrintJob> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(ROOM_JOBS, "Room jobs request failed...");
+            postErrorEvent(Single.ROOM_JOBS, "Room jobs request failed...");
         }
 
         @Override
-        public void onRequestSuccess(PrintJob[] printJobs) {
-            postLoadEvent(ROOM_JOBS, printJobs);
+        public void onRequestSuccess(RoomPrintJob roomPrintJob) {
+            postLoadEvent(Single.ROOM_JOBS, roomPrintJob);
         }
     }
 
@@ -267,24 +260,24 @@ public class DataType {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(DESTINATIONS, "Destinations request failed...");
+            postErrorEvent(Single.DESTINATIONS, "Destinations request failed...");
         }
 
         @Override
         public void onRequestSuccess(Map map) {
-            postLoadEvent(DESTINATIONS, map);
+            postLoadEvent(Single.DESTINATIONS, map);
         }
     }
 
     private static class DestinationsRequestListenerToQueue implements RequestListener<HashMap<String, Destination>> { //TODO check if Map should be replaced with HashMap<String, Destination>
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(DESTINATIONS_TO_QUEUE, "Destinations request failed...");
+            postErrorEvent(Single.DESTINATIONS_TO_QUEUE, "Destinations request failed...");
         }
 
         @Override
         public void onRequestSuccess(HashMap<String, Destination> map) {
-            postLoadEventActivityOnly(DESTINATIONS_TO_QUEUE, map);
+            postLoadEvent(Single.DESTINATIONS_TO_QUEUE, map);
         }
     }
 
@@ -293,12 +286,12 @@ public class DataType {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(QUEUES, "Queues request failed...");
+            postErrorEvent(Single.QUEUES, "Queues request failed...");
         }
 
         @Override
         public void onRequestSuccess(List<PrintQueue> list) {
-            postLoadEventActivityOnly(QUEUES, list); //Received PrintQueue, but we want to change it to RoomInformation TODO add separate Room Info request listener
+            postLoadEventActivityOnly(Single.QUEUES, list); //Received PrintQueue, but we want to change it to RoomInformation TODO add separate Room Info request listener
         }
     }
 
@@ -306,12 +299,12 @@ public class DataType {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            postErrorEvent(NICKNAME, "Nick request failed...");
+            postErrorEvent(Single.NICKNAME, "Nick request failed...");
         }
 
         @Override
         public void onRequestSuccess(String nick) {
-            postLoadEvent(NICKNAME, nick);
+            postLoadEvent(Single.NICKNAME, nick);
         }
     }
 }

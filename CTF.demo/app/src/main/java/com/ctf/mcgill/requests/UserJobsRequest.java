@@ -10,12 +10,12 @@ import okhttp3.Response;
 /**
  * request to get a list of user's jobs from TEPID
  */
-public class JobsRequest extends BaseTepidRequest<PrintJob[]> {
+public class UserJobsRequest extends BaseTepidRequest<PrintJob[]> {
 
     private static final String url = baseUrl + "jobs/" + AccountUtil.getShortUser() + "/";
     private String token;
 
-    public JobsRequest(String token) {
+    public UserJobsRequest(String token) {
         super(PrintJob[].class);
         this.token = token;
     }

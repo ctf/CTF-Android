@@ -59,7 +59,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        mRequestManager.start(this);
+        startSpice();
     }
 
     /**
@@ -83,16 +83,25 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     @Subscribe
     public void loadData(SingleDataEvent event) {
         DataType.Single type = event.type;
-        if (isWithinSeconds(type, FROM_LOCAL_THRESHOLD)) {
+        /*
+         * Currently, if any fragment does not have all of the necessary information, it will reload all the necessary data
+         * ForceReload should only be true when the user decides to pull down the SwipeRefreshLayout
+         * Otherwise, if we already have data that is recent enough to use, there is no need to request it again
+         */
+        if (!event.forceReload && isWithinSeconds(type, FROM_LOCAL_THRESHOLD)) {
             CLog.d("Send %s from local data", type);
-            if (type == DESTINATIONS_TO_QUEUE) type = QUEUES; //TODO get better workaround; queue request starts from destinations_to_queue
-            postEvent(new LoadEvent(type, true, getLocalData(type)).fragmentOnly());
-            return;
+            if (type == DESTINATIONS_TO_QUEUE)
+                type = QUEUES; //TODO get better workaround; queue request starts from destinations_to_queue
+            Object data = getLocalData(type);
+            if (data != null) {
+                postEvent(new LoadEvent(type, true, getLocalData(type)).fragmentOnly());
+                return;
+            } //data should never be null, unless the timeMap is out of sync
         }
-        startSpice();
+        startSpice(); //For precautions; eventually stopSpice will implemented more where necessary
         Object[] extras = event.extras;
         CLog.d("Sending request for %s", type);
-        if (event.type != ROOM_JOBS) { //TODO change this
+        if (event.type != ROOM_JOBS) { //TODO change this (room_jobs is currently not saved)
             if (isInProgress(type)) {
                 CLog.d("%s request is already in session", type);
                 return;
@@ -100,9 +109,14 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             setInProgress(type);
         }
 
-        mRequestManager.execute(type.getRequest(mToken, extras), type.getListener());
+        mRequestManager.execute(type.getRequest(mToken, extras), type.getListener()); //Call a new request with a new listener for the given type
     }
 
+    /**
+     * On load event.
+     *
+     * @param event the event received (containing the type and data)
+     */
     @Subscribe
     public void onLoadEvent(@NonNull LoadEvent event) {
         if (event.isFragmentOnly()) return;
@@ -150,6 +164,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         }
     }
 
+    //Get requested data from saved values
     private Object getLocalData(DataType.Single type) {
         switch (type) {
             case QUOTA:
@@ -170,6 +185,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         }
     }
 
+    //Set map time of current type to current time
     private void updateTime(DataType.Single type) {
         mUpdateMap.put(type.getTrueDataType(), System.currentTimeMillis());
     }

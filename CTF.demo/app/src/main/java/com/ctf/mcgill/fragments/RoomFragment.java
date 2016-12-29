@@ -10,7 +10,7 @@ import android.support.v4.view.ViewPager;
 import com.ctf.mcgill.R;
 import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.events.LoadEvent;
-import com.ctf.mcgill.items.DestinationHashMap;
+import com.ctf.mcgill.wrappers.DestinationHashMap;
 import com.ctf.mcgill.tepid.Destination;
 import com.pitchedapps.capsule.library.adapters.ViewPagerAdapter;
 import com.pitchedapps.capsule.library.fragments.ViewPagerFragment;
@@ -28,9 +28,6 @@ import java.util.List;
 public class RoomFragment extends ViewPagerFragment {
 
     public static final String TAG = "ROOM_FRAGMENT"; //TODO remove
-
-    // the number of tabs on the room info page
-    private static final int FRAGMENT_COUNT = 3;
 
     private HashMap<String, Destination> rDesinationMap;
 
@@ -66,6 +63,17 @@ public class RoomFragment extends ViewPagerFragment {
                 new PageItem(RoomTabFragment.newInstance(Room._1B17, null, rDesinationMap), 0),
                 new PageItem(RoomTabFragment.newInstance(Room._1B18, null, rDesinationMap), 0)
         });
+    }
+
+    @Override
+    protected void viewPagerSetup(ViewPager viewPager, int pageCount) {
+        /**
+         * The size is small enough so that it's worth it
+         * Please be aware that the RoomTabFragments do not save their data when started/stopped
+         * If they are ever paused by the viewPager, they need to have their own way of getting data back
+         * Their data is however saved in this fragment, but only when switched to this tab from the drawer
+         */
+        viewPager.setOffscreenPageLimit(pageCount);
     }
 
     @Override

@@ -92,31 +92,22 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         return DataType.Category.DASHBOARD;
     }
 
-    @Subscribe
     @Override
-    public void onLoadEvent(LoadEvent event) {
-        if (event.isActivityOnly()) return;
-        hideRefresh(); //TODO hide after all events loaded
+    public boolean onLoadEvent(LoadEvent event) {
+        if (!isLoadValid(event, DataType.Single.QUOTA, DataType.Single.USER_JOBS, DataType.Single.QUEUES))
+            return false;
         switch (event.type) {
             case QUOTA:
-                if (isLoadSuccessful(event)) {
                     rQuota = String.valueOf(event.data);
-                } else return;
                 break;
             case USER_JOBS:
-                if (isLoadSuccessful(event)) {
                     rPrintJobs = (PrintJob[]) event.data;
-                } else return;
                 break;
             case QUEUES: //Already changed into List<RoomInformation> through RequestActivity
-                if (isLoadSuccessful(event)) {
                     rRoomInfo = (ArrayList<RoomInformation>) event.data;
-                } else return;
                 break;
-            default: //Event is not one of the ones we wish to see; don't bother updating content for it
-                return;
         }
-        updateContent(event.type);
+        return true;
     }
 
     @Override

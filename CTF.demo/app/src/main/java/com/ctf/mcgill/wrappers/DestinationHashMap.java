@@ -1,4 +1,4 @@
-package com.ctf.mcgill.items;
+package com.ctf.mcgill.wrappers;
 
 import android.os.Parcel;
 
@@ -9,8 +9,9 @@ import java.util.HashMap;
 
 /**
  * Created by Allan Wang on 2016-12-28.
+ *
+ * Parcelable HashMap<String, Destination> wrapper
  */
-
 public class DestinationHashMap extends ParcelableHashMap<String, Destination> {
 
     public DestinationHashMap(HashMap<String, Destination> map) {
