@@ -26,4 +26,5 @@ public abstract class BaseTepidRequest<T> extends SpiceRequest<T> {
     public OkHttpClient getOkHttpClient() {
         return okHttpClient;
     }
+
 }
