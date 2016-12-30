@@ -25,15 +25,15 @@
 
         <EditText
             android:id="@+id/nick_field"
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75" />
+            android:inputType="textPersonName"
+            android:maxLength="30" />
 
         <Button
             android:id="@+id/change_nick"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 
