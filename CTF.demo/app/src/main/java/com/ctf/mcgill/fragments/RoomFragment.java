@@ -45,7 +45,7 @@ public class RoomFragment extends ViewPagerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+//        setRetainInstance(true);
         getArgs(getArguments());
     }
 

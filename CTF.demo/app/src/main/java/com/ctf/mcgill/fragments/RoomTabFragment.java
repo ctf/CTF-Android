@@ -107,7 +107,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
+//        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
         getArgs(getArguments());
     }
 

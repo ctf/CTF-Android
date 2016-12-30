@@ -29,7 +29,7 @@ public class DestinationEventRequest extends BaseEventRequest<HashMap> {
 
     @Override
     DataType.Single getDataType() {
-        return DataType.Single.USER_JOBS;
+        return DataType.Single.DESTINATIONS;
     }
 
     /**

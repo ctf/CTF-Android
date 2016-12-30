@@ -37,7 +37,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+//        setRetainInstance(true);
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString(KEY_TOKEN);

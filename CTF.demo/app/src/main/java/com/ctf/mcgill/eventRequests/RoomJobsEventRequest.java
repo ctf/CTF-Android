@@ -1,14 +1,15 @@
 package com.ctf.mcgill.eventRequests;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.requests.BaseTepidRequest;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.ctf.mcgill.wrappers.RoomPrintJob;
 import com.google.gson.Gson;
+import com.octo.android.robospice.SpiceManager;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -20,8 +21,19 @@ import okhttp3.Response;
 public class RoomJobsEventRequest extends BaseEventRequest<RoomPrintJob> {
 
     @Override
+    public void execute(SpiceManager manager, Context context, String token, @Nullable Object extra) {
+        Room room = getExtraNullable(extra, Room.class);
+        if (room == null) {
+            for (Room r : Room.values()) execute(manager, context, token, r); //Execute for each room
+            return;
+        }
+        if (!manager.isStarted()) manager.start(context);
+        manager.execute(getRequest(token, extra), getListener());
+    }
+
+    @Override
     BaseTepidRequest<RoomPrintJob> getRequest(String token, @Nullable Object extra) {
-        return new RoomJobsRequest(token, getExtra(extra, Room.class, "RoomJobRequest must receive valid room enum"));
+        return new RoomJobsRequest(token, getExtra(extra, Room.class, "RoomJobsRequest must have Room enum"));
     }
 
     @Override

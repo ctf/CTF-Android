@@ -40,7 +40,7 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
+//        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
         getArgs(getArguments());
     }
 

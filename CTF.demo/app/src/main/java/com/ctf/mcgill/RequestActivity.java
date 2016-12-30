@@ -51,6 +51,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     private EnumMap<DataType.Single, Long> mUpdateMap = new EnumMap<>(DataType.Single.class);
 
     private boolean waitingForRoomInfo = false;
+    private boolean allLoaded = false;
 
     /*
      * Collection of requested data
@@ -93,15 +94,20 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
          * Otherwise, if we already have data that is recent enough to use, there is no need to request it again
          */
         if (!event.forceReload && isWithinSeconds(type, FROM_LOCAL_THRESHOLD)) {
-            CLog.d("Send %s from local data", type);
             Object data = getLocalData(type);
             if (data != null) {
+                CLog.d("Send %s from local data", type);
                 postEvent(new LoadEvent(type, true, getLocalData(type)).fragmentOnly());
                 return;
             } //data should never be null, unless the timeMap is out of sync
         }
-        startSpice(); //For precautions; eventually stopSpice will be implemented more where necessary
+//        startSpice(); //For precautions; eventually stopSpice will be implemented more where necessary
         CLog.d("Sending request for %s", type);
+        if (type == QUEUES && event.extra == null) {
+            CLog.d("Destinations is null, get that first");
+            waitingForRoomInfo = true;
+            type = DESTINATIONS; //Load destinations first
+        }
         if (event.type != ROOM_JOBS) { //TODO change this (room_jobs is currently not saved)
             if (isInProgress(type)) {
                 CLog.d("%s request is already in session", type);
@@ -110,7 +116,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             setInProgress(type);
         }
 
-        if (type == QUEUES && event.extra == null) type = DESTINATIONS; //Load destinations first
+
         getEventRequest(type).execute(mRequestManager, this, mToken, event.extra); //Call a new request with a new listener for the given type
     }
 
@@ -133,16 +139,21 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         }
     }
 
+    @Subscribe
+    public final void onLoadEventSubscription(@NonNull LoadEvent event) {
+        onLoadEvent(event);
+    }
+
     /**
      * On load event.
      *
      * @param event the event received (containing the type and data)
      */
-    @Subscribe
-    public void onLoadEvent(@NonNull LoadEvent event) {
+    private void onLoadEvent(@NonNull LoadEvent event) {
         if (event.isFragmentOnly()) return;
         CLog.d("%s has loaded", event.type);
         updateTime(event.type);
+        loadRemaining(); //Load all remaining data if not done already
         if (!event.isSuccessful || event.data == null) {
             CLog.e("Unsuccessful or null load event: %s", event);
             return;
@@ -156,7 +167,10 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 break;
             case DESTINATIONS:
                 rDestinationMap = (HashMap<String, Destination>) event.data;
-                if (waitingForRoomInfo) loadData(new SingleDataEvent(QUEUES, rDestinationMap)); //Submit new QUEUE request with given destinationMap
+                if (waitingForRoomInfo) {
+                    CLog.d("Proceed to load Queue");
+                    loadData(new SingleDataEvent(QUEUES, rDestinationMap)); //Submit new QUEUE request with given destinationMap
+                }
                 break;
             case QUEUES: //Process into RoomInfo first; then send
                 waitingForRoomInfo = false;
@@ -184,6 +198,22 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             default:
                 CLog.e(sf(R.string.no_local_data, type));
                 return null;
+        }
+    }
+
+    private void loadRemaining() {
+        if (allLoaded) return;
+        //Check if all are loaded
+        if (mUpdateMap.size() == DataType.Single.values().length) {
+            allLoaded = true;
+            return;
+        }
+        //Check for pending requests
+        for (Long time : mUpdateMap.values()) {
+            if (time == -1) return; //Finish loading what you need first
+        }
+        for (DataType.Single type : DataType.Single.values()) {
+            if (!mUpdateMap.containsKey(type)) loadData(new SingleDataEvent(type));
         }
     }
 

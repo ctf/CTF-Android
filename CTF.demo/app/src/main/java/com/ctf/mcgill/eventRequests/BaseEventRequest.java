@@ -32,6 +32,7 @@ public abstract class BaseEventRequest<T> {
 
     /**
      * Action for listener after successful request
+     *
      * @param type dataType
      * @param data data received
      */
@@ -55,6 +56,13 @@ public abstract class BaseEventRequest<T> {
     <E> E getExtra(Object extra, Class<E> clazz, String error) {
         if (extra == null || !clazz.isAssignableFrom(extra.getClass()))
             throw new IllegalArgumentException(error);
+        return (E) extra;
+    }
+
+    @Nullable
+    <E> E getExtraNullable(Object extra, Class<E> clazz) {
+        if (extra == null || !clazz.isAssignableFrom(extra.getClass()))
+            return null;
         return (E) extra;
     }
 

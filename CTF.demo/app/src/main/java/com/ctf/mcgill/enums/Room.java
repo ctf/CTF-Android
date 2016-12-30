@@ -7,7 +7,7 @@ package com.ctf.mcgill.enums;
  */
 
 public enum Room {
-    _1B16("1B16"), _1B17("1B17"), _1B18("1B18"), ALL("1B--");
+    _1B16("1B16"), _1B17("1B17"), _1B18("1B18");
 
     private String name;
 
