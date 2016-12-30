@@ -18,9 +18,8 @@ import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.events.SingleDataEvent;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
+import com.pitchedapps.capsule.library.logging.CLog;
 import com.pitchedapps.capsule.library.utils.ParcelUtils;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +80,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
             public void onClick(View view) {
                 rNickname = nickView.getText().toString();
                 if (!rNickname.isEmpty()) {
+                    showRefresh();
                     postEvent(new SingleDataEvent(DataType.Single.NICKNAME, rNickname)); //Send load request; text will change if accepted
                 }
             }
@@ -127,6 +127,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
             switch (type) {
                 case NICKNAME:
                     if (rNickname == null) continue;
+                    CLog.e("NICK %s", rNickname);
                     AccountUtil.updateNick(rNickname);
                     usernameView.setText(getString(R.string.dashboard_username_text, rNickname));
                     break;

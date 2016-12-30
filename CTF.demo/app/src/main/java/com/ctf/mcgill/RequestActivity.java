@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.ctf.mcgill.enums.DataType;
+import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.eventRequests.BaseEventRequest;
 import com.ctf.mcgill.eventRequests.DestinationEventRequest;
 import com.ctf.mcgill.eventRequests.NicknameEventRequest;
@@ -19,6 +20,7 @@ import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
 import com.ctf.mcgill.tepid.RoomInformation;
+import com.ctf.mcgill.wrappers.RoomPrintJob;
 import com.octo.android.robospice.SpiceManager;
 import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
 import com.pitchedapps.capsule.library.logging.CLog;
@@ -31,22 +33,28 @@ import java.util.HashMap;
 
 import static com.ctf.mcgill.enums.DataType.Single.DESTINATIONS;
 import static com.ctf.mcgill.enums.DataType.Single.QUEUES;
-import static com.ctf.mcgill.enums.DataType.Single.ROOM_JOBS;
 
 /**
  * Created by Allan Wang on 26/12/2016.
  * <p>
- * Requests should be loaded asap, not just when we switch to the tab.
+ * This Activity takes care of executing and sending all load requests and responses
+ * It operates through an EnumMap that keeps track of update times
+ * If a request is sent and has not yet been received, the request will not be sent again
+ * If all requests are fulfilled, we are free to load all null/outdated data
+ * If a request is sent moments after new data has been received and is not a forced request, we may load the old data
  */
 
 public abstract class RequestActivity extends CapsuleActivityFrame {
 
     protected String mToken;
     private SpiceManager mRequestManager = new SpiceManager(CTFSpiceService.class);
-    private static final long FROM_LOCAL_THRESHOLD = 15L; //Seconds from last update where you should pull from local
+    private static final long FROM_LOCAL_THRESHOLD = 15L, //Seconds from last update where you should pull from local
+    //Special flags; all < 0
+    PENDING_REQUEST = -1L, //We've sent this request and are waiting for the response
+            PENDING_BUT_NOT_EXECUTED = -2L; //Signifies that we need the request but we are sending other requests first to fulfill this one
     /*
      * Map that keeps track of latest update time
-     * If time shows as -1, it is currently in progress
+     * If time shows as PENDING_REQUEST, it is currently in progress
      */
     private EnumMap<DataType.Single, Long> mUpdateMap = new EnumMap<>(DataType.Single.class);
 
@@ -60,6 +68,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     protected PrintJob[] rPrintJobArray;
     protected HashMap<String, Destination> rDestinationMap;
     protected ArrayList<RoomInformation> rRoomInfoList;
+    protected EnumMap<Room, RoomPrintJob> rRoomJobsMap;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -106,16 +115,15 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         if (type == QUEUES && event.extra == null) {
             CLog.d("Destinations is null, get that first");
             waitingForRoomInfo = true;
+            setValue(QUEUES, PENDING_BUT_NOT_EXECUTED);
             type = DESTINATIONS; //Load destinations first
         }
-        if (event.type != ROOM_JOBS) { //TODO change this (room_jobs is currently not saved)
-            if (isInProgress(type)) {
-                CLog.d("%s request is already in session", type);
-                return;
-            }
-            setInProgress(type);
-        }
 
+        if (isInProgress(type)) {
+            CLog.d("%s request is already in session", type);
+            return;
+        }
+        setInProgress(type);
 
         getEventRequest(type).execute(mRequestManager, this, mToken, event.extra); //Call a new request with a new listener for the given type
     }
@@ -179,6 +187,10 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             case NICKNAME:
                 rNickname = String.valueOf(event.data);
                 break;
+            case ROOM_JOBS:
+                RoomPrintJob roomPrintJob = (RoomPrintJob) event.data;
+                rRoomJobsMap.put(roomPrintJob.room, roomPrintJob);
+                break;
         }
     }
 
@@ -195,6 +207,8 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 return rRoomInfoList;
             case NICKNAME:
                 return rNickname;
+            case ROOM_JOBS:
+                return rRoomJobsMap;
             default:
                 CLog.e(sf(R.string.no_local_data, type));
                 return null;
@@ -210,7 +224,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         }
         //Check for pending requests
         for (Long time : mUpdateMap.values()) {
-            if (time == -1) return; //Finish loading what you need first
+            if (time < 0) return; //Special flag found, load this first
         }
         for (DataType.Single type : DataType.Single.values()) {
             if (!mUpdateMap.containsKey(type)) loadData(new SingleDataEvent(type));
@@ -219,26 +233,30 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
 
     //Set map time of current type to current time
     private void updateTime(DataType.Single type) {
-        mUpdateMap.put(type, System.currentTimeMillis());
+        setValue(type, System.currentTimeMillis());
     }
 
     /**
-     * Sets timemap value to -1 to signify that it is loading
+     * Sets timemap value to PENDING_REQUEST to signify that it is loading
      *
      * @param type Single DataType
      */
     private void setInProgress(DataType.Single type) {
-        mUpdateMap.put(type, -1L);
+        setValue(type, PENDING_REQUEST);
+    }
+
+    private void setValue(DataType.Single type, long value) {
+        mUpdateMap.put(type, value);
     }
 
     /**
-     * Check if timestamp is -1
+     * Check if timestamp is PENDING_REQUEST
      *
      * @param type Single Data type
      * @return update status
      */
     private boolean isInProgress(DataType.Single type) {
-        return mUpdateMap.containsKey(type) && mUpdateMap.get(type) == -1L;
+        return mUpdateMap.containsKey(type) && mUpdateMap.get(type) == PENDING_REQUEST;
     }
 
     private boolean isWithinSeconds(DataType.Single type, long seconds) {

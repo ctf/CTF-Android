@@ -17,9 +17,9 @@ import com.ctf.mcgill.enums.Room;
 import com.ctf.mcgill.events.CategoryDataEvent;
 import com.ctf.mcgill.events.LoadEvent;
 import com.ctf.mcgill.interfaces.RoboFragmentContract;
-import com.ctf.mcgill.wrappers.DestinationHashMap;
 import com.ctf.mcgill.tepid.Destination;
 import com.ctf.mcgill.tepid.PrintJob;
+import com.ctf.mcgill.wrappers.DestinationHashMap;
 import com.ctf.mcgill.wrappers.RoomPrintJob;
 import com.pitchedapps.capsule.library.event.CFabEvent;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
@@ -33,6 +33,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -82,12 +83,15 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
     /**
      * Returns a new instance of this fragment for the given section number.
      */
-    public static RoomTabFragment newInstance(@NonNull Room roomNumber, PrintJob[] printJobs, HashMap<String, Destination> destinationMap) {
+    public static RoomTabFragment newInstance(@NonNull Room roomNumber, EnumMap<Room, RoomPrintJob> roomPrintJobMap, HashMap<String, Destination> destinationMap) {
         ParcelUtils parcelUtils = new ParcelUtils<>(new RoomTabFragment());
         parcelUtils.getBundle().putSerializable(BUNDLE_ROOM, roomNumber);
+        PrintJob[] printJobs = null;
+        if (roomPrintJobMap != null && roomPrintJobMap.containsKey(roomNumber)) //RoomJobs found; retrieve it
+            printJobs = roomPrintJobMap.get(roomNumber).printJobs;
         if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, printJobs, destinationMap)) {
             parcelUtils.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
-                    .putHashMap(BUNDLE_DESTINATION_MAP, new DestinationHashMap(destinationMap));
+                    .putMap(BUNDLE_DESTINATION_MAP, new DestinationHashMap(destinationMap));
         }
         return (RoomTabFragment) parcelUtils.create();
     }
@@ -101,13 +105,12 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
             return;
         }
         rPrintJobArray = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
-        rDesinationMap = ParcelUtils.getHashMap(args, BUNDLE_DESTINATION_MAP, DestinationHashMap.class);
+        rDesinationMap = ParcelUtils.getMap(args, BUNDLE_DESTINATION_MAP, DestinationHashMap.class);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true); //TODO Why? Didn't see any differences - Allan
         getArgs(getArguments());
     }
 
@@ -237,7 +240,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
                     }
                     break;
                 case ROOM_JOBS:
-                    mAdapter.updateList(new ArrayList<PrintJob>(Arrays.asList(rPrintJobArray))); //TODO see if you need to wrap it, since we aren't really changing the data
+                    mAdapter.updateList(new ArrayList<>(Arrays.asList(rPrintJobArray)));
                     break;
             }
         }

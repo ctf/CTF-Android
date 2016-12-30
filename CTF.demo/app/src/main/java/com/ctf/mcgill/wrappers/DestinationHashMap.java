@@ -3,7 +3,7 @@ package com.ctf.mcgill.wrappers;
 import android.os.Parcel;
 
 import com.ctf.mcgill.tepid.Destination;
-import com.pitchedapps.capsule.library.parcelable.hashmaps.ParcelableHashMap;
+import com.pitchedapps.capsule.library.parcelable.maps.ParcelableHashMap;
 
 import java.util.HashMap;
 

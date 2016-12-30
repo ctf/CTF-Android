@@ -2,11 +2,9 @@ package com.ctf.mcgill.eventRequests;
 
 import android.support.annotation.Nullable;
 
-import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.enums.DataType;
 import com.ctf.mcgill.requests.BaseTepidRequest;
 import com.ctf.mcgill.tepid.Destination;
-import com.ctf.mcgill.tepid.PrintJob;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

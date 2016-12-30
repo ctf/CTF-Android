@@ -60,7 +60,6 @@ public class RoomInfoAdapter extends CapsuleAdapter<RoomInformation, RoomInfoAda
             TextView tv = new TextView(mContext);
             tv.setGravity(Gravity.CENTER);
             tv.setText(printer.name);
-//                        tv.setTextColor(Color.WHITE); //TODO theme
             ImageView im = new ImageView(mContext);
             im.setImageResource(printer.isUp ? R.drawable.printer_up : R.drawable.printer_down);
             item.addView(im);

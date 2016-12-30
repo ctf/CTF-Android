@@ -12,7 +12,6 @@ import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.requests.CTFSpiceService;
 import com.ctf.mcgill.requests.LogoutRequest;
 import com.ctf.mcgill.tepid.Session;
-import com.ctf.mcgill.utils.Preferences;
 import com.gc.materialdesign.widgets.Dialog;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -22,7 +21,7 @@ import java.util.Locale;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    public static final String TAG = "SETTINGS_FRAGMENT", KEY_TOKEN = "TOKEN";
+    public static final String KEY_TOKEN = "TOKEN";
     private String token;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
@@ -37,7 +36,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
         Bundle args = getArguments();
         if (args != null) {
             token = args.getString(KEY_TOKEN);

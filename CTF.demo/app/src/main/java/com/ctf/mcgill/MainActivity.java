@@ -67,7 +67,7 @@ public class MainActivity extends RequestActivity {
         if (isWifiConnected()) {
             capsuleOnCreate(savedInstanceState);
             capsuleFrameOnCreate(savedInstanceState);
-            cFab.hide(); //we don't the fab for now
+            cFab.hide(); //we don't use the fab for now
             cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
             if (AccountUtil.isSignedIn()) {
                 requestManager.start(this);
@@ -104,6 +104,7 @@ public class MainActivity extends RequestActivity {
 
     }
 
+    //TODO use this?
     public void checkAccountPermission(@NonNull CPermissionCallback callback) {
         requestPermission(callback, 42, Manifest.permission.GET_ACCOUNTS);
     }
@@ -149,7 +150,7 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return RoomFragment.newInstance(rDestinationMap);
+                        return RoomFragment.newInstance(rDestinationMap, rRoomJobsMap);
                     }
                 },
                 new DrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, true) {
@@ -165,7 +166,7 @@ public class MainActivity extends RequestActivity {
                     public Fragment getFragment() {
                         return SettingsFragment.newInstance(mToken);
                     }
-                }, //TODO Not capsule based, verify
+                },
                 new DrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true) {
                     @Nullable
                     @Override
@@ -211,17 +212,13 @@ public class MainActivity extends RequestActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_changelog) {
-            ChangelogDialog.show(this, R.xml.changelog);
-            return true;
-        } else if (id == R.id.action_settings) {
-            selectDrawerItem(3); //TODO do not hardcode number
+        switch (item.getItemId()) {
+            case R.id.action_changelog:
+                ChangelogDialog.show(this, R.xml.changelog);
+                return true;
+            case R.id.action_settings:
+                selectDrawerItemFromId(R.string.settings); //Switch to settings; note that CDrawer for settings has this as the titleId
+                break;
         }
 
         return super.onOptionsItemSelected(item);

@@ -10,7 +10,6 @@ import com.ctf.mcgill.tepid.PrintQueue;
 import com.ctf.mcgill.tepid.RoomInformation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pitchedapps.capsule.library.logging.CLog;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

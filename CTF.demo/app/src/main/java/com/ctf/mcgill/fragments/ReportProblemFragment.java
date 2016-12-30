@@ -21,8 +21,6 @@ public class ReportProblemFragment extends CapsuleFragment {
     //todo:  include room, general problem info, optional additional details (station number, paper jam, etc),
     //todo:  user submitting the report, date report was submitted, etc.
 
-    public static final String TAG = "REPORT_PROBLEM_FRAGMENT";
-
     private static int roomSelect;
     private static String errorMessage;
 

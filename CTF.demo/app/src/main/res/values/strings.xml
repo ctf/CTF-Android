@@ -66,6 +66,8 @@
     <string name="south">South</string>
     <string name="table_header_print_history">Print History</string>
 
+    <string name="update">Update</string>
+
     <string name="send_error">Send Error</string>
     <string name="ctf_long_name">McGill Science Computer Taskforce</string>
 

@@ -15,6 +15,8 @@ import okhttp3.Response;
 
 /**
  * Created by Allan Wang on 28/12/2016.
+ *
+ * TODO BUG This request is not working
  */
 
 public class NicknameEventRequest extends BaseEventRequest<String> {

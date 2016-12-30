@@ -19,7 +19,7 @@
         android:text="@string/table_header_print_history" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -28,12 +28,14 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:maxLength="30" />
+            android:maxLength="30"
+            android:maxLines="2" />
 
         <Button
             android:id="@+id/change_nick"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/update" />
     </LinearLayout>
 
 

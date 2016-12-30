@@ -17,10 +17,9 @@ import com.ctf.mcgill.tepid.PrintJob;
 import com.ctf.mcgill.tepid.RoomInformation;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
+import com.pitchedapps.capsule.library.logging.CLog;
 import com.pitchedapps.capsule.library.utils.AnimUtils;
 import com.pitchedapps.capsule.library.utils.ParcelUtils;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -92,19 +91,21 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
         return DataType.Category.DASHBOARD;
     }
 
+    //TODO remove flicker on refresh and keep
     @Override
     public boolean onLoadEvent(LoadEvent event) {
         if (!isLoadValid(event, DataType.Single.QUOTA, DataType.Single.USER_JOBS, DataType.Single.QUEUES))
             return false;
         switch (event.type) {
             case QUOTA:
-                    rQuota = String.valueOf(event.data);
+                rQuota = String.valueOf(event.data);
                 break;
             case USER_JOBS:
-                    rPrintJobs = (PrintJob[]) event.data;
+                rPrintJobs = (PrintJob[]) event.data;
                 break;
-            case QUEUES: //Already changed into List<RoomInformation> through RequestActivity
-                    rRoomInfo = (ArrayList<RoomInformation>) event.data;
+            case QUEUES:
+                CLog.d("New Queue");
+                rRoomInfo = (ArrayList<RoomInformation>) event.data;
                 break;
         }
         return true;
@@ -133,10 +134,6 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
                 case QUEUES: //Already changed into List<RoomInformation> through RequestActivity
                     if (rRoomInfo == null) continue;
                     cAdapter.updateList(rRoomInfo);
-                    /*
-                     * TODO figure out why adapter doesn't refresh properly
-                     * It is set to null whenever onRefresh is called, but the Eventbus post doesn't reach here some times; it seems to work for th eother adapters though
-                     */
                     break;
             }
         }
