@@ -15,9 +15,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.ctf.mcgill.auth.AccountUtil;
 import com.ctf.mcgill.fragments.DashboardFragment;
 import com.ctf.mcgill.fragments.MyAccountFragment;
@@ -37,13 +41,36 @@ import com.pitchedapps.capsule.library.changelog.ChangelogDialog;
 import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
 import com.pitchedapps.capsule.library.item.DrawerItem;
+import com.pitchedapps.capsule.library.logging.CallbackLogTree;
 import com.pitchedapps.capsule.library.permissions.CPermissionCallback;
+
+import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
 
 public class MainActivity extends RequestActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        if (!BuildConfig.DEBUG) disableCLog(); //Make things cleaner; don't log unless specified
+        if (!BuildConfig.DEBUG) {
+            disableCLog(); //Make things cleaner; don't log unless specified
+            //Add crashlytics
+            CrashlyticsCore core = new CrashlyticsCore.Builder().build();
+            Fabric.with(this, new Crashlytics.Builder().core(core).build(), new Answers(), new Crashlytics());
+            Timber.plant(new CallbackLogTree(new CallbackLogTree.Callback() {
+                @Override
+                public void log(int priority, String tag, String message, Throwable t) {
+                    if (priority == Log.ERROR) {
+                        if (t == null) {
+                            Crashlytics.logException(new Exception(message));
+                        } else {
+                            Crashlytics.logException(t);
+                        }
+                    } else {
+                        Crashlytics.log(priority, tag, message);
+                    }
+                }
+            }));
+        }
         super.onCreate(savedInstanceState);
         Preferences prefs = new Preferences(this);
         if (prefs.isDarkMode()) setTheme(R.style.AppTheme_Dark_NoActionBar);

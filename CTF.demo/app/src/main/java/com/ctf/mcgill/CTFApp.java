@@ -3,6 +3,8 @@ package com.ctf.mcgill;
 import android.app.Application;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import okhttp3.OkHttpClient;
 
 public class CTFApp extends Application {
@@ -12,6 +14,7 @@ public class CTFApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         mInstance = this;
 
         //todo using for network debug

@@ -13,7 +13,7 @@
     <item text="Created RequestActivity to manage all requests asynchronously" />
     <item text="Made data parcelable" />
     <item text="Removed Spice caching in favour of RequestActivity data" />
-    <item text="" />
+    <item text="Added Crashlytics logging" />
 
     <version title="v1.0_beta1"/>
     <item text="Cleaned up MainActivity and Fragments"/>
