@@ -18,6 +18,13 @@ import ca.mcgill.science.ctf.requests.BaseTepidRequest;
 
 public abstract class BaseEventRequest<T> {
 
+    /**
+     * Starts the request manager and adds the request and listener
+     * @param manager SpiceManager from activity
+     * @param context context from activity
+     * @param token String token for user
+     * @param extra Optional extra param
+     */
     public void execute(SpiceManager manager, Context context, String token, @Nullable Object extra) {
         if (!manager.isStarted()) manager.start(context);
         manager.execute(getRequest(token, extra), getListener());
@@ -41,6 +48,9 @@ public abstract class BaseEventRequest<T> {
         postLoadEvent(type, data);
     }
 
+    /**
+     * Generic Listener that will be used for all requests
+     */
     private class EventListener implements RequestListener<T> {
 
         @Override
