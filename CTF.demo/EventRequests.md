@@ -14,6 +14,20 @@ There are three main components for requests
     * Single types are used within the eventRequests
     * Category types are used within fragments, which specifies which requests are used in their respective fragments
 
+Requests are created by either
+* Pulling down in a SwipeRefreshLayout - all data in that fragment is reloaded
+* Opening a new fragment - all invalid/null data is reloaded
+* Specific interactions - respective data is reloaded
+
+To load, events are posted from the fragment to the RequestActivity, which will either
+* Return local data if it's still valid
+* Create a request listener and get the data from TEPID
+
+If data is retrieved from Tepid, an EventRequest is created, where it will send the request and get the response.
+Once the response (or error) is received, it will post an EventBus event for all receivers.
+Usually, the RequestActivity will always be listening and will save the data or post a snackbar if there's an error.
+Fragments that are running will also listen to the data and change the UI depending on the response.
+
 ## Creating a New Event Request
 
 1. **Create a new DataType**
