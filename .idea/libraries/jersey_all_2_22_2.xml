@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jersey-all-2.22.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.eclipsesource.jaxrs/jersey-all/2.22.2/dffb4182550805a8c3c5e342a567a197f264d008/jersey-all-2.22.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.eclipsesource.jaxrs/jersey-all/2.22.2/40e492429731b1b95482d77616a1a2459faf6478/jersey-all-2.22.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

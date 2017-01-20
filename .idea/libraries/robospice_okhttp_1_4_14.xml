@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="robospice-okhttp-1.4.14">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.octo.android.robospice/robospice-okhttp/1.4.14/ba9cdcf32fc21de16afebfc5411425284923e0cd/robospice-okhttp-1.4.14.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.octo.android.robospice/robospice-okhttp/1.4.14/2c6832fa2a5334bbc63aca7de550ab1597b06209/robospice-okhttp-1.4.14-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
