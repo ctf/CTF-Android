@@ -26,7 +26,7 @@ tasks.whenTaskAdded { task ->
 ext {
     TARGET_SDK = 25
     BUILD_TOOLS = "25.0.2"
-    ANDROID_SUPPORT_LIBS = "25.1.0"
+    ANDROID_SUPPORT_LIBS = "25.1.1"
 }
 
 android {
@@ -71,15 +71,15 @@ dependencies {
     compile 'com.github.AllanWang:Capsule:ae8c3a408f'
 
     //Butterknife
-    compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.vajro:MaterialDesignLibrary:1.6'
 
     compile 'com.eclipsesource.jaxrs:jersey-all:2.22.2'
 
-    compile 'com.squareup.okhttp3:okhttp:3.5.0'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.google.code.gson:gson:2.8.0'
 
     compile 'com.facebook.stetho:stetho:1.4.2'
@@ -92,4 +92,28 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
