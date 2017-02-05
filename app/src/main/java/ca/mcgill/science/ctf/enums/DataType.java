@@ -36,6 +36,6 @@ public class DataType {
      */
     public enum Single {
 
-        QUOTA, USER_JOBS, ROOM_JOBS, DESTINATIONS, QUEUES, NICKNAME
+        QUOTA, USER_JOBS, ROOM_JOBS, DESTINATIONS, QUEUES, NICKNAME, COLOR
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,18 +39,22 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
     EditText nickView;
     @BindView(R.id.change_nick)
     Button changeNickView;
-
+    @BindView(R.id.my_account_color)
+    AppCompatCheckBox turnColor;
+    private boolean rColor;
     private String rNickname, rQuota;
     private PrintJob[] rPrintJobs;
 
-    private static final String BUNDLE_QUOTA = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_NICKNAME = "nickname", BUNDLE_COMPLETE = "complete";
+    private static final String BUNDLE_QUOTA = "quota", BUNDLE_PRINT_JOBS = "print_jobs", BUNDLE_NICKNAME = "nickname", BUNDLE_COMPLETE = "complete", BUNDLE_COLOR = "has_color";
 
-    public static MyAccountFragment newInstance(String quota, PrintJob[] printJobs, String nickname) {
+
+    public static MyAccountFragment newInstance(String quota, PrintJob[] printJobs, String nickname, boolean color) {
         ParcelUtils parcelUtils = new ParcelUtils<>(new MyAccountFragment());
         if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, quota, printJobs, nickname)) {
             parcelUtils.putString(BUNDLE_QUOTA, quota)
                     .putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
-                    .putString(BUNDLE_NICKNAME, nickname);
+                    .putString(BUNDLE_NICKNAME, nickname)
+                    .putBoolean(BUNDLE_COLOR, color);
         }
         return (MyAccountFragment) parcelUtils.create();
     }
@@ -63,6 +68,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
         rQuota = args.getString(BUNDLE_QUOTA);
         rPrintJobs = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
         rNickname = args.getString(BUNDLE_NICKNAME);
+        rColor = args.getBoolean(BUNDLE_COLOR);
     }
 
     @Override
@@ -73,6 +79,13 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
         bindButterKnife(linear);
         if (rQuota == null || rPrintJobs == null || rNickname == null) showRefresh();
         cLinear.addView(linear, 0);
+        turnColor.setChecked(rColor);
+        turnColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turnColor.toggle();
+            }
+        });
 
         usernameView.setText(getString(R.string.dashboard_username_text, AccountUtil.getNick()));
         changeNickView.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +118,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
 
     @Override
     public boolean onLoadEvent(LoadEvent event) {
-        if (!isLoadValid(event, DataType.Single.NICKNAME, DataType.Single.QUOTA, DataType.Single.USER_JOBS))
+        if (!isLoadValid(event, DataType.Single.NICKNAME, DataType.Single.QUOTA, DataType.Single.USER_JOBS, DataType.Single.COLOR))
             return false;
         switch (event.type) {
             case NICKNAME:
@@ -116,6 +129,9 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
                 break;
             case USER_JOBS:
                 rPrintJobs = (PrintJob[]) event.data;
+                break;
+            case COLOR:
+                rColor = (boolean) event.data;
                 break;
         }
         return true;
