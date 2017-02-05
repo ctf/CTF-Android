@@ -7,7 +7,7 @@ printer availability.
 <!--Current Release 0.1-->
 
 View the auto-generated javadocs on JitPack through <br>
-[Javadocs v0.1](https://jitpack.io/com/github/CTFMcGill/Ctf-Android/v0.1/javadoc/)
+<a href="https://jitpack.io/com/github/CTFMcGill/Ctf-Android/v0.1/javadoc/" target="_blank">Javadocs v0.1</a>
 
 
 
