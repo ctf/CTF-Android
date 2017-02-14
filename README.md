@@ -10,5 +10,9 @@ printer availability.
 
 [Javadocs v0.2](https://jitpack.io/com/github/CTFMcGill/CTF-Android/v0.2/javadoc/)
 
+## Documentation
+
+[Creating a new Event Request](https://github.com/CTFMcGill/CTF-Android/blob/master/EventRequests.md)
+
 
 
