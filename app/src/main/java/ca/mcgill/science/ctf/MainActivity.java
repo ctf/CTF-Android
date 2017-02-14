@@ -184,7 +184,7 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return MyAccountFragment.newInstance(rQuota, rPrintJobArray, rNickname);
+                        return MyAccountFragment.newInstance(rQuota, rPrintJobArray, rNickname, false);
                     }
                 },
                 new DrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, true) {
