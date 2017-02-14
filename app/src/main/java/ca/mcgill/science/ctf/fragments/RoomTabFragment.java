@@ -28,12 +28,11 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.adapter.PrintJobAdapter;
 import ca.mcgill.science.ctf.enums.DataType;
 import ca.mcgill.science.ctf.enums.Room;
-import ca.mcgill.science.ctf.events.CategoryDataEvent;
-import ca.mcgill.science.ctf.events.LoadEvent;
 import ca.mcgill.science.ctf.interfaces.RoboFragmentContract;
 import ca.mcgill.science.ctf.tepid.Destination;
 import ca.mcgill.science.ctf.tepid.PrintJob;
@@ -160,7 +159,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
 
     @Override
     public void requestData() {
-        postEvent(new CategoryDataEvent(getDataCategory(), rRoom));
+        postEvent(new Events.CategoryDataEvent(getDataCategory(), rRoom));
     }
 
     /**
@@ -170,25 +169,25 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
      */
     @Subscribe
     @Override
-    public final void onLoadEventSubscription(LoadEvent event) {
+    public final void onLoadEventSubscription(Events.LoadEvent event) {
         if (event.isActivityOnly()) return;
         mRefresher.setRefreshing(false); //TODO hide only after all pending events are received
-        if (onLoadEvent(event)) updateContent(event.type);
+        if (onLoadEvent(event)) updateContent(event.getType());
     }
 
 
     @Override
-    public boolean onLoadEvent(LoadEvent event) {
+    public boolean onLoadEvent(Events.LoadEvent event) {
         if (!isLoadValid(event, DataType.Single.ROOM_JOBS, DataType.Single.DESTINATIONS))
             return false;
-        switch (event.type) {
+        switch (event.getType()) {
             case ROOM_JOBS:
-                RoomPrintJob roomPrintJob = (RoomPrintJob) event.data;
+                RoomPrintJob roomPrintJob = (RoomPrintJob) event.getData();
                 if (roomPrintJob.room != rRoom) break;
                 rPrintJobArray = roomPrintJob.printJobs;
                 break;
             case DESTINATIONS:
-                rDesinationMap = ((HashMap<String, Destination>) event.data);
+                rDesinationMap = ((HashMap<String, Destination>) event.getData());
         }
         return true;
     }
@@ -200,11 +199,11 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
      * @param types types that are valid subscriptions
      * @return true if event contains a valid type and valid data
      */
-    protected final boolean isLoadValid(LoadEvent event, DataType.Single... types) {
-        if (!ArrayUtils.contains(types, event.type)) return false;
-        if (event.isSuccessful) return true;
-        if (event.data == null) return false; //Error String is null -> Silent error
-        snackbar(new SnackbarEvent(String.valueOf(event.data)));
+    protected final boolean isLoadValid(Events.LoadEvent event, DataType.Single... types) {
+        if (!ArrayUtils.contains(types, event.getType())) return false;
+        if (event.isSuccessful()) return true;
+        if (event.getData() == null) return false; //Error String is null -> Silent error
+        snackbar(new SnackbarEvent(String.valueOf(event.getData())));
         return false;
     }
 

@@ -23,9 +23,6 @@ import ca.mcgill.science.ctf.eventRequests.QuotaEventRequest;
 import ca.mcgill.science.ctf.eventRequests.RoomInfoEventRequest;
 import ca.mcgill.science.ctf.eventRequests.RoomJobsEventRequest;
 import ca.mcgill.science.ctf.eventRequests.UserJobsEventRequest;
-import ca.mcgill.science.ctf.events.CategoryDataEvent;
-import ca.mcgill.science.ctf.events.LoadEvent;
-import ca.mcgill.science.ctf.events.SingleDataEvent;
 import ca.mcgill.science.ctf.requests.CTFSpiceService;
 import ca.mcgill.science.ctf.tepid.Destination;
 import ca.mcgill.science.ctf.tepid.PrintJob;
@@ -84,9 +81,9 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * @param event Category DataType and optional variables needed to complete certain requests
      */
     @Subscribe
-    public void loadData(CategoryDataEvent event) {
-        for (DataType.Single s : event.type.getContent())
-            loadData(new SingleDataEvent(s, event.extra));
+    public void loadData(Events.CategoryDataEvent event) {
+        for (DataType.Single s : event.getType().getContent())
+            loadData(new Events.SingleDataEvent(s, event.getExtra()));
     }
 
     /**
@@ -96,24 +93,24 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      * @param event Single DataType and optional variables needed to complete certain requests
      */
     @Subscribe
-    public void loadData(SingleDataEvent event) {
-        DataType.Single type = event.type;
+    public void loadData(Events.SingleDataEvent event) {
+        DataType.Single type = event.getType();
         /*
          * Currently, if any fragment does not have all of the necessary information, it will reload all the necessary data
          * ForceReload should only be true when the user decides to pull down the SwipeRefreshLayout
          * Otherwise, if we already have data that is recent enough to use, there is no need to request it again
          */
-        if (!event.forceReload && isWithinSeconds(type, FROM_LOCAL_THRESHOLD)) {
+        if (!event.getForceReload() && isWithinSeconds(type, FROM_LOCAL_THRESHOLD)) {
             Object data = getLocalData(type);
             if (data != null) {
                 CLog.d("Send %s from local data", type);
-                postEvent(new LoadEvent(type, true, getLocalData(type)).fragmentOnly());
+                postEvent(new Events.LoadEvent(type, true, getLocalData(type)).fragmentOnly());
                 return;
             } //data should never be null, unless the timeMap is out of sync
         }
 //        startSpice(); //For precautions; eventually stopSpice will be implemented more where necessary
         CLog.d("Sending request for %s", type);
-        if (type == QUEUES && event.extra == null) {
+        if (type == QUEUES && event.getExtra() == null) {
             CLog.d("Destinations is null, get that first");
             waitingForRoomInfo = true;
             setValue(QUEUES, PENDING_BUT_NOT_EXECUTED);
@@ -126,7 +123,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
         }
         setInProgress(type);
 
-        getEventRequest(type).execute(mRequestManager, this, mToken, event.extra); //Call a new request with a new listener for the given type
+        getEventRequest(type).execute(mRequestManager, this, mToken, event.getExtra()); //Call a new request with a new listener for the given type
     }
 
     private BaseEventRequest getEventRequest(DataType.Single type) {
@@ -149,7 +146,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     }
 
     @Subscribe
-    public final void onLoadEventSubscription(@NonNull LoadEvent event) {
+    public final void onLoadEventSubscription(@NonNull Events.LoadEvent event) {
         onLoadEvent(event);
     }
 
@@ -158,38 +155,38 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
      *
      * @param event the event received (containing the type and data)
      */
-    private void onLoadEvent(@NonNull LoadEvent event) {
+    private void onLoadEvent(@NonNull Events.LoadEvent event) {
         if (event.isFragmentOnly()) return;
-        CLog.d("%s has loaded", event.type);
-        updateTime(event.type);
+        CLog.d("%s has loaded", event.getType());
+        updateTime(event.getType());
         loadRemaining(); //Load all remaining data if not done already
-        if (!event.isSuccessful || event.data == null) {
+        if (!event.isSuccessful() || event.getData() == null) {
             CLog.e("Unsuccessful or null load event: %s", event);
             return;
         }
-        switch (event.type) {
+        switch (event.getType()) {
             case QUOTA:
-                rQuota = String.valueOf(event.data);
+                rQuota = String.valueOf(event.getData());
                 break;
             case USER_JOBS:
-                rPrintJobArray = (PrintJob[]) event.data;
+                rPrintJobArray = (PrintJob[]) event.getData();
                 break;
             case DESTINATIONS:
-                rDestinationMap = (HashMap<String, Destination>) event.data;
+                rDestinationMap = (HashMap<String, Destination>) event.getData();
                 if (waitingForRoomInfo) {
                     CLog.d("Proceed to load Queue");
-                    loadData(new SingleDataEvent(QUEUES, rDestinationMap)); //Submit new QUEUE request with given destinationMap
+                    loadData(new Events.SingleDataEvent(QUEUES, rDestinationMap)); //Submit new QUEUE request with given destinationMap
                 }
                 break;
             case QUEUES: //Process into RoomInfo first; then send
                 waitingForRoomInfo = false;
-                rRoomInfoList = (ArrayList<RoomInformation>) event.data;
+                rRoomInfoList = (ArrayList<RoomInformation>) event.getData();
                 break;
             case NICKNAME:
-                rNickname = String.valueOf(event.data);
+                rNickname = String.valueOf(event.getData());
                 break;
             case ROOM_JOBS:
-                RoomPrintJob roomPrintJob = (RoomPrintJob) event.data;
+                RoomPrintJob roomPrintJob = (RoomPrintJob) event.getData();
                 rRoomJobsMap.put(roomPrintJob.room, roomPrintJob);
                 break;
         }
@@ -228,7 +225,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
             if (time < 0) return; //Special flag found, load this first
         }
         for (DataType.Single type : DataType.Single.values()) {
-            if (!mUpdateMap.containsKey(type)) loadData(new SingleDataEvent(type));
+            if (!mUpdateMap.containsKey(type)) loadData(new Events.SingleDataEvent(type));
         }
     }
 

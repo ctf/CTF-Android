@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import butterknife.BindView;
+import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.adapter.PrintJobAdapter;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.enums.DataType;
-import ca.mcgill.science.ctf.events.LoadEvent;
-import ca.mcgill.science.ctf.events.SingleDataEvent;
 import ca.mcgill.science.ctf.tepid.PrintJob;
 
 public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.ViewHolder> {
@@ -94,7 +93,7 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
                 rNickname = nickView.getText().toString();
                 if (!rNickname.isEmpty()) {
                     showRefresh();
-                    postEvent(new SingleDataEvent(DataType.Single.NICKNAME, rNickname)); //Send load request; text will change if accepted
+                    postEvent(new Events.SingleDataEvent(DataType.Single.NICKNAME, rNickname)); //Send load request; text will change if accepted
                 }
             }
         });
@@ -117,21 +116,21 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
     }
 
     @Override
-    public boolean onLoadEvent(LoadEvent event) {
+    public boolean onLoadEvent(Events.LoadEvent event) {
         if (!isLoadValid(event, DataType.Single.NICKNAME, DataType.Single.QUOTA, DataType.Single.USER_JOBS, DataType.Single.COLOR))
             return false;
-        switch (event.type) {
+        switch (event.getType()) {
             case NICKNAME:
-                rNickname = String.valueOf(event.data);
+                rNickname = String.valueOf(event.getData());
                 break;
             case QUOTA:
-                rQuota = String.valueOf(event.data);
+                rQuota = String.valueOf(event.getData());
                 break;
             case USER_JOBS:
-                rPrintJobs = (PrintJob[]) event.data;
+                rPrintJobs = (PrintJob[]) event.getData();
                 break;
             case COLOR:
-                rColor = (boolean) event.data;
+                rColor = (boolean) event.getData();
                 break;
         }
         return true;

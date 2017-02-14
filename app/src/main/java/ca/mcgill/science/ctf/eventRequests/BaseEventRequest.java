@@ -8,8 +8,8 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.utils.EventUtils;
 
+import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.enums.DataType;
-import ca.mcgill.science.ctf.events.LoadEvent;
 import ca.mcgill.science.ctf.requests.BaseTepidRequest;
 
 /**
@@ -85,7 +85,7 @@ public abstract class BaseEventRequest<T> {
      * @param data Castable object containing appropriate data
      */
     protected static void postLoadEvent(DataType.Single type, Object data) {
-        EventUtils.post(new LoadEvent(type, true, data));
+        EventUtils.post(new Events.LoadEvent(type, true, data));
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class BaseEventRequest<T> {
      * @param data Castable object containing appropriate data
      */
     protected static void postLoadEventActivityOnly(DataType.Single type, Object data) {
-        EventUtils.post(new LoadEvent(type, true, data).activityOnly());
+        EventUtils.post(new Events.LoadEvent(type, true, data).activityOnly());
     }
 
     /**
@@ -106,7 +106,7 @@ public abstract class BaseEventRequest<T> {
      * @param error String detailing the error; will be put into event data object and logged
      */
     protected static void postErrorEvent(DataType.Single type, String error) {
-        EventUtils.post(new LoadEvent(type, false, error));
+        EventUtils.post(new Events.LoadEvent(type, false, error));
     }
 
 }

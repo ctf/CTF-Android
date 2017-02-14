@@ -3,8 +3,9 @@ package ca.mcgill.science.ctf.interfaces;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.enums.DataType;
-import ca.mcgill.science.ctf.events.LoadEvent;
+
 
 /**
  * Created by Allan Wang on 26/12/2016.
@@ -42,7 +43,7 @@ public interface RoboFragmentContract {
      *
      * @param event loading event sent
      */
-    void onLoadEventSubscription(LoadEvent event);
+    void onLoadEventSubscription(Events.LoadEvent event);
 
     /**
      * Nested method from onLoadEventSubscription
@@ -50,7 +51,7 @@ public interface RoboFragmentContract {
      * @param event event received
      * @return true if content should be updated, false otherwise
      */
-    boolean onLoadEvent(LoadEvent event);
+    boolean onLoadEvent(Events.LoadEvent event);
 
     /**
      * Update a specified content given that the data retrieval has happened

@@ -16,9 +16,9 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 
+import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.enums.Room;
-import ca.mcgill.science.ctf.events.LoadEvent;
 import ca.mcgill.science.ctf.tepid.Destination;
 import ca.mcgill.science.ctf.wrappers.DestinationHashMap;
 import ca.mcgill.science.ctf.wrappers.RoomJobEnumMap;
@@ -82,17 +82,17 @@ public class RoomFragment extends ViewPagerFragment {
 
 
     @Subscribe
-    public void onLoadEvent(LoadEvent event) {
+    public void onLoadEvent(Events.LoadEvent event) {
         if (event.isActivityOnly()) return;
-        if (!event.isSuccessful || event.data == null) return;
-        switch (event.type) {
+        if (!event.isSuccessful() || event.getData() == null) return;
+        switch (event.getType()) {
             case DESTINATIONS:
-                rDesinationMap = (HashMap<String, Destination>) event.data; //TODO check if worth saving
+                rDesinationMap = (HashMap<String, Destination>) event.getData(); //TODO check if worth saving
                 break;
             case ROOM_JOBS:
                 if (rRoomPrintJobMap == null)
                     rRoomPrintJobMap = new EnumMap<>(Room.class);
-                RoomPrintJob printJob = (RoomPrintJob) event.data;
+                RoomPrintJob printJob = (RoomPrintJob) event.getData();
                 rRoomPrintJobMap.put(printJob.room, printJob);
         }
     }

@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
+import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.adapter.RoomInfoAdapter;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.enums.DataType;
-import ca.mcgill.science.ctf.events.LoadEvent;
 import ca.mcgill.science.ctf.tepid.PrintJob;
 import ca.mcgill.science.ctf.tepid.RoomInformation;
 
@@ -93,19 +93,19 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
 
     //TODO remove flicker on refresh and keep
     @Override
-    public boolean onLoadEvent(LoadEvent event) {
+    public boolean onLoadEvent(Events.LoadEvent event) {
         if (!isLoadValid(event, DataType.Single.QUOTA, DataType.Single.USER_JOBS, DataType.Single.QUEUES))
             return false;
-        switch (event.type) {
+        switch (event.getType()) {
             case QUOTA:
-                rQuota = String.valueOf(event.data);
+                rQuota = String.valueOf(event.getData());
                 break;
             case USER_JOBS:
-                rPrintJobs = (PrintJob[]) event.data;
+                rPrintJobs = (PrintJob[]) event.getData();
                 break;
             case QUEUES:
                 CLog.d("New Queue");
-                rRoomInfo = (ArrayList<RoomInformation>) event.data;
+                rRoomInfo = (ArrayList<RoomInformation>) event.getData();
                 break;
         }
         return true;

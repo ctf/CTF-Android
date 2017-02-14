@@ -20,10 +20,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.enums.DataType;
-import ca.mcgill.science.ctf.events.CategoryDataEvent;
-import ca.mcgill.science.ctf.events.LoadEvent;
 import ca.mcgill.science.ctf.interfaces.RoboFragmentContract;
 
 /**
@@ -75,10 +74,10 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
      */
     @Subscribe
     @Override
-    public final void onLoadEventSubscription(LoadEvent event) {
+    public final void onLoadEventSubscription(Events.LoadEvent event) {
         if (event.isActivityOnly()) return;
         hideRefresh(); //TODO hide only after all pending events are received
-        if (onLoadEvent(event)) updateContent(event.type);
+        if (onLoadEvent(event)) updateContent(event.getType());
     }
 
     /**
@@ -88,17 +87,17 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
      * @param types types that are valid subscriptions
      * @return true if event contains a valid type and valid data
      */
-    protected final boolean isLoadValid(LoadEvent event, DataType.Single... types) {
-        if (!ArrayUtils.contains(types, event.type)) return false;
-        if (event.isSuccessful) return true;
-        if (event.data == null) return false; //Error String is null -> Silent error
-        snackbar(new SnackbarEvent(String.valueOf(event.data)));
+    protected final boolean isLoadValid(Events.LoadEvent event, DataType.Single... types) {
+        if (!ArrayUtils.contains(types, event.getType())) return false;
+        if (event.isSuccessful()) return true;
+        if (event.getData() == null) return false; //Error String is null -> Silent error
+        snackbar(new SnackbarEvent(String.valueOf(event.getData())));
         return false;
     }
 
     @Override
     public void requestData() {
-        postEvent(new CategoryDataEvent(getDataCategory()));
+        postEvent(new Events.CategoryDataEvent(getDataCategory()));
     }
 
     @SuppressLint("MissingSuperCall")

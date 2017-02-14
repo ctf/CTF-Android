@@ -1,4 +1,4 @@
-package com.ctf.mcgill;
+package ca.mcgill.science.ctf;
 
 import org.junit.Test;
 
