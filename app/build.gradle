@@ -1,3 +1,9 @@
+ext {
+    TARGET_SDK = 25
+    BUILD_TOOLS = "25.0.2"
+    ANDROID_SUPPORT_LIBS = "25.1.1"
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -8,11 +14,13 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 apply plugin: 'com.github.dcendents.android-maven'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 
@@ -22,12 +30,6 @@ tasks.whenTaskAdded { task ->
     } else if (task.name.equals("lintVitalRelease")) {
         task.enabled = false
     }
-}
-
-ext {
-    TARGET_SDK = 25
-    BUILD_TOOLS = "25.0.2"
-    ANDROID_SUPPORT_LIBS = "25.1.1"
 }
 
 android {
@@ -62,6 +64,9 @@ android {
     dexOptions {
         javaMaxHeapSize "2g"
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
@@ -93,6 +98,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 // build a jar with source files
