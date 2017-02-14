@@ -2,6 +2,8 @@ ext {
     TARGET_SDK = 25
     BUILD_TOOLS = "25.0.2"
     ANDROID_SUPPORT_LIBS = "25.1.1"
+    VERSION_CODE = 3
+    VERSION_NAME = "1.0_beta3"
 }
 
 buildscript {
@@ -14,6 +16,7 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 apply plugin: 'com.github.dcendents.android-maven'
@@ -39,8 +42,8 @@ android {
         applicationId 'ca.mcgill.science.ctf'
         minSdkVersion 17
         targetSdkVersion TARGET_SDK
-        versionCode 3
-        versionName "1.0_beta3"
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
         multiDexEnabled true
     }
 
@@ -118,6 +121,21 @@ task javadoc(type: Javadoc) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
+
+dokka {
+    includes = ['README.md']
+
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://github.com/CTFMcGill/CTF-Android/tree/master/app/src/main/kotlin"
+        suffix = "#L"
+    }
 }
 
 artifacts {
