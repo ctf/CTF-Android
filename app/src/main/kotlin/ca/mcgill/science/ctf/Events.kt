@@ -5,7 +5,7 @@ import ca.mcgill.science.ctf.enums.DataType
 /**
  * Created by Allan Wang on 14/02/2017.
  *
- * All the possible Events that can be send through EventBus
+ * All the possible Events that can be sent through EventBus
  */
 
 class Events {
