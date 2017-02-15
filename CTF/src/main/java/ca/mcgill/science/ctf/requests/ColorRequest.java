@@ -2,10 +2,7 @@ package ca.mcgill.science.ctf.requests;
 
 import com.google.gson.Gson;
 
-import javax.ws.rs.POST;
-
 import ca.mcgill.science.ctf.tepid.Session;
-import ca.mcgill.science.ctf.tepid.SessionRequest;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
