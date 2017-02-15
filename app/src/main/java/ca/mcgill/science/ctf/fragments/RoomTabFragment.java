@@ -87,7 +87,7 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
         parcelUtils.getBundle().putSerializable(BUNDLE_ROOM, roomNumber);
         PrintJob[] printJobs = null;
         if (roomPrintJobMap != null && roomPrintJobMap.containsKey(roomNumber)) //RoomJobs found; retrieve it
-            printJobs = roomPrintJobMap.get(roomNumber).getPrintJobs();
+            printJobs = roomPrintJobMap.get(roomNumber).printJobs;
         if (parcelUtils.putNullStatus(BUNDLE_COMPLETE, printJobs, destinationMap)) {
             parcelUtils.putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
                     .putMap(BUNDLE_DESTINATION_MAP, new DestinationHashMap(destinationMap));
@@ -183,8 +183,8 @@ public class RoomTabFragment extends CapsulePageFragment implements SwipeRefresh
         switch (event.getType()) {
             case ROOM_JOBS:
                 RoomPrintJob roomPrintJob = (RoomPrintJob) event.getData();
-                if (roomPrintJob.getRoom() != rRoom) break;
-                rPrintJobArray = roomPrintJob.getPrintJobs();
+                if (roomPrintJob.room != rRoom) break;
+                rPrintJobArray = roomPrintJob.printJobs;
                 break;
             case DESTINATIONS:
                 rDesinationMap = ((HashMap<String, Destination>) event.getData());

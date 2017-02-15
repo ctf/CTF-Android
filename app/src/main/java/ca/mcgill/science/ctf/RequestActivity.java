@@ -187,7 +187,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 break;
             case ROOM_JOBS:
                 RoomPrintJob roomPrintJob = (RoomPrintJob) event.getData();
-                rRoomJobsMap.put(roomPrintJob.getRoom(), roomPrintJob);
+                rRoomJobsMap.put(roomPrintJob.room, roomPrintJob);
                 break;
         }
     }

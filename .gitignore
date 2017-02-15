@@ -34,7 +34,7 @@ captures/
 
 # Intellij
 .idea/workspace.xml
-.idea/libraries
+.idea/libraries/
 .idea/tasks.xml
 
 # Keystore files

@@ -93,7 +93,7 @@ public class RoomFragment extends ViewPagerFragment {
                 if (rRoomPrintJobMap == null)
                     rRoomPrintJobMap = new EnumMap<>(Room.class);
                 RoomPrintJob printJob = (RoomPrintJob) event.getData();
-                rRoomPrintJobMap.put(printJob.getRoom(), printJob);
+                rRoomPrintJobMap.put(printJob.room, printJob);
         }
     }
 
