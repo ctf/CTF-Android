@@ -10,6 +10,8 @@ printer availability.
 
 [Javadocs v0.2](https://jitpack.io/com/github/CTFMcGill/CTF-Android/v0.2/javadoc/)
 
+This project is written in both Java and Kotlin. You will therefore need to have the Kotlin plugin to build it properly.
+
 ## Documentation
 
 [Creating a new Event Request](https://github.com/CTFMcGill/CTF-Android/blob/master/EventRequests.md)
