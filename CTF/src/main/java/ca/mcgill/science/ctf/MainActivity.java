@@ -7,6 +7,8 @@ import android.accounts.AccountManagerFuture;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -29,7 +31,6 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.pitchedapps.capsule.library.changelog.ChangelogDialog;
-import com.pitchedapps.capsule.library.event.SnackbarEvent;
 import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
 import com.pitchedapps.capsule.library.item.DrawerItem;
 import com.pitchedapps.capsule.library.logging.CallbackLogTree;
@@ -91,43 +92,49 @@ public class MainActivity extends RequestActivity {
         String lang = preferences.getString("pref_language", "en");
         SettingsFragment.Companion.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
         final SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
-        if (isWifiConnected()) {
-            capsuleOnCreate(savedInstanceState);
-            capsuleFrameOnCreate(savedInstanceState);
-            cFab.hide(); //we don't use the fab for now
-            cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
+        if (isNetworkAvailable()) {
             if (AccountUtil.isSignedIn()) {
                 requestManager.start(this);
                 requestManager.execute(new TokenRequest(AccountUtil.getAccount(), this), new RequestListener<String>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
-                        // todo wat do if we can't get token?!
-                        //should go back to sign in page - Allan
-                        snackbar(new SnackbarEvent("Token request failed"));
                         requestManager.shouldStop();
+                        requestAccount();
                     }
 
                     @Override
                     public void onRequestSuccess(String str) {
                         mToken = str;
-                        selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default TODO fix commitAllowingStateLoss ->   java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
                         requestManager.shouldStop();
+                        onLogin(savedInstanceState);
                     }
                 });
             } else {
-                //TODO make account work
-                AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
-                    @Override
-                    public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                        // switch back to main activity after user signs in
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
-                }, null);
+                requestAccount();
             }
         } else {
             setContentView(R.layout.no_wifi);
         }
+
+    }
+
+    private void requestAccount() {
+        AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
+                // switch back to main activity after user signs in
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        }, null);
+    }
+
+    private void onLogin(final Bundle savedInstanceState) {
+        capsuleOnCreate(savedInstanceState);
+        capsuleFrameOnCreate(savedInstanceState);
+        cFab.hide(); //we don't use the fab for now
+        cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
+        selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default TODO fix commitAllowingStateLoss ->   java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
 
     }
 
@@ -228,6 +235,13 @@ public class MainActivity extends RequestActivity {
             }
         }
         return false;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     @Override

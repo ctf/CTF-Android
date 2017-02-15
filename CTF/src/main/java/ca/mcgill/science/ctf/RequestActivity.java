@@ -66,7 +66,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
     protected PrintJob[] rPrintJobArray;
     protected HashMap<String, Destination> rDestinationMap;
     protected ArrayList<RoomInformation> rRoomInfoList;
-    protected EnumMap<Room, RoomPrintJob> rRoomJobsMap;
+    protected EnumMap<Room, RoomPrintJob> rRoomJobsMap = new EnumMap<>(Room.class);
 
     @SuppressLint("MissingSuperCall")
     @Override
