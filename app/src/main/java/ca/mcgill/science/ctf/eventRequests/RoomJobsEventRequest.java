@@ -54,7 +54,7 @@ public class RoomJobsEventRequest extends BaseEventRequest<RoomPrintJob> {
             super(RoomPrintJob.class);
             this.token = token;
             this.room = room;
-            url = baseUrl + "queues/" + room.getName() + "?limit=15";
+            url = baseUrl + "queues/" + room.getRoomName() + "?limit=15";
         }
 
         @Override

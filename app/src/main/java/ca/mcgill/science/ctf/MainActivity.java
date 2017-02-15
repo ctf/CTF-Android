@@ -89,7 +89,7 @@ public class MainActivity extends RequestActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
-        SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
+        SettingsFragment.Companion.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
         final SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
         if (isWifiConnected()) {
             capsuleOnCreate(savedInstanceState);
@@ -191,7 +191,7 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return SettingsFragment.newInstance(mToken);
+                        return SettingsFragment.Companion.newInstance(mToken);
                     }
                 },
                 new DrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true) {
@@ -208,7 +208,7 @@ public class MainActivity extends RequestActivity {
     protected void onResume() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
-        SettingsFragment.setLocale(this, lang);
+        SettingsFragment.Companion.setLocale(this, lang);
         //prefs.setTheme();
         super.onResume();
     }
