@@ -1,7 +1,7 @@
 ext {
     TARGET_SDK = 25
     BUILD_TOOLS = "25.0.2"
-    ANDROID_SUPPORT_LIBS = "25.1.1"
+    ANDROID_SUPPORT_LIBS = "25.2.0"
     VERSION_CODE = 3
     VERSION_NAME = "1.0_beta3"
 }
@@ -102,6 +102,7 @@ dependencies {
         transitive = true;
     }
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 // build a jar with source files

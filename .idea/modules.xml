@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CTF/CTF.iml" filepath="$PROJECT_DIR$/CTF/CTF.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ctf.iml" filepath="$PROJECT_DIR$/ctf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CTF-Android.iml" filepath="$PROJECT_DIR$/CTF-Android.iml" />
     </modules>
   </component>
 </project>
