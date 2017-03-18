@@ -13,7 +13,7 @@ import okhttp3.OkHttpClient;
 public abstract class BaseTepidRequest<T> extends SpiceRequest<T> {
 
     private OkHttpClient okHttpClient;
-    protected static String baseUrl = "https://tepid.sus.mcgill.ca:8443/tepid/";
+    protected static String baseUrl = "https://tepid.science.mcgill.ca:8443/tepid/";
 
     public BaseTepidRequest(Class<T> clazz) {
         super(clazz);
