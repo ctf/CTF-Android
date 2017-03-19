@@ -1,29 +1,26 @@
 package ca.mcgill.science.ctf.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 
-import com.pitchedapps.capsule.library.event.CFabEvent;
-import com.pitchedapps.capsule.library.event.SnackbarEvent;
-import com.pitchedapps.capsule.library.fragments.SwipeRecyclerFragmentAnimated;
-import com.pitchedapps.capsule.library.item.CapsuleViewHolder;
+import com.mikepenz.fastadapter.IItem;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import ca.mcgill.science.ctf.Events;
+import ca.allanwang.capsule.library.event.CFabEvent;
+import ca.allanwang.capsule.library.event.SnackbarEvent;
+import ca.allanwang.capsule.library.fragments.CapsuleSRVFragment;
+import ca.allanwang.swiperecyclerview.library.SwipeRecyclerView;
+import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.enums.DataType;
-import ca.mcgill.science.ctf.interfaces.RoboFragmentContract;
+import ca.mcgill.science.ctf.interfaces.DataFragmentContract;
 
 /**
  * Created by Allan Wang on 2016-11-15.
@@ -32,14 +29,23 @@ import ca.mcgill.science.ctf.interfaces.RoboFragmentContract;
  * TODO figure out a way to save data on rotate/start; the data is only passed via bundles when creating the fragment, but if it recreates itself the data will be outdated
  */
 
-public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends SwipeRecyclerFragmentAnimated<T, V> implements RoboFragmentContract {
+public abstract class BaseFragment<I extends IItem> extends CapsuleSRVFragment<I> implements DataFragmentContract {
 
     private Unbinder unbinder;
+    private static final String TAG_TOKEN = "auth_token";
+    protected String token;
+
+    public static <I extends IItem, F extends BaseFragment<I>> F getFragment(String token, F fragment) {
+        Bundle args = new Bundle();
+        args.putString(TAG_TOKEN, token);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getArgs(getArguments());
+        if (getArguments() != null) token = getArguments().getString(TAG_TOKEN);
     }
 
     protected void bindButterKnife(View view) {
@@ -67,52 +73,25 @@ public abstract class BaseFragment<T, V extends CapsuleViewHolder> extends Swipe
         super.onPause();
     }
 
-    /**
-     * Wrapper for abstract load event so we don't need to worry about the Subscription annotation
-     *
-     * @param event loading event sent
-     */
-    @Subscribe
-    @Override
-    public final void onLoadEventSubscription(Events.LoadEvent event) {
-        if (event.isActivityOnly()) return;
-        hideRefresh(); //TODO hide only after all pending events are received
-        if (onLoadEvent(event)) updateContent(event.getType());
-    }
-
-    /**
-     * Specified whether or not eventSubscription should count as a loaded event
-     *
-     * @param event data event
-     * @param types types that are valid subscriptions
-     * @return true if event contains a valid type and valid data
-     */
-    protected final boolean isLoadValid(Events.LoadEvent event, DataType.Single... types) {
-        if (!ArrayUtils.contains(types, event.getType())) return false;
-        if (event.isSuccessful()) return true;
-        if (event.getData() == null) return false; //Error String is null -> Silent error
-        snackbar(new SnackbarEvent(String.valueOf(event.getData())));
-        return false;
-    }
-
-    @Override
-    public void requestData() {
-        postEvent(new Events.CategoryDataEvent(getDataCategory()));
-    }
-
-    @SuppressLint("MissingSuperCall")
     @Override
     @CallSuper
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        cSwipeRefreshRecyclerView.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
-//        super.onViewCreated(view, savedInstanceState); //We are managing list loading ourselves
-    }
+    protected void configSRV(final SwipeRecyclerView srv) {
+        SwipeRefreshLayout swipe = srv.getSwipeRefreshLayout();
+        swipe.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
+        srv.setOnRefreshStatus(new ISwipeRecycler.OnRefreshStatus() {
+            @Override
+            public void onSuccess() {
+                srv.hideRefresh();
+            }
 
-    @Override
-    protected void updateList(List<T> oldList) {
-        requestData();
+            @Override
+            public void onFailure() {
+                postEvent(new SnackbarEvent("Contents failed to load...").setDuration(Snackbar.LENGTH_INDEFINITE));
+                srv.hideRefresh();
+            }
+        });
+        srv.refresh();
     }
-
 
     @Nullable
     @Override

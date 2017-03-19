@@ -9,24 +9,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ocpsoft.pretty.time.PrettyTime;
-import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
-import com.pitchedapps.capsule.library.logging.CLog;
-import com.pitchedapps.capsule.library.utils.AnimUtils;
-import com.pitchedapps.capsule.library.utils.ParcelUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
+import ca.allanwang.capsule.library.adapters.CapsuleAdapter;
+import ca.allanwang.capsule.library.logging.CLog;
+import ca.allanwang.capsule.library.utils.AnimUtils;
+import ca.allanwang.capsule.library.utils.ParcelUtils;
+import ca.allanwang.swiperecyclerview.library.items.CheckBoxItem;
 import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.adapter.RoomInfoAdapter;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.enums.DataType;
+import ca.mcgill.science.ctf.models.PrintData;
 import ca.mcgill.science.ctf.tepid.PrintJob;
 import ca.mcgill.science.ctf.tepid.RoomInformation;
 
-public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAdapter.ViewHolder> {
+public class DashboardFragment extends BaseFragment<PrintData> {
 
     @BindView(R.id.dashboard_username)
     TextView usernameView;
@@ -50,6 +52,7 @@ public class DashboardFragment extends BaseFragment<RoomInformation, RoomInfoAda
                     .putParcelableArray(BUNDLE_PRINT_JOBS, printJobs)
                     .putParcelableArrayList(BUNDLE_ROOM_INFO, roomInfo);
         }
+        CheckBoxItem
         return (DashboardFragment) parcelUtils.create();
     }
 

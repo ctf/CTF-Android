@@ -2,7 +2,7 @@ package ca.mcgill.science.ctf.wrappers;
 
 import android.os.Parcel;
 
-import com.pitchedapps.capsule.library.parcelable.maps.ParcelableHashMap;
+import ca.allanwang.capsule.library.parcelable.maps.ParcelableHashMap;
 
 import java.util.HashMap;
 

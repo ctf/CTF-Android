@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ocpsoft.pretty.time.PrettyTime;
-import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
-import com.pitchedapps.capsule.library.item.CapsuleViewHolder;
+import ca.allanwang.capsule.library.adapters.CapsuleAdapter;
+import ca.allanwang.capsule.library.item.CapsuleViewHolder;
 
 import java.util.Date;
 import java.util.List;

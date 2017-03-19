@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.pitchedapps.capsule.library.event.CFabEvent;
-import com.pitchedapps.capsule.library.event.SnackbarEvent;
-import com.pitchedapps.capsule.library.fragments.CapsulePageFragment;
-import com.pitchedapps.capsule.library.utils.ParcelUtils;
-import com.pitchedapps.capsule.library.views.SwipeRefreshRecyclerView;
+import ca.allanwang.capsule.library.event.CFabEvent;
+import ca.allanwang.capsule.library.event.SnackbarEvent;
+import ca.allanwang.capsule.library.fragments.CapsulePageFragment;
+import ca.allanwang.capsule.library.utils.ParcelUtils;
+import ca.allanwang.capsule.library.views.SwipeRefreshRecyclerView;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -33,7 +33,7 @@ import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.adapter.PrintJobAdapter;
 import ca.mcgill.science.ctf.enums.DataType;
 import ca.mcgill.science.ctf.enums.Room;
-import ca.mcgill.science.ctf.interfaces.RoboFragmentContract;
+import ca.mcgill.science.ctf.interfaces.DataFragmentContract;
 import ca.mcgill.science.ctf.tepid.Destination;
 import ca.mcgill.science.ctf.tepid.PrintJob;
 import ca.mcgill.science.ctf.wrappers.DestinationHashMap;
@@ -43,7 +43,7 @@ import ca.mcgill.science.ctf.wrappers.RoomPrintJob;
  * Created by Allan Wang on 2016-11-20.
  */
 
-public class RoomTabFragment extends CapsulePageFragment implements SwipeRefreshRecyclerView.OnRefreshListener, RoboFragmentContract {
+public class RoomTabFragment extends CapsulePageFragment implements SwipeRefreshRecyclerView.OnRefreshListener, DataFragmentContract {
 
     @Nullable
     @Override

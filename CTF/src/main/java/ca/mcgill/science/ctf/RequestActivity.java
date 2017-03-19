@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.octo.android.robospice.SpiceManager;
-import com.pitchedapps.capsule.library.activities.CapsuleActivityFrame;
-import com.pitchedapps.capsule.library.logging.CLog;
+import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
+import ca.allanwang.capsule.library.logging.CLog;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -178,7 +178,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                     loadData(new Events.SingleDataEvent(QUEUES, rDestinationMap)); //Submit new QUEUE request with given destinationMap
                 }
                 break;
-            case QUEUES: //Process into RoomInfo first; then send
+            case QUEUES: //Process into RoomInfoItem first; then send
                 waitingForRoomInfo = false;
                 rRoomInfoList = (ArrayList<RoomInformation>) event.getData();
                 break;
@@ -201,7 +201,7 @@ public abstract class RequestActivity extends CapsuleActivityFrame {
                 return rPrintJobArray;
             case DESTINATIONS:
                 return rDestinationMap;
-            case QUEUES: //Process into RoomInfo first; then send
+            case QUEUES: //Process into RoomInfoItem first; then send
                 return rRoomInfoList;
             case NICKNAME:
                 return rNickname;

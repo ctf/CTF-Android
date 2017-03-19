@@ -30,11 +30,12 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.changelog.ChangelogDialog;
-import com.pitchedapps.capsule.library.interfaces.CDrawerItem;
-import com.pitchedapps.capsule.library.item.DrawerItem;
-import com.pitchedapps.capsule.library.logging.CallbackLogTree;
-import com.pitchedapps.capsule.library.permissions.CPermissionCallback;
+
+import ca.allanwang.capsule.library.changelog.ChangelogDialog;
+import ca.allanwang.capsule.library.interfaces.CDrawerItem;
+import ca.allanwang.capsule.library.item.DrawerItem;
+import ca.allanwang.capsule.library.logging.CallbackLogTree;
+import ca.allanwang.capsule.library.permissions.CPermissionCallback;
 
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
@@ -90,7 +91,7 @@ public class MainActivity extends RequestActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
-        SettingsFragment.Companion.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
+        SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
         final SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
         if (isNetworkAvailable()) {
             if (AccountUtil.isSignedIn()) {
@@ -198,7 +199,7 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return SettingsFragment.Companion.newInstance(mToken);
+                        return SettingsFragment.newInstance(mToken);
                     }
                 },
                 new DrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true) {
@@ -215,7 +216,7 @@ public class MainActivity extends RequestActivity {
     protected void onResume() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
-        SettingsFragment.Companion.setLocale(this, lang);
+        SettingsFragment.setLocale(this, lang);
         //prefs.setTheme();
         super.onResume();
     }
@@ -227,7 +228,7 @@ public class MainActivity extends RequestActivity {
      * @return true if we have wifi, false otherwise
      */
     private boolean isWifiConnected() {
-        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wm.isWifiEnabled()) {
             WifiInfo wi = wm.getConnectionInfo();
             if (null != wi && wi.getNetworkId() != -1) {

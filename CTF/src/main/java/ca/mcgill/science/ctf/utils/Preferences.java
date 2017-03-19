@@ -2,7 +2,7 @@ package ca.mcgill.science.ctf.utils;
 
 import android.content.Context;
 
-import com.pitchedapps.capsule.library.utils.CPrefs;
+import ca.allanwang.capsule.library.utils.CPrefs;
 
 /**
  * Created by Allan Wang on 2016-11-20.

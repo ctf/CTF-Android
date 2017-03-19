@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pitchedapps.capsule.library.adapters.CapsuleAdapter;
-import com.pitchedapps.capsule.library.logging.CLog;
-import com.pitchedapps.capsule.library.utils.ParcelUtils;
+import ca.allanwang.capsule.library.adapters.CapsuleAdapter;
+import ca.allanwang.capsule.library.logging.CLog;
+import ca.allanwang.capsule.library.utils.ParcelUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

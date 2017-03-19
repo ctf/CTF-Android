@@ -3,10 +3,10 @@ package ca.mcgill.science.ctf.fragments;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
-import com.pitchedapps.capsule.library.fragments.ViewPagerFragment;
-import com.pitchedapps.capsule.library.interfaces.CPage;
-import com.pitchedapps.capsule.library.item.PageItem;
-import com.pitchedapps.capsule.library.utils.ParcelUtils;
+import ca.allanwang.capsule.library.fragments.ViewPagerFragment;
+import ca.allanwang.capsule.library.interfaces.CPage;
+import ca.allanwang.capsule.library.item.PageItem;
+import ca.allanwang.capsule.library.utils.ParcelUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

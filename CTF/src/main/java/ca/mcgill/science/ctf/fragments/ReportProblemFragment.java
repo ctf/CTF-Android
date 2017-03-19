@@ -11,8 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.pitchedapps.capsule.library.event.CFabEvent;
-import com.pitchedapps.capsule.library.fragments.CapsuleFragment;
+import ca.allanwang.capsule.library.event.CFabEvent;
+import ca.allanwang.capsule.library.fragments.CapsuleFragment;
 
 import ca.mcgill.science.ctf.R;
 

@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-import com.pitchedapps.capsule.library.utils.EventUtils;
+import ca.allanwang.capsule.library.utils.EventUtils;
 
 import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.enums.DataType;

@@ -13,14 +13,14 @@ import ca.mcgill.science.ctf.enums.DataType;
  * Methods guaranteed to exist for fragments requiring spicemanager
  */
 
-public interface RoboFragmentContract {
+public interface DataFragmentContract {
 
     /**
      * Get all potential data from RequestActivity
      *
      * @param args getArguments(), may be null
      */
-    void getArgs(@Nullable Bundle args);
+//    void getArgs(@Nullable Bundle args);
 
     //Be sure to also create a static newInstance as a way to put send the data
 
