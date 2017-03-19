@@ -14,9 +14,9 @@ class User(val salutation: String, val realName: String, val longUser: String, v
 /**
  * Printer info; tells you which printers are up and down in which rooms
  */
-class PrinterInfoList(val list: List<PrinterInfo>)
+class PrinterInfoMap(val data: Map<String, PrinterInfo>)
 
-class PrinterInfo(val name: String, val isUp: Boolean) {
+class PrinterInfo(val name: String, val up: Boolean) {
     fun getRoomName(): String {
         val hyphen = name.indexOf("-")
         return if (hyphen == -1) name else name.substring(0, hyphen)
@@ -26,6 +26,5 @@ class PrinterInfo(val name: String, val isUp: Boolean) {
 /**
  * PrintData info; gets list of printJobs
  */
-class PrintDataList(val list: List<PrintData>)
 
 class PrintData(val name: String, val colorPages: Int, val pages: Int, val refunded: Boolean)

@@ -18,16 +18,16 @@ import retrofit2.http.Query
 
 interface ITEPID {
 
-    @GET("/users/{shortUser}")
+    @GET("users/{shortUser}")
     fun getUser(@Path("shortUser") shortUser: String): Call<User>
 
-    @GET("/users/{shortUser}/quota")
+    @GET("users/{shortUser}/quota")
     fun getQuota(@Path("shortUser") shortUser: String): Call<Int>
 
-    @GET("/queues")
-    fun getPrinterInfo(): Call<PrinterInfoList>
+    @GET("destinations")
+    fun getPrinterInfo(): Call<Map<String, PrinterInfo>>
 
     @GET("queues/{roomId}")
-    fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<PrintDataList>
+    fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<List<PrintData>>
 
 }

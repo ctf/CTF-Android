@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 
@@ -56,19 +58,25 @@ public class PrinterInfoView extends LinearLayout {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.item_printer, this);
+        CLog.e("INITT");
+        LayoutInflater inflater = (LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.item_printer, this);
+//        inflate(getContext(), R.layout.item_printer, this);
         setVisibility(INVISIBLE);
         ButterKnife.bind(this);
     }
 
     public PrinterInfoView bind(@Nullable PrinterInfo data) {
         if (data == null) {
+            CLog.e("NULL DATA");
             setVisibility(INVISIBLE);
             image.setImageDrawable(null);
             name.setText(null);
         } else {
+            CLog.e("DATA %s", data.getName());
             setVisibility(VISIBLE);
-            image.setImageResource(data.isUp() ? R.drawable.printer_up : R.drawable.printer_down);
+            image.setImageResource(data.getUp() ? R.drawable.printer_up : R.drawable.printer_down);
             name.setText(data.getName());
         }
         return this;

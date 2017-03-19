@@ -4,6 +4,7 @@ import android.Manifest;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,17 +32,16 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
+import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
 import ca.allanwang.capsule.library.changelog.ChangelogDialog;
 import ca.allanwang.capsule.library.interfaces.CDrawerItem;
 import ca.allanwang.capsule.library.item.DrawerItem;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.allanwang.capsule.library.permissions.CPermissionCallback;
-
 import ca.mcgill.science.ctf.auth.AccountUtil;
+import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
-import ca.mcgill.science.ctf.fragments.MyAccountFragment;
 import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
-import ca.mcgill.science.ctf.fragments.RoomFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.requests.CTFSpiceService;
 import ca.mcgill.science.ctf.requests.TokenRequest;
@@ -49,8 +49,11 @@ import ca.mcgill.science.ctf.utils.Preferences;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
-public class MainActivity extends RequestActivity {
+public class MainActivity extends CapsuleActivityFrame {
 
+    private String mToken;
+
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         if (!BuildConfig.DEBUG) {
@@ -73,7 +76,7 @@ public class MainActivity extends RequestActivity {
                 }
             }));
         }
-        super.onCreate(savedInstanceState);
+//        super.onCreate(savedInstanceState);
         Preferences prefs = new Preferences(this);
         if (prefs.isDarkMode()) setTheme(R.style.AppTheme_Dark_NoActionBar);
 
@@ -178,23 +181,23 @@ public class MainActivity extends RequestActivity {
                     @Nullable
                     @Override
                     public Fragment getFragment() {
-                        return DashboardFragment.newInstance(rQuota, rPrintJobArray, rRoomInfoList);
+                        return BaseFragment.getFragment(mToken, new DashboardFragment());
                     }
                 },
-                new DrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true) {
-                    @Nullable
-                    @Override
-                    public Fragment getFragment() {
-                        return RoomFragment.newInstance(rDestinationMap, rRoomJobsMap);
-                    }
-                },
-                new DrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, true) {
-                    @Nullable
-                    @Override
-                    public Fragment getFragment() {
-                        return MyAccountFragment.newInstance(rQuota, rPrintJobArray, rNickname, false);
-                    }
-                },
+//                new DrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true) {
+//                    @Nullable
+//                    @Override
+//                    public Fragment getFragment() {
+//                        return RoomFragment.newInstance(rDestinationMap, rRoomJobsMap);
+//                    }
+//                },
+//                new DrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, true) {
+//                    @Nullable
+//                    @Override
+//                    public Fragment getFragment() {
+//                        return MyAccountFragment.newInstance(rQuota, rPrintJobArray, rNickname, false);
+//                    }
+//                },
                 new DrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, true) {
                     @Nullable
                     @Override

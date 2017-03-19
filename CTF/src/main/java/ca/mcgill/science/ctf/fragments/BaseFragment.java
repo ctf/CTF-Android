@@ -12,10 +12,6 @@ import android.view.ViewGroup;
 
 import com.mikepenz.fastadapter.IItem;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.IOException;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import ca.allanwang.capsule.library.event.CFabEvent;
@@ -27,6 +23,9 @@ import ca.allanwang.swiperecyclerview.library.adapters.AnimationAdapter;
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Allan Wang on 2016-11-15.
@@ -35,13 +34,13 @@ import ca.mcgill.science.ctf.api.TEPIDAPI;
  * TODO figure out a way to save data on rotate/start; the data is only passed via bundles when creating the fragment, but if it recreates itself the data will be outdated
  */
 
-public abstract class BaseFragment<I extends IItem> extends CapsuleSRVFragment<I> {
+public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragment<I> {
 
     private Unbinder unbinder;
     private static final String TAG_TOKEN = "auth_token";
     protected TEPIDAPI api;
 
-    public static <I extends IItem, F extends BaseFragment<I>> F getFragment(String token, F fragment) {
+    public static <I extends IItem, C, F extends BaseFragment<I, C>> F getFragment(String token, F fragment) {
         Bundle args = new Bundle();
         args.putString(TAG_TOKEN, token);
         fragment.setArguments(args);
@@ -79,13 +78,13 @@ public abstract class BaseFragment<I extends IItem> extends CapsuleSRVFragment<I
     @CallSuper
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
     }
 
     @Override
     @CallSuper
     public void onPause() {
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
@@ -121,22 +120,30 @@ public abstract class BaseFragment<I extends IItem> extends CapsuleSRVFragment<I
     }
 
     @Override
-    public final void onRefresh(ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
-        try {
-            onRefresh(onRefreshStatus, api);
-        } catch (IOException e) {
-            CLog.e(e.getMessage());
-            onRefreshStatus.onFailure();
-        }
+    public final void onRefresh(final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+        Call<C> call = getAPICall(api);
+        call.enqueue(new Callback<C>() {
+            @Override
+            public void onResponse(Call<C> call, Response<C> response) {
+                CLog.e("RESPONSE DATA %s", response.toString());
+                if (response.body() == null)
+                    onRefreshStatus.onFailure();
+                else if (onResponseReceived(response.body()) && response.isSuccessful())
+                    onRefreshStatus.onSuccess();
+                else
+                    onRefreshStatus.onFailure();
+            }
+
+            @Override
+            public void onFailure(Call<C> call, Throwable t) {
+//                CLog.e(t.getMessage());
+                onRefreshStatus.onFailure();
+            }
+        });
     }
 
-    /**
-     * Data loading method
-     *
-     * @param onRefreshStatus callbacks for refresh status
-     * @param api             api hook for data calls
-     * @throws IOException request exceptions
-     */
-    protected abstract void onRefresh(ISwipeRecycler.OnRefreshStatus onRefreshStatus, TEPIDAPI api) throws IOException;
+    protected abstract Call<C> getAPICall(TEPIDAPI api);
+
+    protected abstract boolean onResponseReceived(Object body);
 
 }

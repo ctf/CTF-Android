@@ -9,11 +9,14 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.views.PrinterInfoView;
@@ -27,7 +30,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
     private List<PrinterInfo> roomInfoData = new ArrayList<>();
     private String roomName;
 
-    public static List<RoomInfoItem> getItems(List<PrinterInfo> info) {
+    public static List<RoomInfoItem> getItems(Collection<PrinterInfo> info) {
         TreeMap<String, List<PrinterInfo>> map = new TreeMap<>();
         for (final PrinterInfo printer : info) {
             String room = printer.getRoomName();
@@ -81,18 +84,22 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.room_name)
+//        @BindView(R.id.room_name)
         TextView roomName;
-        @BindView(R.id.computer_availability)
+//        @BindView(R.id.computer_availability)
         ImageView computerVisibility;
-        @BindView(R.id.printer_1)
+//        @BindView(R.id.printer_1)
         PrinterInfoView printer1;
-        @BindView(R.id.printer_2)
+//        @BindView(R.id.printer_2)
         PrinterInfoView printer2;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(view);
+//            ButterKnife.bind(this, view);
+            roomName = (TextView) view.findViewById(R.id.room_name);
+            computerVisibility = (ImageView) view.findViewById(R.id.computer_availability);
+            printer1 = (PrinterInfoView) view.findViewById(R.id.printer_1);
+            printer2 = (PrinterInfoView) view.findViewById(R.id.printer_2);
         }
     }
 

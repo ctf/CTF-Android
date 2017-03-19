@@ -13,12 +13,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class TEPIDAPI(token: String?) {
     private val api: ITEPID
-    private val interceptor: LoginInterceptor
 
     init {
-        interceptor = LoginInterceptor(token)
-        val client = OkHttpClient()
-        client.interceptors().add(interceptor)
+        val client = OkHttpClient.Builder()
+                .addInterceptor(LoginInterceptor(token))
+                .build()
 
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://tepid.science.mcgill.ca:8443/tepid/")
@@ -36,11 +35,11 @@ class TEPIDAPI(token: String?) {
         return api.getQuota(shortUser)
     }
 
-    fun getPrinterInfo(): Call<PrinterInfoList> {
+    fun getPrinterInfo(): Call<Map<String, PrinterInfo>> {
         return api.getPrinterInfo()
     }
 
-    fun getPrintQueue(roomId: String, limit: Int): Call<PrintDataList> {
+    fun getPrintQueue(roomId: String, limit: Int): Call<List<PrintData>> {
         return api.getPrintQueue(roomId, limit)
     }
 

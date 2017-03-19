@@ -1,30 +1,24 @@
 package ca.mcgill.science.ctf.fragments;
 
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import java.util.Map;
 
-import java.io.IOException;
-import java.util.List;
-
-import butterknife.BindView;
-import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
+import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.PrinterInfo;
-import ca.mcgill.science.ctf.api.PrinterInfoList;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.iitems.RoomInfoItem;
-import retrofit2.Response;
+import retrofit2.Call;
 
-public class DashboardFragment extends BaseFragment<RoomInfoItem> {
+public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, PrinterInfo>> {
 
-    @BindView(R.id.dashboard_username)
-    TextView usernameView;
-    @BindView(R.id.dashboard_quota)
-    TextView quotaView;
-    @BindView(R.id.dashboard_last_print_job)
-    TextView lastJobView;
-    @BindView(R.id.dashboard_container)
-    LinearLayout parentLayout;
+//    @BindView(R.id.dashboard_username)
+//    TextView usernameView;
+//    @BindView(R.id.dashboard_quota)
+//    TextView quotaView;
+//    @BindView(R.id.dashboard_last_print_job)
+//    TextView lastJobView;
+//    @BindView(R.id.dashboard_container)
+//    LinearLayout parentLayout;
 
     @Override
     public int getTitleId() {
@@ -32,11 +26,15 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem> {
     }
 
     @Override
-    public void onRefresh(ISwipeRecycler.OnRefreshStatus onRefreshStatus, TEPIDAPI api) throws IOException {
-        Response response = api.getPrinterInfo().execute();
-        if (response.isSuccessful()) {
-            List<PrinterInfo> data = ((PrinterInfoList) response.body()).getList();
-            mAdapter.add(RoomInfoItem.getItems(data));
-        } else onRefreshStatus.onFailure();
+    protected Call<Map<String, PrinterInfo>> getAPICall(TEPIDAPI api) {
+        return api.getPrinterInfo();
+    }
+
+    @Override
+    protected boolean onResponseReceived(Object body) {
+        Map<String, PrinterInfo> data = ((Map<String, PrinterInfo>) body);
+//        CLog.e("MSP %s", data.keySet());
+        mAdapter.add(RoomInfoItem.getItems(data.values()));
+        return false;
     }
 }
