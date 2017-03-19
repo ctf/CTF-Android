@@ -15,6 +15,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -41,6 +42,7 @@ import ca.allanwang.capsule.library.permissions.CPermissionCallback;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
+import ca.mcgill.science.ctf.fragments.MyAccountFragment;
 import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.requests.CTFSpiceService;
@@ -113,13 +115,10 @@ public class MainActivity extends CapsuleActivityFrame {
                         onLogin(savedInstanceState);
                     }
                 });
-            } else {
+            } else
                 requestAccount();
-            }
-        } else {
+        } else
             setContentView(R.layout.no_wifi);
-        }
-
     }
 
     private void requestAccount() {
@@ -162,11 +161,39 @@ public class MainActivity extends CapsuleActivityFrame {
                 .withSelectionSecondLine(BuildConfig.VERSION_NAME)
                 .withProfileImagesClickable(false)
                 .withResetDrawerOnProfileListClick(false)
-                .addProfiles(
-                        new ProfileDrawerItem().withIcon(ContextCompat.getDrawable(this, R.drawable.ctf))
-                )
+                .addProfiles(new ProfileDrawerItem().withIcon(ContextCompat.getDrawable(this, R.drawable.ctf)))
                 .withSelectionListEnabled(false)
                 .withSelectionListEnabledForSingleProfile(false);
+    }
+
+    private class CTFDrawerItem {
+        @StringRes
+        int titleId;
+        GoogleMaterial.Icon icon;
+        Fragment fragment;
+
+        private CTFDrawerItem(@StringRes int titleId, GoogleMaterial.Icon icon, Fragment fragment) {
+            this.titleId = titleId;
+            this.icon = icon;
+            this.fragment = fragment;
+        }
+
+        private CDrawerItem getCDrawerItem() {
+            return new DrawerItem(titleId, icon, true) {
+                @Nullable
+                @Override
+                public Fragment getFragment() {
+                    return BaseFragment.getFragment(mToken, fragment);
+                }
+            };
+        }
+    }
+
+    private CDrawerItem[] generateDrawerItems(CTFDrawerItem... items) {
+        CDrawerItem[] drawerItems = new CDrawerItem[items.length];
+        for (int i = 0; i < items.length; i++)
+            drawerItems[i] = items[i].getCDrawerItem();
+        return drawerItems;
     }
 
     /**
@@ -176,43 +203,13 @@ public class MainActivity extends CapsuleActivityFrame {
      */
     @Override
     protected CDrawerItem[] getDrawerItems() {
-        return new CDrawerItem[]{ //TODO add fragments
-                new DrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, true) {
-                    @Nullable
-                    @Override
-                    public Fragment getFragment() {
-                        return BaseFragment.getFragment(mToken, new DashboardFragment());
-                    }
-                },
-//                new DrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, true) {
-//                    @Nullable
-//                    @Override
-//                    public Fragment getFragment() {
-//                        return RoomFragment.newInstance(rDestinationMap, rRoomJobsMap);
-//                    }
-//                },
-//                new DrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, true) {
-//                    @Nullable
-//                    @Override
-//                    public Fragment getFragment() {
-//                        return MyAccountFragment.newInstance(rQuota, rPrintJobArray, rNickname, false);
-//                    }
-//                },
-                new DrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, true) {
-                    @Nullable
-                    @Override
-                    public Fragment getFragment() {
-                        return SettingsFragment.newInstance(mToken);
-                    }
-                },
-                new DrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, true) {
-                    @Nullable
-                    @Override
-                    public Fragment getFragment() {
-                        return new ReportProblemFragment();
-                    }
-                }
-        };
+        return generateDrawerItems(
+                new CTFDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, new DashboardFragment()),
+//                new CTFDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
+                new CTFDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, new MyAccountFragment()),
+                new CTFDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, new SettingsFragment()),
+                new CTFDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, new ReportProblemFragment())
+        );
     }
 
     @Override
@@ -265,7 +262,6 @@ public class MainActivity extends CapsuleActivityFrame {
                 selectDrawerItemFromId(R.string.settings); //Switch to settings; note that CDrawer for settings has this as the titleId
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

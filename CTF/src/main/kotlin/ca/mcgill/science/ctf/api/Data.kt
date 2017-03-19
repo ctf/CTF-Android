@@ -1,5 +1,9 @@
 package ca.mcgill.science.ctf.api
 
+import ca.mcgill.science.ctf.iitems.PairItem
+import java.text.SimpleDateFormat
+import java.util.*
+
 /**
  * Created by Allan Wang on 18/03/2017.
  *
@@ -25,6 +29,13 @@ class PrinterInfo(val name: String, val up: Boolean) {
 
 /**
  * PrintData info; gets list of printJobs
+ * TODO check if long or int
  */
 
-class PrintData(val name: String, val colorPages: Int, val pages: Int, val refunded: Boolean)
+class PrintData(val name: String, val colorPages: Long, val pages: Long, val refunded: Boolean, val printed: Long) {
+    fun getPairData(): PairItem {
+        return PairItem(name, dateFormat.format(if (printed == -1L) Date() else Date(printed)).toString())
+    }
+}
+
+val dateFormat = SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.CANADA)

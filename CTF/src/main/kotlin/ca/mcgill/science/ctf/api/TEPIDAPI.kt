@@ -43,4 +43,8 @@ class TEPIDAPI(token: String?) {
         return api.getPrintQueue(roomId, limit)
     }
 
+    fun getUserPrintJobs(shortUser: String): Call<List<PrintData>> {
+        return api.getUserPrintJobs(shortUser)
+    }
+
 }

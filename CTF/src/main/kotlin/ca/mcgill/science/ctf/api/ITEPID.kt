@@ -30,4 +30,8 @@ interface ITEPID {
     @GET("queues/{roomId}")
     fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<List<PrintData>>
 
+    //TODO add limit query
+    @GET("jobs/{shortUser}")
+    fun getUserPrintJobs(@Path("shortUser") shortUser: String): Call<List<PrintData>>
+
 }

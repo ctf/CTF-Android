@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import ca.allanwang.swiperecyclerview.library.adapters.AnimationAdapter;
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.auth.AccountUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,19 +42,23 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     private static final String TAG_TOKEN = "auth_token";
     protected TEPIDAPI api;
 
-    public static <I extends IItem, C, F extends BaseFragment<I, C>> F getFragment(String token, F fragment) {
+    public static Fragment getFragment(String token, Fragment fragment) {
         Bundle args = new Bundle();
         args.putString(TAG_TOKEN, token);
         fragment.setArguments(args);
         return fragment;
     }
 
+    public static String getToken(Fragment fragment) {
+        if (fragment.getArguments() == null) return null;
+        return fragment.getArguments().getString(TAG_TOKEN);
+    }
+
     @Override
     @CallSuper
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String token = getArguments() != null ? getArguments().getString(TAG_TOKEN) : null;
-        api = new TEPIDAPI(token);
+        api = new TEPIDAPI(getToken(this));
     }
 
     @Nullable
@@ -146,5 +152,9 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     protected abstract Call<C> getAPICall(TEPIDAPI api);
 
     protected abstract void onResponseReceived(Object body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus);
+
+    protected String getShortUser() {
+        return AccountUtil.getShortUser();
+    }
 
 }

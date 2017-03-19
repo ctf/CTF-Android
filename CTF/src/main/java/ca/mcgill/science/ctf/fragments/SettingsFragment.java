@@ -30,22 +30,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private String token;
     private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
 
-    public static SettingsFragment newInstance(String token) {
-        SettingsFragment frag = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(KEY_TOKEN, token);
-        frag.setArguments(args);
-        return frag;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            token = args.getString(KEY_TOKEN);
-        }
-
+        token = BaseFragment.getToken(this);
     }
 
     @Override
