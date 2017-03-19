@@ -25,6 +25,7 @@ import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
+import ca.mcgill.science.ctf.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,7 +59,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     @CallSuper
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        api = new TEPIDAPI(getToken(this));
+        api = new TEPIDAPI(getToken(this), getContext());
     }
 
     @Nullable
@@ -128,6 +129,8 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     @Override
     public final void onRefresh(final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         mAdapter.clear();
+        if (!Utils.isNetworkAvailable(getContext()))
+            postEvent(new SnackbarEvent("No internet; Retrieving from cache"));
         Call<C> call = getAPICall(api);
         call.enqueue(new Callback<C>() {
             @Override

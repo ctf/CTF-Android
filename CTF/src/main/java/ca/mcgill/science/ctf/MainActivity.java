@@ -48,6 +48,7 @@ import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.requests.CTFSpiceService;
 import ca.mcgill.science.ctf.requests.TokenRequest;
 import ca.mcgill.science.ctf.utils.Preferences;
+import ca.mcgill.science.ctf.utils.Utils;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
@@ -239,10 +240,7 @@ public class MainActivity extends CapsuleActivityFrame {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+        return Utils.isNetworkAvailable(this);
     }
 
     @Override

@@ -1,9 +1,12 @@
 package ca.mcgill.science.ctf.api
 
+import android.content.Context
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 
 /**
  * Created by Allan Wang on 18/03/2017.
@@ -11,12 +14,17 @@ import retrofit2.converter.gson.GsonConverterFactory
  * API for data retrieval
  */
 
-class TEPIDAPI(token: String?) {
+class TEPIDAPI(token: String?, context: Context) {
     private val api: ITEPID
 
     init {
+        val cacheDir = File(context.cacheDir, "responses")
+        val cacheSize = 5L * 1024 * 1024 //10MiB
+        val cache = Cache(cacheDir, cacheSize)
+
         val client = OkHttpClient.Builder()
-                .addInterceptor(LoginInterceptor(token))
+                .addInterceptor(CTFInterceptor(token, context))
+                .cache(cache)
                 .build()
 
         val retrofit = Retrofit.Builder()
