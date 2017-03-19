@@ -18,17 +18,20 @@ import ca.allanwang.capsule.library.adapters.CapsuleAdapter;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.utils.AnimUtils;
 import ca.allanwang.capsule.library.utils.ParcelUtils;
+import ca.allanwang.swiperecyclerview.library.adapters.AnimationAdapter;
+import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.allanwang.swiperecyclerview.library.items.CheckBoxItem;
 import ca.mcgill.science.ctf.Events;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.adapter.RoomInfoAdapter;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.enums.DataType;
+import ca.mcgill.science.ctf.iitems.RoomInfoItem;
 import ca.mcgill.science.ctf.models.PrintData;
 import ca.mcgill.science.ctf.tepid.PrintJob;
 import ca.mcgill.science.ctf.tepid.RoomInformation;
 
-public class DashboardFragment extends BaseFragment<PrintData> {
+public class DashboardFragment extends BaseFragment<RoomInfoItem> {
 
     @BindView(R.id.dashboard_username)
     TextView usernameView;
@@ -54,17 +57,6 @@ public class DashboardFragment extends BaseFragment<PrintData> {
         }
         CheckBoxItem
         return (DashboardFragment) parcelUtils.create();
-    }
-
-    @Override
-    public void getArgs(Bundle args) {
-        if (args == null || !args.getBoolean(BUNDLE_COMPLETE, false)) {
-            updateList(null);
-            return;
-        }
-        rQuota = args.getString(BUNDLE_QUOTA);
-        rPrintJobs = (PrintJob[]) args.getParcelableArray(BUNDLE_PRINT_JOBS);
-        rRoomInfo = args.getParcelableArrayList(BUNDLE_ROOM_INFO);
     }
 
     @Override
@@ -94,52 +86,23 @@ public class DashboardFragment extends BaseFragment<PrintData> {
         return DataType.Category.DASHBOARD;
     }
 
-    //TODO remove flicker on refresh and keep
     @Override
-    public boolean onLoadEvent(Events.LoadEvent event) {
-        if (!isLoadValid(event, DataType.Single.QUOTA, DataType.Single.USER_JOBS, DataType.Single.QUEUES))
-            return false;
-        switch (event.getType()) {
-            case QUOTA:
-                rQuota = String.valueOf(event.getData());
-                break;
-            case USER_JOBS:
-                rPrintJobs = (PrintJob[]) event.getData();
-                break;
-            case QUEUES:
-                CLog.d("New Queue");
-                rRoomInfo = (ArrayList<RoomInformation>) event.getData();
-                break;
-        }
-        return true;
+    public void requestData() {
+
     }
 
     @Override
-    public void updateContent(DataType.Single... types) {
-        for (DataType.Single type : types) {
-            switch (type) {
-                case QUOTA:
-                    if (rQuota == null) continue;
-                    quotaView.setText(String.valueOf(rQuota));
-                    AnimUtils.fadeIn(getContext(), quotaView, 0, 1000);
-                    break;
-                case USER_JOBS:
-                    Date last;
-                    if (rPrintJobs == null || rPrintJobs[0] == null) {
-                        last = new Date();
-                    } else {
-                        last = rPrintJobs[0].started;
-                    }
-                    PrettyTime pt = new PrettyTime();
-                    lastJobView.setText(getString(R.string.dashboard_last_job_text, pt.format(last)));
-                    AnimUtils.fadeIn(getContext(), lastJobView, 0, 1000);
-                    break;
-                case QUEUES: //Already changed into List<RoomInformation> through RequestActivity
-                    if (rRoomInfo == null) continue;
-                    cAdapter.updateList(rRoomInfo);
-                    break;
-            }
-        }
+    public void onLoadEventSubscription(Events.LoadEvent event) {
+
     }
 
+    @Override
+    protected void configAdapter(AnimationAdapter<RoomInfoItem> adapter) {
+
+    }
+
+    @Override
+    public void onRefresh(ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+
+    }
 }

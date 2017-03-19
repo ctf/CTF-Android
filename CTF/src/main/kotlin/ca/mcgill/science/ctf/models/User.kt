@@ -4,9 +4,7 @@ package ca.mcgill.science.ctf.models
  * Created by Allan Wang on 18/03/2017.
  */
 
-class User(val data: UserData)
-
-class UserData(
+class User(
         val salutation: String,
         val realName: String,
         val longUser: String,

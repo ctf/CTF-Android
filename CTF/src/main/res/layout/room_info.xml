@@ -15,4 +15,13 @@
         android:layout_height="wrap_content"
         android:contentDescription="Computer Availability" />
 
+    <ca.mcgill.science.ctf.views.PrinterInfoView
+        android:id="@+id/printer_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ca.mcgill.science.ctf.views.PrinterInfoView
+        android:id="@+id/printer_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

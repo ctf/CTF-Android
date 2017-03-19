@@ -1,56 +1,65 @@
 package ca.mcgill.science.ctf.iitems;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
-import com.mikepenz.fastadapter.listeners.ClickEventHook;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
-import com.mikepenz.materialize.holder.StringHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import ca.allanwang.swiperecyclerview.library.items.CheckBoxItem;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.models.PrinterInfo;
 import ca.mcgill.science.ctf.models.RoomInfo;
+import ca.mcgill.science.ctf.views.PrinterInfoView;
 
 /**
  * Created by Allan Wang on 18/03/2017.
  */
 
-public class RoomInfoItem extends AbstractItem<CheckBoxItem, CheckBoxItem.ViewHolder> {
-    private static final ViewHolderFactory<? extends CheckBoxItem.ViewHolder> FACTORY = new RoomInfoItem.ItemFactory();
-    public String header;
-    public StringHolder name;
-    public StringHolder description;
+public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHolder> {
+    private static final ViewHolderFactory<? extends RoomInfoItem.ViewHolder> FACTORY = new RoomInfoItem.ItemFactory();
+    private List<PrinterInfo> roomInfoData = new ArrayList<>();
+    private String roomName;
 
-    public RoomInfoItem(RoomInfo data) {
-
+    public RoomInfoItem(String roomName, RoomInfo data) {
+        this.roomName = roomName;
+        for (PrinterInfo printerInfo : data.getPrinters())
+            if (printerInfo.getName().contains(roomName))
+                roomInfoData.add(printerInfo);
     }
 
     public int getType() {
-        return ca.allanwang.swiperecyclerview.library.R.id.checkbox;
+        return R.id.ctf_room_info_item;
     }
 
     public int getLayoutRes() {
-        return ca.allanwang.swiperecyclerview.library.R.layout.fastitem_checkbox;
+        return R.layout.room_info;
     }
 
-    public void bindView(CheckBoxItem.ViewHolder viewHolder, List<Object> payloads) {
+    @Override
+    public void bindView(RoomInfoItem.ViewHolder viewHolder, List<Object> payloads) {
         super.bindView(viewHolder, payloads);
-        viewHolder.checkBox.setChecked(this.isSelected());
-        StringHolder.applyTo(this.name, viewHolder.name);
-        StringHolder.applyToOrHide(this.description, viewHolder.description);
+        viewHolder.roomName.setText(roomName);
+//        viewHolder.computerVisibility.setImageDrawable(null);
+        if (roomInfoData.size() >= 1)
+            viewHolder.printer1.bind(roomInfoData.get(0));
+        if (roomInfoData.size() >= 2)
+            viewHolder.printer2.bind(roomInfoData.get(1));
     }
 
-    public void unbindView(CheckBoxItem.ViewHolder holder) {
+    @Override
+    public void unbindView(RoomInfoItem.ViewHolder holder) {
         super.unbindView(holder);
-        holder.name.setText((CharSequence)null);
-        holder.description.setText((CharSequence)null);
+        holder.roomName.setText(null);
+        holder.computerVisibility.setImageDrawable(null);
+        holder.printer1.bind(null);
+        holder.printer2.bind(null);
     }
 
     public ViewHolderFactory<? extends RoomInfoItem.ViewHolder> getFactory() {
@@ -58,17 +67,19 @@ public class RoomInfoItem extends AbstractItem<CheckBoxItem, CheckBoxItem.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        protected View view;
-        public CheckBox checkBox;
-        TextView name;
-        TextView description;
+
+        @BindView(R.id.room_name)
+        TextView roomName;
+        @BindView(R.id.computer_availability)
+        ImageView computerVisibility;
+        @BindView(R.id.printer_1)
+        PrinterInfoView printer1;
+        @BindView(R.id.printer_2)
+        PrinterInfoView printer2;
 
         public ViewHolder(View view) {
             super(view);
-            this.checkBox = (CheckBox)view.findViewById(ca.allanwang.swiperecyclerview.library.R.id.checkbox);
-            this.name = (TextView)view.findViewById(ca.allanwang.swiperecyclerview.library.R.id.title);
-            this.description = (TextView)view.findViewById(ca.allanwang.swiperecyclerview.library.R.id.description);
-            this.view = view;
+            ButterKnife.bind(view);
         }
     }
 
