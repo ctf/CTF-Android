@@ -1,8 +1,5 @@
 package ca.mcgill.science.ctf.api
 
-import ca.mcgill.science.ctf.models.PrintQueue
-import ca.mcgill.science.ctf.models.RoomInfo
-import ca.mcgill.science.ctf.models.User
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -31,8 +28,7 @@ class TEPIDAPI(token: String?) {
         api = retrofit.create(ITEPID::class.java)
     }
 
-
-    fun getUser(shortUser: String): Call<User> {
+    fun getUser(shortUser: String): Call<ITEPID.User> {
         return api.getUser(shortUser)
     }
 
@@ -40,11 +36,11 @@ class TEPIDAPI(token: String?) {
         return api.getQuota(shortUser)
     }
 
-    fun getRoomInfo(): Call<RoomInfo> {
-        return api.getRoomInfo()
+    fun getPrinterInfo(): Call<ITEPID.PrinterInfoList> {
+        return api.getPrinterInfo()
     }
 
-    fun getPrintQueue(roomId: String, limit: Int): Call<PrintQueue> {
+    fun getPrintQueue(roomId: String, limit: Int): Call<ITEPID.PrintDataList> {
         return api.getPrintQueue(roomId, limit)
     }
 

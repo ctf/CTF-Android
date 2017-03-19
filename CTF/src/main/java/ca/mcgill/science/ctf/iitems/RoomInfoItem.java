@@ -10,12 +10,12 @@ import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.models.PrinterInfo;
-import ca.mcgill.science.ctf.models.RoomInfo;
+import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.views.PrinterInfoView;
 
 /**
@@ -24,14 +24,27 @@ import ca.mcgill.science.ctf.views.PrinterInfoView;
 
 public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHolder> {
     private static final ViewHolderFactory<? extends RoomInfoItem.ViewHolder> FACTORY = new RoomInfoItem.ItemFactory();
-    private List<PrinterInfo> roomInfoData = new ArrayList<>();
+    private List<ITEPID.PrinterInfo> roomInfoData = new ArrayList<>();
     private String roomName;
 
-    public RoomInfoItem(String roomName, RoomInfo data) {
+    public static List<RoomInfoItem> getItems(List<ITEPID.PrinterInfo> info) {
+        TreeMap<String, List<ITEPID.PrinterInfo>> map = new TreeMap<>();
+        for (final ITEPID.PrinterInfo printer : info) {
+            String room = printer.getRoomName();
+            if (map.containsKey(room)) map.get(room).add(printer);
+            else map.put(room, new ArrayList<ITEPID.PrinterInfo>() {{
+                add(printer);
+            }});
+        }
+        List<RoomInfoItem> itemList = new ArrayList<>();
+        for (String room : map.keySet())
+            itemList.add(new RoomInfoItem(room, map.get(room)));
+        return itemList;
+    }
+
+    public RoomInfoItem(String roomName, List<ITEPID.PrinterInfo> data) {
         this.roomName = roomName;
-        for (PrinterInfo printerInfo : data.getPrinters())
-            if (printerInfo.getName().contains(roomName))
-                roomInfoData.add(printerInfo);
+        roomInfoData = data;
     }
 
     public int getType() {

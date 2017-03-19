@@ -1,9 +1,5 @@
 package ca.mcgill.science.ctf.api
 
-import ca.mcgill.science.ctf.models.PrintQueue
-import ca.mcgill.science.ctf.models.RoomInfo
-import ca.mcgill.science.ctf.models.User
-import ca.mcgill.science.ctf.models.UserData
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -24,12 +20,25 @@ interface ITEPID {
     @GET("/users/{shortUser}")
     fun getUser(@Path("shortUser") shortUser: String): Call<User>
 
+    class User(val salutation: String, val realName: String, val longUser: String, val studentId: Int, val colorPrinting: Boolean)
+
     @GET("/users/{shortUser}/quota")
     fun getQuota(@Path("shortUser") shortUser: String): Call<Int>
 
     @GET("/queues")
-    fun getRoomInfo(): Call<RoomInfo>
+    fun getPrinterInfo(): Call<PrinterInfoList>
+
+    class PrinterInfoList(val list: List<PrinterInfo>)
+    class PrinterInfo(val name: String, val isUp: Boolean) {
+        fun getRoomName(): String {
+            val hyphen = name.indexOf("-")
+            return if (hyphen == -1) name else name.substring(0, hyphen)
+        }
+    }
 
     @GET("queues/{roomId}")
-    fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<PrintQueue>
+    fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<PrintDataList>
+
+    class PrintDataList(val list: List<PrintData>)
+    class PrintData(val name: String, val colorPages: Int, val pages: Int, val refunded: Boolean)
 }
