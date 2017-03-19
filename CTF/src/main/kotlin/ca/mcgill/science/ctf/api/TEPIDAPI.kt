@@ -28,7 +28,7 @@ class TEPIDAPI(token: String?) {
         api = retrofit.create(ITEPID::class.java)
     }
 
-    fun getUser(shortUser: String): Call<ITEPID.User> {
+    fun getUser(shortUser: String): Call<User> {
         return api.getUser(shortUser)
     }
 
@@ -36,11 +36,11 @@ class TEPIDAPI(token: String?) {
         return api.getQuota(shortUser)
     }
 
-    fun getPrinterInfo(): Call<ITEPID.PrinterInfoList> {
+    fun getPrinterInfo(): Call<PrinterInfoList> {
         return api.getPrinterInfo()
     }
 
-    fun getPrintQueue(roomId: String, limit: Int): Call<ITEPID.PrintDataList> {
+    fun getPrintQueue(roomId: String, limit: Int): Call<PrintDataList> {
         return api.getPrintQueue(roomId, limit)
     }
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.PrinterInfo;
 
 /**
  * Created by Allan Wang on 18/03/2017.
@@ -33,7 +33,7 @@ public class PrinterInfoView extends LinearLayout {
         init();
     }
 
-    public static PrinterInfoView bindData(@IdRes int id, View v, @Nullable ITEPID.PrinterInfo data) {
+    public static PrinterInfoView bindData(@IdRes int id, View v, @Nullable PrinterInfo data) {
         PrinterInfoView view = (PrinterInfoView) v.findViewById(id);
         view.bind(data);
         return view;
@@ -61,7 +61,7 @@ public class PrinterInfoView extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public PrinterInfoView bind(@Nullable ITEPID.PrinterInfo data) {
+    public PrinterInfoView bind(@Nullable PrinterInfo data) {
         if (data == null) {
             setVisibility(INVISIBLE);
             image.setImageDrawable(null);

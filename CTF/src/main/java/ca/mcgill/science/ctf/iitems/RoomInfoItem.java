@@ -15,7 +15,7 @@ import java.util.TreeMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.views.PrinterInfoView;
 
 /**
@@ -24,15 +24,15 @@ import ca.mcgill.science.ctf.views.PrinterInfoView;
 
 public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHolder> {
     private static final ViewHolderFactory<? extends RoomInfoItem.ViewHolder> FACTORY = new RoomInfoItem.ItemFactory();
-    private List<ITEPID.PrinterInfo> roomInfoData = new ArrayList<>();
+    private List<PrinterInfo> roomInfoData = new ArrayList<>();
     private String roomName;
 
-    public static List<RoomInfoItem> getItems(List<ITEPID.PrinterInfo> info) {
-        TreeMap<String, List<ITEPID.PrinterInfo>> map = new TreeMap<>();
-        for (final ITEPID.PrinterInfo printer : info) {
+    public static List<RoomInfoItem> getItems(List<PrinterInfo> info) {
+        TreeMap<String, List<PrinterInfo>> map = new TreeMap<>();
+        for (final PrinterInfo printer : info) {
             String room = printer.getRoomName();
             if (map.containsKey(room)) map.get(room).add(printer);
-            else map.put(room, new ArrayList<ITEPID.PrinterInfo>() {{
+            else map.put(room, new ArrayList<PrinterInfo>() {{
                 add(printer);
             }});
         }
@@ -42,7 +42,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
         return itemList;
     }
 
-    public RoomInfoItem(String roomName, List<ITEPID.PrinterInfo> data) {
+    public RoomInfoItem(String roomName, List<PrinterInfo> data) {
         this.roomName = roomName;
         roomInfoData = data;
     }

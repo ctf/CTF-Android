@@ -9,7 +9,8 @@ import java.util.List;
 import butterknife.BindView;
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.PrinterInfo;
+import ca.mcgill.science.ctf.api.PrinterInfoList;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.iitems.RoomInfoItem;
 import retrofit2.Response;
@@ -34,7 +35,7 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem> {
     public void onRefresh(ISwipeRecycler.OnRefreshStatus onRefreshStatus, TEPIDAPI api) throws IOException {
         Response response = api.getPrinterInfo().execute();
         if (response.isSuccessful()) {
-            List<ITEPID.PrinterInfo> data = ((ITEPID.PrinterInfoList) response.body()).getList();
+            List<PrinterInfo> data = ((PrinterInfoList) response.body()).getList();
             mAdapter.add(RoomInfoItem.getItems(data));
         } else onRefreshStatus.onFailure();
     }
