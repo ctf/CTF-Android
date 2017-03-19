@@ -1,6 +1,6 @@
 package ca.mcgill.science.ctf.api
 
-import ca.mcgill.science.ctf.iitems.PairItem
+import ca.allanwang.swiperecyclerview.library.items.PairItem
 import java.text.SimpleDateFormat
 import java.util.*
 

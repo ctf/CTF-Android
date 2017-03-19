@@ -144,6 +144,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="swiperecyclerview-f0e0a6532caefe27b9f07027b08ad3f6ff964cd7" level="project" />
     <orderEntry type="library" exported="" name="design-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="commons-cli-1.2" level="project" />
     <orderEntry type="library" exported="" name="commons-io-1.3.2" level="project" />
@@ -174,7 +175,6 @@
     <orderEntry type="library" exported="" name="animated-vector-drawable-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="stetho-okhttp3-1.4.2" level="project" />
     <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
-    <orderEntry type="library" exported="" name="swiperecyclerview-b74cd9cdc3" level="project" />
     <orderEntry type="library" exported="" name="transition-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-core-2.3.14" level="project" />
     <orderEntry type="library" exported="" name="ocpsoft-pretty-time-1.0.7" level="project" />
@@ -185,11 +185,11 @@
     <orderEntry type="library" exported="" name="core-0.9.4.1" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="google-material-typeface-3.0.1.0.original" level="project" />
-    <orderEntry type="library" exported="" name="capsule-3f613f632c" level="project" />
     <orderEntry type="library" exported="" name="butterknife-annotations-8.5.1" level="project" />
     <orderEntry type="library" exported="" name="kotlin-stdlib-jre7-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="beta-1.2.2" level="project" />
     <orderEntry type="library" exported="" name="annotations-13.0" level="project" />
+    <orderEntry type="library" exported="" name="capsule-0e598109597c690a8d41b28529b8a3fd836ad446" level="project" />
     <orderEntry type="library" exported="" name="answers-1.3.10" level="project" />
     <orderEntry type="library" exported="" name="eventbus-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="okio-1.11.0" level="project" />
