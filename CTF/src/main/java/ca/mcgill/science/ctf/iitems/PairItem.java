@@ -2,6 +2,7 @@ package ca.mcgill.science.ctf.iitems;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
@@ -37,6 +38,8 @@ public class PairItem extends AbstractItem<PairItem, PairItem.ViewHolder> {
     @Override
     public void bindView(PairItem.ViewHolder viewHolder, List<Object> payloads) {
         super.bindView(viewHolder, payloads);
+        if (viewHolder.getAdapterPosition() % 2 == 1)
+            viewHolder.container.setBackgroundResource(R.color.transparentBlack);
         viewHolder.left.setText(left);
         viewHolder.right.setText(right);
     }
@@ -54,6 +57,8 @@ public class PairItem extends AbstractItem<PairItem, PairItem.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.linear_container)
+        LinearLayout container;
         @BindView(R.id.text_left)
         TextView left;
         @BindView(R.id.text_right)

@@ -38,4 +38,4 @@ class PrintData(val name: String, val colorPages: Long, val pages: Long, val ref
     }
 }
 
-val dateFormat = SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.CANADA)
+val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA)
