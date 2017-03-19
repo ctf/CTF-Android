@@ -84,22 +84,18 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-//        @BindView(R.id.room_name)
+        @BindView(R.id.room_name)
         TextView roomName;
-//        @BindView(R.id.computer_availability)
+        @BindView(R.id.computer_availability)
         ImageView computerVisibility;
-//        @BindView(R.id.printer_1)
+        @BindView(R.id.printer_1)
         PrinterInfoView printer1;
-//        @BindView(R.id.printer_2)
+        @BindView(R.id.printer_2)
         PrinterInfoView printer2;
 
         public ViewHolder(View view) {
             super(view);
-//            ButterKnife.bind(this, view);
-            roomName = (TextView) view.findViewById(R.id.room_name);
-            computerVisibility = (ImageView) view.findViewById(R.id.computer_availability);
-            printer1 = (PrinterInfoView) view.findViewById(R.id.printer_1);
-            printer2 = (PrinterInfoView) view.findViewById(R.id.printer_2);
+            ButterKnife.bind(this, view);
         }
     }
 

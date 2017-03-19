@@ -121,17 +121,18 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
     @Override
     public final void onRefresh(final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+        mAdapter.clear();
         Call<C> call = getAPICall(api);
         call.enqueue(new Callback<C>() {
             @Override
             public void onResponse(Call<C> call, Response<C> response) {
                 CLog.e("RESPONSE DATA %s", response.toString());
-                if (response.body() == null)
+                if (response.body() == null || !response.isSuccessful())
                     onRefreshStatus.onFailure();
-                else if (onResponseReceived(response.body()) && response.isSuccessful())
+                else {
+                    onResponseReceived(response.body(), onRefreshStatus);
                     onRefreshStatus.onSuccess();
-                else
-                    onRefreshStatus.onFailure();
+                }
             }
 
             @Override
@@ -144,6 +145,6 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
     protected abstract Call<C> getAPICall(TEPIDAPI api);
 
-    protected abstract boolean onResponseReceived(Object body);
+    protected abstract void onResponseReceived(Object body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus);
 
 }

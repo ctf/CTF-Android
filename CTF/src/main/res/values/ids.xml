@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="ctf_room_info_item" type="id" />
+    <item name="ctf_dashboard_header" type="id" />
 </resources>
