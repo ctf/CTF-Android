@@ -8,17 +8,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.Color;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +25,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.octo.android.robospice.SpiceManager;
@@ -36,11 +35,9 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
 import ca.allanwang.capsule.library.changelog.ChangelogDialog;
 import ca.allanwang.capsule.library.interfaces.CDrawerItem;
-import ca.allanwang.capsule.library.item.DrawerItem;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.allanwang.capsule.library.permissions.CPermissionCallback;
 import ca.mcgill.science.ctf.auth.AccountUtil;
-import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
 import ca.mcgill.science.ctf.fragments.MyAccountFragment;
 import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
@@ -217,7 +214,29 @@ public class MainActivity extends CapsuleActivityFrame {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem.setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_search).color(Color.WHITE).sizeDp(24).respectFontBounds(true));
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                search(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                search(newText);
+                return true;
+            }
+
+
+        });
         return true;
+    }
+
+    private void search(String s) {
+
     }
 
     @Override
