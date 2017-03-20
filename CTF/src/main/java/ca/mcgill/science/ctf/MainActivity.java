@@ -167,36 +167,6 @@ public class MainActivity extends CapsuleActivityFrame {
                 .withSelectionListEnabledForSingleProfile(false);
     }
 
-    private class CTFDrawerItem {
-        @StringRes
-        int titleId;
-        GoogleMaterial.Icon icon;
-        Fragment fragment;
-
-        private CTFDrawerItem(@StringRes int titleId, GoogleMaterial.Icon icon, Fragment fragment) {
-            this.titleId = titleId;
-            this.icon = icon;
-            this.fragment = fragment;
-        }
-
-        private CDrawerItem getCDrawerItem() {
-            return new DrawerItem(titleId, icon, true) {
-                @Nullable
-                @Override
-                public Fragment getFragment() {
-                    return BaseFragment.getFragment(mToken, fragment);
-                }
-            };
-        }
-    }
-
-    private CDrawerItem[] generateDrawerItems(CTFDrawerItem... items) {
-        CDrawerItem[] drawerItems = new CDrawerItem[items.length];
-        for (int i = 0; i < items.length; i++)
-            drawerItems[i] = items[i].getCDrawerItem();
-        return drawerItems;
-    }
-
     /**
      * Sets up array of drawer items
      *
@@ -205,11 +175,11 @@ public class MainActivity extends CapsuleActivityFrame {
     @Override
     protected CDrawerItem[] getDrawerItems() {
         return generateDrawerItems(
-                new CTFDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, new DashboardFragment()),
-//                new CTFDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
-                new CTFDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, new MyAccountFragment()),
-                new CTFDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, new SettingsFragment()),
-                new CTFDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, new ReportProblemFragment())
+                new ShortCDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, new DashboardFragment()),
+//                new ShortCDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
+                new ShortCDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, new MyAccountFragment()),
+                new ShortCDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, new SettingsFragment()),
+                new ShortCDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, new ReportProblemFragment())
         );
     }
 

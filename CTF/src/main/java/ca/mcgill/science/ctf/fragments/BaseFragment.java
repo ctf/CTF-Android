@@ -40,6 +40,7 @@ import retrofit2.Response;
 public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragment<I> {
 
     private Unbinder unbinder;
+    private Call<C> mCall;
     private static final String TAG_TOKEN = "auth_token";
     protected TEPIDAPI api;
 
@@ -82,20 +83,6 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     }
 
     @Override
-    @CallSuper
-    public void onResume() {
-        super.onResume();
-//        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    @CallSuper
-    public void onPause() {
-//        EventBus.getDefault().unregister(this);
-        super.onPause();
-    }
-
-    @Override
     protected void configAdapter(AnimationAdapter<I> adapter) {
 
     }
@@ -109,12 +96,14 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
             @Override
             public void onSuccess() {
                 srv.hideRefresh();
+                mCall = null;
             }
 
             @Override
             public void onFailure() {
                 postEvent(new SnackbarEvent("Contents failed to load...").setDuration(Snackbar.LENGTH_INDEFINITE));
                 srv.hideRefresh();
+                mCall = null;
             }
         });
         srv.refresh();
@@ -131,8 +120,9 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
         mAdapter.clear();
         if (!Utils.isNetworkAvailable(getContext()))
             postEvent(new SnackbarEvent("No internet; Retrieving from cache"));
-        Call<C> call = getAPICall(api);
-        call.enqueue(new Callback<C>() {
+        if (mCall != null) mCall.cancel(); //cancel old if it's still running
+        mCall = getAPICall(api);
+        mCall.enqueue(new Callback<C>() {
             @Override
             public void onResponse(Call<C> call, Response<C> response) {
                 CLog.e("RESPONSE DATA %s", response.toString());
@@ -146,10 +136,20 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
             @Override
             public void onFailure(Call<C> call, Throwable t) {
+                if (call.isCanceled()) {
+                    onRefreshStatus.onSuccess();
+                    return;
+                }
                 CLog.e("Retrofit OnFailure: %s", t.getMessage());
                 onRefreshStatus.onFailure();
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mCall != null) mCall.cancel();
+        super.onDestroy();
     }
 
     protected abstract Call<C> getAPICall(TEPIDAPI api);
