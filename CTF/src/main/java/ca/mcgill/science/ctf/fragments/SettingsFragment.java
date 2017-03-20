@@ -41,10 +41,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         addPreferencesFromResource(R.xml.preferences);
 
         findPreference("pref_logout").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AccountUtil.removeAccount();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+                    AccountUtil.removeAccount();
                 getActivity().finish();
                 return true;
             }

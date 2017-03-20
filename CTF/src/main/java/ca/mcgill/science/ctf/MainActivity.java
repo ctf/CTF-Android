@@ -1,12 +1,10 @@
 package ca.mcgill.science.ctf;
 
 import android.Manifest;
-import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.wifi.WifiInfo;
@@ -28,9 +26,6 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -50,8 +45,6 @@ import ca.mcgill.science.ctf.fragments.DashboardFragment;
 import ca.mcgill.science.ctf.fragments.MyAccountFragment;
 import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
-import ca.mcgill.science.ctf.requests.CTFSpiceService;
-import ca.mcgill.science.ctf.requests.TokenRequest;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
 import io.fabric.sdk.android.Fabric;
@@ -105,23 +98,19 @@ public class MainActivity extends CapsuleActivityFrame {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
         SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
-        final SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
         if (isNetworkAvailable()) {
             if (AccountUtil.isSignedIn()) {
-                requestManager.start(this);
-                requestManager.execute(new TokenRequest(AccountUtil.getAccount(), this), new RequestListener<String>() {
+                AccountUtil.requestToken(this, new AccountUtil.TokenRequestCallback() {
                     @Override
-                    public void onRequestFailure(SpiceException spiceException) {
-                        requestManager.shouldStop();
-                        requestAccount();
+                    public void onReceived(@NonNull String token) {
+                        mToken = token;
+                        mUserSearch = new UserSearch(MainActivity.this, mToken);
+                        onLogin(savedInstanceState);
                     }
 
                     @Override
-                    public void onRequestSuccess(String str) {
-                        mToken = str;
-                        mUserSearch = new UserSearch(MainActivity.this, mToken);
-                        requestManager.shouldStop();
-                        onLogin(savedInstanceState);
+                    public void onFailed() {
+                        requestAccount();
                     }
                 });
             } else
@@ -131,14 +120,12 @@ public class MainActivity extends CapsuleActivityFrame {
     }
 
     private void requestAccount() {
-        AccountManager.get(this).addAccount(AccountUtil.accountType, AccountUtil.tokenType, null, null, this, new AccountManagerCallback<Bundle>() {
+        AccountUtil.requestAccount(this, new AccountManagerCallback<Bundle>() {
             @Override
-            public void run(AccountManagerFuture<Bundle> accountManagerFuture) {
-                // switch back to main activity after user signs in
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+            public void run(AccountManagerFuture<Bundle> future) {
+                reload();
             }
-        }, null);
+        });
     }
 
     private void onLogin(final Bundle savedInstanceState) {
@@ -264,7 +251,7 @@ public class MainActivity extends CapsuleActivityFrame {
 
         @Override
         protected void onSuccess(List<UserQuery> result) {
-            CLog.e("Success");
+            CLog.e("Success %d", result.size());
         }
 
         @Override

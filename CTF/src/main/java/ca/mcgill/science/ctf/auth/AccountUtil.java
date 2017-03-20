@@ -2,12 +2,18 @@ package ca.mcgill.science.ctf.auth;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 
+import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.CTFApp;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.Session;
@@ -97,5 +103,33 @@ public class AccountUtil {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     public static void removeAccount() {
         am.removeAccountExplicitly(account);
+    }
+
+    public static void requestAccount(Activity activity, AccountManagerCallback<Bundle> callback) {
+        AccountManager.get(activity).addAccount(accountType, tokenType, null, null, activity, callback, null);
+    }
+
+    public interface TokenRequestCallback {
+        void onReceived(@NonNull String token);
+
+        void onFailed();
+    }
+
+    public static void requestToken(Activity activity, @NonNull final TokenRequestCallback callback) {
+        AccountManager.get(activity).getAuthToken(getAccount(), tokenType, null, activity, new AccountManagerCallback<Bundle>() {
+            @Override
+            public void run(AccountManagerFuture<Bundle> future) {
+                try {
+                    String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+                    if (token == null || token.isEmpty())
+                        callback.onFailed();
+                    else
+                        callback.onReceived(token);
+                } catch (Exception e) {
+                    CLog.e("Failed to request token %s", e.getMessage());
+                    callback.onFailed();
+                }
+            }
+        }, null);
     }
 }
