@@ -15,12 +15,12 @@ import java.util.*
  */
 class UserSession(val username: String, val password: String, val persistent: Boolean = true, val permanent: Boolean = true)
 
-class UserSessionResponse(val role: String, val user: User)
+class UserSessionResponse(val role: String, val user: User, val _id: String)
 
 /**
  * User info; various bits of information for a given student
  */
-class User(val salutation: String, val realName: String, val longUser: String, val studentId: Int, val colorPrinting: Boolean)
+class User(val salutation: String, val realName: String, val shortUser: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
 
 /**
  * User Query; student info from autoSuggest

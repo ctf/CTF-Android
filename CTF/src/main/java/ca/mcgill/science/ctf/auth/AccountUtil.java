@@ -3,11 +3,14 @@ package ca.mcgill.science.ctf.auth;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.google.gson.Gson;
 
 import ca.mcgill.science.ctf.CTFApp;
 import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.api.UserSession;
 import ca.mcgill.science.ctf.tepid.LdapUser;
 import ca.mcgill.science.ctf.tepid.Session;
 
@@ -41,10 +44,9 @@ public class AccountUtil {
      * gets the serialized Session object the TEPID server gave us when we authenticated
      * @return the user's current session on the TEPID server
      */
-    public static Session getSession() {
+    public static UserSession getSession() {
         String s = am.getUserData(account, AccountUtil.KEY_SESSION);
-        Session session = new Gson().fromJson(s, Session.class);
-        return session;
+        return new Gson().fromJson(s, UserSession.class);
     }
 
     /**
@@ -52,10 +54,7 @@ public class AccountUtil {
      * @return
      */
     public static boolean isSignedIn() {
-        if (getAccount() != null) {
-            return true;
-        }
-        return false;
+        return getAccount() != null;
     }
 
     /**
@@ -95,6 +94,7 @@ public class AccountUtil {
      * removes the CTFAccount from android's account manager
      * used before logout to remove the account from the system
      */
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     public static void removeAccount() {
         am.removeAccountExplicitly(account);
     }

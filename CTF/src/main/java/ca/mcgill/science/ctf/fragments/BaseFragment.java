@@ -154,7 +154,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
     protected abstract Call<C> getAPICall(TEPIDAPI api);
 
-    protected abstract void onResponseReceived(Object body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus);
+    protected abstract void onResponseReceived(C body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus);
 
     protected String getShortUser() {
         return AccountUtil.getShortUser();

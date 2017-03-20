@@ -5,8 +5,6 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -18,19 +16,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.DurationInMillis;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 
-import org.json.JSONException;
-
-import java.util.concurrent.ExecutionException;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ca.allanwang.capsule.library.logging.CLog;
+import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.UserSessionResponse;
 import ca.mcgill.science.ctf.auth.AccountUtil;
-import ca.mcgill.science.ctf.requests.CTFSpiceService;
-import ca.mcgill.science.ctf.requests.LoginRequest;
-import ca.mcgill.science.ctf.tepid.Session;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * The main login screen users will see
@@ -51,19 +46,16 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             ARG_IS_ADDING_NEW_ACCOUNT = "BOOL_IS_NEW_ACCOUNT";
 
     // UI references.
-    private EditText mUsernameField;
-    private EditText mPasswordField;
-    private View mProgressView;
-    private View mLoginFormView;
-
-    private SpiceManager spiceManager = new SpiceManager(CTFSpiceService.class);
-
-
-    @Override
-    protected void onStart() {
-        spiceManager.start(this);
-        super.onStart();
-    }
+    @BindView(R.id.username)
+    public EditText mUsernameField;
+    @BindView(R.id.password)
+    public EditText mPasswordField;
+    @BindView(R.id.login_progress)
+    public View mProgressView;
+    @BindView(R.id.login_form)
+    public View mLoginFormView;
+    private TEPIDAPI mAPI;
+    private Call<UserSessionResponse> mRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +63,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         setContentView(R.layout.activity_student_login);
 
         mAccountManager = AccountManager.get(getBaseContext());
-
-        // Set up the login form.
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-        mUsernameField = (EditText) findViewById(R.id.username);
-        mPasswordField = (EditText) findViewById(R.id.password);
+        mAPI = new TEPIDAPI(null, this);
+        ButterKnife.bind(this);
         mPasswordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -95,13 +83,6 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             }
         });
     }
-
-    @Override
-    protected void onStop() {
-        spiceManager.shouldStop();
-        super.onStop();
-    }
-
 
     /**
      * tries to sign in with username and password entered in the form,
@@ -154,7 +135,41 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             //mAuthTask = new UserLoginTask(email, password);
             //mAuthTask.execute((Void) null);
 
-            spiceManager.execute(new LoginRequest(username, password), "json", DurationInMillis.ALWAYS_EXPIRED, new LoginRequestListener());
+
+            mRequest = mAPI.getSession(username, password);
+            mRequest.enqueue(new Callback<UserSessionResponse>() {
+                @Override
+                public void onResponse(Call<UserSessionResponse> call, Response<UserSessionResponse> response) {
+                    CLog.e("RESPONSE DATA %s", response.toString());
+                    if (response.body() == null || !response.isSuccessful()){
+                        mPasswordField.setError("Empty body returned");
+                        showProgress(false);
+                        mPasswordField.requestFocus();
+                    } else {
+                        UserSessionResponse responseData = response.body();
+                        final Account account = new Account(responseData.getUser().getShortUser(), AccountUtil.accountType);
+
+                        if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
+                            Bundle userData = new Bundle();
+                            userData.putString(AccountUtil.KEY_SESSION, new Gson().toJson(responseData));
+                            // password is optional here, we won't keep it
+                            mAccountManager.addAccountExplicitly(account, null, userData);
+                        }
+
+                        // set the auth token using the session we received
+                        mAccountManager.setAuthToken(account, AccountUtil.tokenType,
+                                Base64.encodeToString((responseData.getUser().getShortUser() + ":" + responseData.get_id()).getBytes(), Base64.CRLF));
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserSessionResponse> call, Throwable t) {
+                    if (!call.isCanceled()) mPasswordField.setError("Could not Log in");
+                    showProgress(false);
+                    mPasswordField.requestFocus();
+                }
+            });
 
         }
     }
@@ -191,142 +206,5 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             }
         });
     }
-
-    private final class LoginRequestListener implements RequestListener<Session> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            showProgress(false);
-            mPasswordField.setError(spiceException.getMessage());//todo probs not a great idea to show user exception message eh?
-            mPasswordField.requestFocus();
-        }
-
-        @Override
-        public void onRequestSuccess(Session session) {
-            showProgress(false);
-
-            // create a new CTF account, will be displayed in settings under user's salutation
-            final Account account = new Account(session.getUser().shortUser, AccountUtil.accountType);
-
-            if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
-                Bundle userData = new Bundle();
-                userData.putString(AccountUtil.KEY_SESSION, new Gson().toJson(session)); //todo should we save the whole damn session object?
-                // password is optional here, we won't keep it
-                mAccountManager.addAccountExplicitly(account, null, userData);
-            }
-
-            // set the auth token using the session we received
-            mAccountManager.setAuthToken(account, AccountUtil.tokenType,
-                    Base64.encodeToString((session.getUser().shortUser + ":" + session.getId()).getBytes(), Base64.CRLF));
-
-            finish();
-        }
-    }
-
-    /**
-     * Represents an asynchronous login task used to authenticate the user.
-     */
-    /*public class UserLoginTask extends AsyncTask<Void, Void, Intent> {
-
-        private final String mUsername;
-        private final String mPassword;
-        private String KEY_ERROR_MESSAGE = "";
-
-        UserLoginTask(String username, String password) {
-            mUsername = username;
-            mPassword = password;
-        }
-
-        @Override
-        protected Intent doInBackground(Void... params) {
-            final Intent res = new Intent();
-            String authToken;
-
-            try {
-                authToken = getAuthTokenFromCredentials();
-                //System.out.println(authToken);
-
-                res.putExtra(ARG_ACCOUNT_TYPE, AccountUtil.accountType);
-                res.putExtra(ARG_ACCOUNT_NAME, mUsername);
-                res.putExtra(ARG_TOKEN_TYPE, AccountUtil.tokenType);
-                res.putExtra(AccountManager.KEY_AUTHTOKEN, authToken);
-
-            } catch (Exception e) {
-                res.putExtra(KEY_ERROR_MESSAGE, e.toString());
-            }
-
-            return res;
-        }
-
-        *//**
-         * submits a session request object to the loginURL with the provided credentials
-         * and waits for the server to respond with a session object or an error
-         *
-         * @return a json string representing a session object
-         * @throws ExecutionException if an error occurs waiting for the server response
-         * @throws InterruptedException if an error occurs waiting for the server response
-         * @throws JSONException if an error occurs turning the session request into a json object
-         *//*
-        private String getAuthTokenFromCredentials() throws ExecutionException, InterruptedException, JSONException {
-
-
-*//*
-            final String loginUrl = "https://tepid.sus.mcgill.ca:8443/tepid/";
-            final WebTarget tepidServer = ClientBuilder.newBuilder().build().target(loginUrl);
-
-            // build session request with the provided login credentials
-            SessionRequest sr = new SessionRequest()
-                    .withUsername(mUsername)
-                    .withPassword(mPassword)
-                    .withPersistent(true)
-                    .withPermanent(true);
-
-            return tepidServer.path("sessions")
-                    .request(MediaType.APPLICATION_JSON)
-                    .post(Entity.entity(sr, MediaType.APPLICATION_JSON)).toString();*//*
-            return "";
-        }
-
-        @Override
-        protected void onPostExecute(final Intent intent) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (intent.hasExtra(KEY_ERROR_MESSAGE)) {
-                mPasswordField.setError(intent.getStringExtra(KEY_ERROR_MESSAGE));
-                mPasswordField.requestFocus();
-            } else {
-                finishLogin(intent);
-                finish();
-            }
-        }
-        
-        private void finishLogin(Intent intent) {
-            String authToken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
-            final Account account = new Account(intent.getStringExtra(ARG_ACCOUNT_NAME), intent.getStringExtra(ARG_ACCOUNT_TYPE));
-
-            if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
-                // Creating the account
-                // Password is optional to this call, safer not to send it really.
-                mAccountManager.addAccountExplicitly(account, null, null);
-            }
-            // set the auth token we got (Not setting the auth token will cause
-            // another call to the server to authenticate the user)
-            mAccountManager.setAuthToken(account, intent.getStringExtra(ARG_TOKEN_TYPE), authToken);
-
-            // Our base class can do what Android requires with the
-            // KEY_ACCOUNT_AUTHENTICATOR_RESPONSE extra that onCreate has
-            // already grabbed
-            setAccountAuthenticatorResult(intent.getExtras());
-            // Tell the account manager settings page that all went well
-            setResult(RESULT_OK, intent);
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }*/
 }
 

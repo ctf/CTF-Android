@@ -42,10 +42,9 @@ public class MyAccountFragment extends BaseFragment<PairItem, List<PrintData>> {
     }
 
     @Override
-    protected void onResponseReceived(Object body, ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
-        List<PrintData> data = ((List<PrintData>) body);
+    protected void onResponseReceived(List<PrintData> body, ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         List<PairItem> items = new ArrayList<>();
-        for (PrintData print : data)
+        for (PrintData print : body)
             items.add(print.getPairData());
         mAdapter.add(items);
     }

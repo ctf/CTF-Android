@@ -35,8 +35,7 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, Pr
     }
 
     @Override
-    protected void onResponseReceived(Object body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
-        Map<String, PrinterInfo> data = ((Map<String, PrinterInfo>) body);
-        mAdapter.add(RoomInfoItem.getItems(data.values()));
+    protected void onResponseReceived(Map<String, PrinterInfo> body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+        mAdapter.add(RoomInfoItem.getItems(body.values()));
     }
 }
