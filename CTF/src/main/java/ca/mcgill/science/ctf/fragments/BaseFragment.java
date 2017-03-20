@@ -143,7 +143,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
             @Override
             public void onFailure(Call<C> call, Throwable t) {
-//                CLog.e(t.getMessage());
+                CLog.e("Retrofit OnFailure: %s", t.getMessage());
                 onRefreshStatus.onFailure();
             }
         });
