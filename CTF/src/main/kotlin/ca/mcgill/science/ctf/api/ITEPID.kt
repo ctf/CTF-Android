@@ -18,7 +18,10 @@ interface ITEPID {
 
     @POST("sessions")
     @Headers("CTFA-Type: NewSession")
-    fun getSession(@Body body: UserSession): Call<UserSessionResponse>
+    fun getSession(@Body body: SessionRequest): Call<Session>
+
+    @DELETE("sessions/{id}")
+    fun removeSession(@Path("id") id: String): Call<Void>
 
     @GET("users/{shortUser}")
     fun getUser(@Path("shortUser") shortUser: String): Call<User>

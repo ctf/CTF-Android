@@ -10,9 +10,8 @@ import com.google.gson.Gson;
 
 import ca.mcgill.science.ctf.CTFApp;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.UserSession;
-import ca.mcgill.science.ctf.tepid.LdapUser;
-import ca.mcgill.science.ctf.tepid.Session;
+import ca.mcgill.science.ctf.api.Session;
+import ca.mcgill.science.ctf.api.User;
 
 /**
  * utility class for operations relating to the CTFAccount stored in android's account manager
@@ -27,6 +26,7 @@ public class AccountUtil {
 
     /**
      * called on startup to keep a global reference to the user's account
+     *
      * @param context likely MainActivity or CTFApp
      */
     public static void initAccount(Context context) {
@@ -42,15 +42,17 @@ public class AccountUtil {
 
     /**
      * gets the serialized Session object the TEPID server gave us when we authenticated
+     *
      * @return the user's current session on the TEPID server
      */
-    public static UserSession getSession() {
+    public static Session getSession() {
         String s = am.getUserData(account, AccountUtil.KEY_SESSION);
-        return new Gson().fromJson(s, UserSession.class);
+        return new Gson().fromJson(s, Session.class);
     }
 
     /**
      * checks whether we successfully retrieved the account object from android's account manager
+     *
      * @return
      */
     public static boolean isSignedIn() {
@@ -59,34 +61,32 @@ public class AccountUtil {
 
     /**
      * retrieves the short user from the stored Session object
+     *
      * @return user's "short user (jdoe7)"
      */
     public static String getShortUser() {
-        String s = am.getUserData(account, AccountUtil.KEY_SESSION);
-        Session session = new Gson().fromJson(s, Session.class);
-        return session.getUser().shortUser;
+        return getSession().getUser().getShortUser();
     }
 
     /**
      * gets the user's preferred nick from the Session object
+     *
      * @return user's nick
      */
     public static String getNick() {
-        String s = am.getUserData(account, AccountUtil.KEY_SESSION);
-        Session session = new Gson().fromJson(s, Session.class);
-        return session.getUser().nick;
+        return getSession().getUser().getNick();
     }
 
     /**
      * rather than reauth and get a new Session after a successfully changing the nick on TEPID
      * we just store the new nick in our current Session object
+     *
      * @param nick
      */
     public static void updateNick(String nick) {
-        Session session = new Gson().fromJson(am.getUserData(account, AccountUtil.KEY_SESSION), Session.class);
-        LdapUser user = session.getUser();
-        user.nick = nick;
-        session.setUser(user);
+        Session session = getSession();
+        User user = session.getUser();
+        user.setNick(nick);
         am.setUserData(account, KEY_SESSION, new Gson().toJson(session));
     }
 

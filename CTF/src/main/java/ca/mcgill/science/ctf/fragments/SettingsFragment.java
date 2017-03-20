@@ -2,23 +2,24 @@ package ca.mcgill.science.ctf.fragments;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.gc.materialdesign.widgets.Dialog;
-import com.octo.android.robospice.SpiceManager;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.Locale;
 
 import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.api.Session;
+import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
-import ca.mcgill.science.ctf.requests.CTFSpiceService;
-import ca.mcgill.science.ctf.requests.LogoutRequest;
-import ca.mcgill.science.ctf.tepid.Session;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Allan Wang on 18/03/2017.
@@ -26,20 +27,12 @@ import ca.mcgill.science.ctf.tepid.Session;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    public static final String KEY_TOKEN = "TOKEN";
-    private String token;
-    private SpiceManager requestManager = new SpiceManager(CTFSpiceService.class);
+    private TEPIDAPI mAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        token = BaseFragment.getToken(this);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        requestManager.start(getActivity());
+        mAPI = BaseFragment.getAPI(this);
     }
 
     @Override
@@ -48,6 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         addPreferencesFromResource(R.xml.preferences);
 
         findPreference("pref_logout").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 AccountUtil.removeAccount();
@@ -89,30 +83,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Session session = AccountUtil.getSession();
-                requestManager.execute(new LogoutRequest(token, session.getId()), new RequestListener<Void>() {
+                mAPI.removeSession(AccountUtil.getSession().get_id()).enqueue(new Callback<Void>() {
                     @Override
-                    public void onRequestFailure(SpiceException spiceException) {
-                        AccountUtil.removeAccount();
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+                            AccountUtil.removeAccount();
                         getActivity().finish();
                     }
 
                     @Override
-                    public void onRequestSuccess(Void v) {
-                        AccountUtil.removeAccount();
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+                            AccountUtil.removeAccount();
                         getActivity().finish();
                     }
                 });
                 return false;
             }
         });
-    }
-
-    @Override
-    public void onStop() {
-        if (requestManager.isStarted()) {
-            requestManager.shouldStop();
-        }
-        super.onStop();
     }
 
     /**

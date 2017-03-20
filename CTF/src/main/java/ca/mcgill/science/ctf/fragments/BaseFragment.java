@@ -56,11 +56,15 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
         return fragment.getArguments().getString(TAG_TOKEN);
     }
 
+    public static TEPIDAPI getAPI(Fragment fragment) {
+        return new TEPIDAPI(getToken(fragment), fragment.getContext());
+    }
+
     @Override
     @CallSuper
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        api = new TEPIDAPI(getToken(this), getContext());
+        api = getAPI(this);
     }
 
     @Nullable

@@ -21,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
-import ca.mcgill.science.ctf.api.UserSessionResponse;
+import ca.mcgill.science.ctf.api.Session;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,7 +55,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     @BindView(R.id.login_form)
     public View mLoginFormView;
     private TEPIDAPI mAPI;
-    private Call<UserSessionResponse> mRequest;
+    private Call<Session> mRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,16 +137,16 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
 
             mRequest = mAPI.getSession(username, password);
-            mRequest.enqueue(new Callback<UserSessionResponse>() {
+            mRequest.enqueue(new Callback<Session>() {
                 @Override
-                public void onResponse(Call<UserSessionResponse> call, Response<UserSessionResponse> response) {
+                public void onResponse(Call<Session> call, Response<Session> response) {
                     CLog.e("RESPONSE DATA %s", response.toString());
                     if (response.body() == null || !response.isSuccessful()){
                         mPasswordField.setError("Empty body returned");
                         showProgress(false);
                         mPasswordField.requestFocus();
                     } else {
-                        UserSessionResponse responseData = response.body();
+                        Session responseData = response.body();
                         final Account account = new Account(responseData.getUser().getShortUser(), AccountUtil.accountType);
 
                         if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
@@ -164,7 +164,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                 }
 
                 @Override
-                public void onFailure(Call<UserSessionResponse> call, Throwable t) {
+                public void onFailure(Call<Session> call, Throwable t) {
                     if (!call.isCanceled()) mPasswordField.setError("Could not Log in");
                     showProgress(false);
                     mPasswordField.requestFocus();

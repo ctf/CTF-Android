@@ -35,9 +35,14 @@ class TEPIDAPI(token: String?, context: Context) {
         api = retrofit.create(ITEPID::class.java)
     }
 
-    fun getSession(username: String, password: String): Call<UserSessionResponse> {
-        return api.getSession(UserSession(username, password))
+    fun getSession(username: String, password: String): Call<Session> {
+        return api.getSession(SessionRequest(username, password))
     }
+
+    fun removeSession(id: String): Call<Void> {
+        return api.removeSession(id)
+    }
+
 
     fun getUser(shortUser: String): Call<User> {
         return api.getUser(shortUser)
