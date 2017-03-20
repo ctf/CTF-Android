@@ -25,7 +25,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,10 +41,6 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
-
-        <service
-            android:name=".requests.CTFSpiceService"
-            android:exported="false" />
 
         <activity
             android:name=".LoginActivity"

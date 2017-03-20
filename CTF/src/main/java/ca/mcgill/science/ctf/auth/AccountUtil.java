@@ -124,7 +124,7 @@ public class AccountUtil {
                     if (token == null || token.isEmpty())
                         callback.onFailed();
                     else
-                        callback.onReceived(token);
+                        callback.onReceived(token.trim());
                 } catch (Exception e) {
                     CLog.e("Failed to request token %s", e.getMessage());
                     callback.onFailed();
