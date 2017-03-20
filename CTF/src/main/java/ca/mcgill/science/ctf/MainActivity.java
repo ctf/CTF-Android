@@ -32,11 +32,19 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
 import ca.allanwang.capsule.library.changelog.ChangelogDialog;
 import ca.allanwang.capsule.library.interfaces.CDrawerItem;
+import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.allanwang.capsule.library.permissions.CPermissionCallback;
+import ca.mcgill.science.ctf.api.SingleCallRequest;
+import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.UserQuery;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
 import ca.mcgill.science.ctf.fragments.MyAccountFragment;
@@ -47,11 +55,13 @@ import ca.mcgill.science.ctf.requests.TokenRequest;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
 import timber.log.Timber;
 
 public class MainActivity extends CapsuleActivityFrame {
 
     private String mToken;
+    private UserSearch mUserSearch;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -109,6 +119,7 @@ public class MainActivity extends CapsuleActivityFrame {
                     @Override
                     public void onRequestSuccess(String str) {
                         mToken = str;
+                        mUserSearch = new UserSearch(MainActivity.this, mToken);
                         requestManager.shouldStop();
                         onLogin(savedInstanceState);
                     }
@@ -237,6 +248,34 @@ public class MainActivity extends CapsuleActivityFrame {
 
     private void search(String s) {
 
+    }
+
+    private class UserSearch extends SingleCallRequest<String, List<UserQuery>> {
+
+        public UserSearch(@NotNull Context c, @NotNull String token) {
+            super(c, token);
+        }
+
+        @NotNull
+        @Override
+        protected Call<List<UserQuery>> getAPICall(String input, @NotNull TEPIDAPI api) {
+            return api.getUserQuery(input);
+        }
+
+        @Override
+        protected void onSuccess(List<UserQuery> result) {
+            CLog.e("Success");
+        }
+
+        @Override
+        protected void onFail(@NotNull Throwable t) {
+
+        }
+
+        @Override
+        protected void onEnd(int flag) {
+
+        }
     }
 
     @Override

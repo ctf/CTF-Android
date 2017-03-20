@@ -1,4 +1,4 @@
-package ca.mcgill.science.ctf
+package ca.mcgill.science.ctf.api
 
 import android.content.Context
 
@@ -9,16 +9,15 @@ import retrofit2.Response
 
 /**
  * Created by Allan Wang on 2017-03-19.
+ *
+ * Makes sure that only one call is used at a time; is many are called, only the newest one will keep executing
  */
 
-abstract class SingleCallRequest<I, C>(c: Context, token: String) {
+abstract class SingleCallRequest<in I, C>(c: Context, token: String) {
 
     private var mCall: Call<C>? = null
-    private val mAPI: TEPIDAPI
-
-    init {
-        mAPI = TEPIDAPI(token, c)
-    }
+    private val mAPI: TEPIDAPI = TEPIDAPI(token, c)
+    val EMPTY_RESULT = -1
 
     fun request(input: I) {
         cancel()
@@ -38,8 +37,7 @@ abstract class SingleCallRequest<I, C>(c: Context, token: String) {
     }
 
     fun cancel() {
-        mCall?
-        if (mCall != null) mCall!!.cancel()
+        mCall?.cancel()
         mCall = null
     }
 
@@ -50,10 +48,6 @@ abstract class SingleCallRequest<I, C>(c: Context, token: String) {
     protected abstract fun onFail(t: Throwable)
 
     protected abstract fun onEnd(flag: Int)
-
-    companion object {
-        val EMPTY_RESULT = -1
-    }
 
 
 }

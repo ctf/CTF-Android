@@ -35,6 +35,10 @@ class TEPIDAPI(token: String?, context: Context) {
         api = retrofit.create(ITEPID::class.java)
     }
 
+    fun getSession(username: String, password: String): Call<UserSessionResponse> {
+        return api.getSession(UserSession(username, password))
+    }
+
     fun getUser(shortUser: String): Call<User> {
         return api.getUser(shortUser)
     }
@@ -54,5 +58,14 @@ class TEPIDAPI(token: String?, context: Context) {
     fun getUserPrintJobs(shortUser: String): Call<List<PrintData>> {
         return api.getUserPrintJobs(shortUser)
     }
+
+    fun getUserQuery(query: String): Call<List<UserQuery>> {
+        return getUserQuery(query, 15)
+    }
+
+    fun getUserQuery(query: String, limit: Int): Call<List<UserQuery>> {
+        return api.getUserQuery(query, limit)
+    }
+
 
 }

@@ -1,9 +1,7 @@
 package ca.mcgill.science.ctf.api
 
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 /**
  * Created by Allan Wang on 18/03/2017.
@@ -17,6 +15,10 @@ import retrofit2.http.Query
  */
 
 interface ITEPID {
+
+    @POST("sessions")
+    @Headers("CTFA-Type: NewSession")
+    fun getSession(@Body body: UserSession): Call<UserSessionResponse>
 
     @GET("users/{shortUser}")
     fun getUser(@Path("shortUser") shortUser: String): Call<User>
@@ -33,5 +35,8 @@ interface ITEPID {
     //TODO add limit query
     @GET("jobs/{shortUser}")
     fun getUserPrintJobs(@Path("shortUser") shortUser: String): Call<List<PrintData>>
+
+    @GET("users/autosuggest/{expr}")
+    fun getUserQuery(@Path("expr") query: String, @Query("limit") limit: Int): Call<List<UserQuery>>
 
 }

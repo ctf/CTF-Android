@@ -11,9 +11,21 @@ import java.util.*
  */
 
 /**
+ * Session JSON object
+ */
+class UserSession(val username: String, val password: String, val persistent: Boolean = true, val permanent: Boolean = true)
+
+class UserSessionResponse(val role: String, val user: User)
+
+/**
  * User info; various bits of information for a given student
  */
 class User(val salutation: String, val realName: String, val longUser: String, val studentId: Int, val colorPrinting: Boolean)
+
+/**
+ * User Query; student info from autoSuggest
+ */
+class UserQuery(val displayName: String, val shortUser: String, val email: String, val colorPrinting: Boolean, val type: String)
 
 /**
  * Printer info; tells you which printers are up and down in which rooms
