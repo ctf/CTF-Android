@@ -105,7 +105,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
             @Override
             public void onFailure() {
-                postEvent(new SnackbarEvent("Contents failed to load...").setDuration(Snackbar.LENGTH_INDEFINITE));
+                postEvent(new SnackbarEvent(s(R.string.error_load_fail)).setDuration(3000));
                 srv.hideRefresh();
                 mCall = null;
             }

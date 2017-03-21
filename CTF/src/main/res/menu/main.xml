@@ -7,7 +7,8 @@
         android:id="@+id/action_search"
         android:orderInCategory="1"
         android:title="@string/action_search"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
 
     <item
         android:id="@+id/action_changelog"

@@ -13,6 +13,8 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.SearchView;
@@ -35,6 +37,7 @@ import java.util.List;
 import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
 import ca.allanwang.capsule.library.changelog.ChangelogDialog;
 import ca.allanwang.capsule.library.interfaces.CDrawerItem;
+import ca.allanwang.capsule.library.item.DrawerItem;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.allanwang.capsule.library.permissions.CPermissionCallback;
@@ -42,6 +45,7 @@ import ca.mcgill.science.ctf.api.SingleCallRequest;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.api.UserQuery;
 import ca.mcgill.science.ctf.auth.AccountUtil;
+import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
 import ca.mcgill.science.ctf.fragments.MyAccountFragment;
 import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
@@ -60,7 +64,7 @@ public class MainActivity extends CapsuleActivityFrame {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG && !BuildConfig.BUILD_TYPE.equals("releaseTest")) {
             disableCLog(); //Make things cleaner; don't log unless specified
             //Add crashlytics
             CrashlyticsCore core = new CrashlyticsCore.Builder().build();
@@ -104,6 +108,8 @@ public class MainActivity extends CapsuleActivityFrame {
                 AccountUtil.requestToken(this, new AccountUtil.TokenRequestCallback() {
                     @Override
                     public void onReceived(@NonNull String token) {
+                        CLog.e("A");
+                        CLog.e("GOT TOKEN %s", token);
                         mToken = token;
                         mUserSearch = new UserSearch(MainActivity.this, mToken);
                         onLogin(savedInstanceState);
@@ -131,12 +137,12 @@ public class MainActivity extends CapsuleActivityFrame {
     }
 
     private void onLogin(final Bundle savedInstanceState) {
+        CLog.e("CRETA");
         capsuleOnCreate(savedInstanceState);
         capsuleFrameOnCreate(savedInstanceState);
         cFab.hide(); //we don't use the fab for now
         cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
         selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default TODO fix commitAllowingStateLoss ->   java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
-
     }
 
     //TODO use this?
@@ -172,12 +178,30 @@ public class MainActivity extends CapsuleActivityFrame {
     @Override
     protected CDrawerItem[] getDrawerItems() {
         return generateDrawerItems(
-                new ShortCDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, new DashboardFragment()),
-//                new ShortCDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
-                new ShortCDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, new MyAccountFragment()),
-                new ShortCDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, new SettingsFragment()),
-                new ShortCDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, new ReportProblemFragment())
+                new TepidDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, new DashboardFragment()),
+//                new TepidDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
+                new TepidDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, new MyAccountFragment()),
+                new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, new SettingsFragment()),
+                new TepidDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, new ReportProblemFragment())
         );
+    }
+
+    //create drawer item and pass the token
+    private class TepidDrawerItem extends ShortCDrawerItem {
+
+        TepidDrawerItem(@StringRes int titleId, GoogleMaterial.Icon icon, Fragment fragment) {
+            super(titleId, icon, fragment);
+        }
+
+        public CDrawerItem getCDrawerItem() {
+            return new DrawerItem(titleId, icon, true) {
+                @Nullable
+                @Override
+                public Fragment getFragment() {
+                    return BaseFragment.getFragment(mToken, fragment);
+                }
+            };
+        }
     }
 
     @Override

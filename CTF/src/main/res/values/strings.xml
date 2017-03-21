@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CTF</string>
+    <!--<string name="app_name">CTF</string>-->
 
     <!-- Strings for page titles -->
     <string name="dashboard">Dashboard</string>
@@ -71,6 +71,7 @@
 
     <string name="send_error">Send Error</string>
     <string name="ctf_long_name">McGill Science Computer Taskforce</string>
+    <string name="error_load_fail">Contents failed to load…</string>
 
 </resources>
 
