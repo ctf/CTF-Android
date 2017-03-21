@@ -2,6 +2,7 @@ language: android
 
 jdk:
   - oraclejdk8
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -19,18 +20,18 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 
-#Script courtesy of
-#https://medium.com/@daggerdwivedi/push-your-apk-to-your-github-repository-from-travis-11e397ec430d#.5v6g5lpxx
+# Script courtesy of
+# https://medium.com/@daggerdwivedi/push-your-apk-to-your-github-repository-from-travis-11e397ec430d#.5v6g5lpxx
 
- before_install:
- - chmod +x gradlew
- - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
- - export JAVA_HOME=$JAVA8_HOME
- after_success:
- - chmod +x ./upload-gh-pages.sh
- - .scripts/upload-apk.sh
- script:
- - ./gradlew clean assembleReleaseTest
+before_install:
+  - chmod +x gradlew
+  - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+  - export JAVA_HOME=$JAVA8_HOME
+after_success:
+  - chmod +x ./upload-gh-pages.sh
+  - .scripts/upload-apk.sh
+script:
+  - ./gradlew clean assembleReleaseTest
 
 #branches:
 #  except:
