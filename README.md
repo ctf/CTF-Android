@@ -12,9 +12,11 @@ printer availability.
 
 This project is written in both Java and Kotlin. You will therefore need to have the Kotlin plugin to build it properly.
 
+[Automatic Test Builds](https://github.com/CTFMcGill/CTFMcGill.github.io/releases/)
+
 ## Documentation
 
-[Creating a new Event Request](https://github.com/CTFMcGill/CTF-Android/blob/master/EventRequests.md)
+[Creating a new TEPID Request](https://github.com/CTFMcGill/CTF-Android/blob/master/TepidRequests.md)
 
 
 
