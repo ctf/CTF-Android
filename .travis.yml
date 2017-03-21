@@ -25,8 +25,8 @@ before_install:
   - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
   - export JAVA_HOME=$JAVA8_HOME
 after_success:
-  - chmod +x ./files/upload-apk.sh
-  - ./files/upload-apk.sh
+  - chmod +x ./upload-apk.sh
+  - ./upload-apk.sh
 script:
   - cd $TRAVIS_BUILD_DIR/
   - ./gradlew clean assembleReleaseTest

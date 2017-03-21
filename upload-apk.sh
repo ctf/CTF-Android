@@ -5,7 +5,7 @@
 #create a new directory that will contain our generated apk
 mkdir $HOME/android/
 #copy generated apk from build folder to the folder just created
-cp -R ../CTF/build/outputs/apk/CTF-Android.apk $HOME/android/
+cp -R CTF/build/outputs/apk/CTF-Android.apk $HOME/android/
 #go to home and setup git
 cd $HOME
 git config --global user.email "me@allanwang.ca"
