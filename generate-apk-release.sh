@@ -15,7 +15,7 @@ git clone --quiet --branch=master  https://AllanWang:$GITHUB_API_KEY@github.com/
 # create version file
 echo "Create Version File"
 cd master
-echo "CTFA v$TRAVIS_BUILD_NUMBER" >> CTFA.txt
+echo "CTFA v$TRAVIS_BUILD_NUMBER" > CTFA.txt
 
 echo "Push Version File"
 git remote rm origin
@@ -30,6 +30,6 @@ API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "master","name": "v%s"
 newRelease=$(curl --data "$API_JSON" https://api.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases?access_token=$GITHUB_API_KEY)
 rID=`echo $newRelease | jq ".id"`
 echo "Push apk to $rID"
-curl "https://api.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases/$rID/assets?access_token=$GITHUB_API_KEY&name=CTFA-Test-v$TRAVIS_BUILD_NUMBER.apk" --header 'Content-Type: application/zip' --upload-file CTFA/CTF-Android.apk -X POST
+curl "https://api.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases/${rID}/assets?access_token=${GITHUB_API_KEY}&name=CTFA-Test-v${TRAVIS_BUILD_NUMBER}.apk" --header 'Content-Type: application/zip' --upload-file CTFA/CTF-Android.apk -X POST
 
 echo -e "Done\n"
