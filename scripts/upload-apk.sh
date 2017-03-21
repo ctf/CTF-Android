@@ -1,8 +1,9 @@
+#!/usr/bin/env bash
 # https://medium.com/@daggerdwivedi/push-your-apk-to-your-github-repository-from-travis-11e397ec430d#.5v6g5lpxx
 # https://github.com/Glucosio/glucosio-android/blob/develop/upload-gh-pages.sh
 
-#create a new directory that will contain out generated apk
-mkdir $HOME/buildApk/
+#create a new directory that will contain our generated apk
+mkdir $HOME/android/
 #copy generated apk from build folder to the folder just created
 cp -R CTF/build/outputs/apk/CTF-Android.apk $HOME/android/
 #go to home and setup git
