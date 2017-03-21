@@ -15,6 +15,10 @@ git clone --quiet --branch=master  https://AllanWang:$GITHUB_API_KEY@github.com/
 #go into directory and copy data we're interested
 cd master
 cp -Rf $HOME/CTFA/* .
+
+API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "master","name": "v%s","body": "Release of version %s","draft": false,"prerelease": false}' $VERSION $VERSION $VERSION)
+curl --data "$API_JSON" https://api.github.com/repos/:owner/:repository/releases?access_token=:access_token
+
 #add, commit and push files
 git remote rm origin
 git remote add origin https://AllanWang:$GITHUB_API_KEY@github.com/CTFMcGill/CTFMcGill.github.io.git
