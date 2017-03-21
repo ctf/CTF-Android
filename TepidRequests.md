@@ -3,7 +3,7 @@
 <sub>Last Updated: 2017/03/21</sub>
 
 TEPID requests are done with retrofit and Kotlin data classes, which makes things very simple and concise.
-The api is in the `CTF/src/main/kotlin/ca.mcgill.science.ctf/api` and contains the following notable files:
+The api is in [`CTF/src/main/kotlin/ca.mcgill.science.ctf/api`](https://github.com/CTFMcGill/CTF-Android/tree/master/CTF/src/main/kotlin/ca/mcgill/science/ctf/api) and contains the following notable files:
 
 ## Data.kt
 
