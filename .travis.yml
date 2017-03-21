@@ -20,15 +20,12 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 
-# Script courtesy of
-# https://medium.com/@daggerdwivedi/push-your-apk-to-your-github-repository-from-travis-11e397ec430d#.5v6g5lpxx
-
 before_install:
   - chmod +x gradlew
   - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
   - export JAVA_HOME=$JAVA8_HOME
 after_success:
-  - chmod +x ./upload-gh-pages.sh
+  - chmod +x .scripts/upload-apk.sh
   - .scripts/upload-apk.sh
 script:
   - ./gradlew clean assembleReleaseTest

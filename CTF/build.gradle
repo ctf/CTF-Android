@@ -1,5 +1,4 @@
 ext {
-    APP_TAG = "CTF"
     TARGET_SDK = 25
     BUILD_TOOLS = "25.0.2"
     ANDROID_SUPPORT_LIBS = "25.2.0"
@@ -56,7 +55,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             output.outputFile = new File(output.outputFile.parent,
-                    "${APP_TAG}-v${variant.versionName}.apk")
+                    "CTF-Android.apk")
         }
     }
 
