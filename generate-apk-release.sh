@@ -29,7 +29,7 @@ cd $HOME
 API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "master","name": "v%s","body": "Automatic Android Release v%s","draft": false,"prerelease": false}' $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_NUMBER)
 newRelease=$(curl --data "$API_JSON" https://api.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases?access_token=$GITHUB_API_KEY)
 rID=`echo $newRelease | jq ".id"`
-echo "Push apk to $rIDss"
+echo "Push apk to $rID"
 curl "https://api.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases/$rID/assets?access_token=$GITHUB_API_KEY&name=CTFA-Test-v$TRAVIS_BUILD_NUMBER.apk" --header 'Content-Type: application/zip' --upload-file CTFA/CTF-Android.apk -X POST
 
 echo -e "Done\n"
