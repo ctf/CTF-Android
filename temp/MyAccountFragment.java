@@ -142,7 +142,6 @@ public class MyAccountFragment extends BaseFragment<PrintJob, PrintJobAdapter.Vi
             switch (type) {
                 case NICKNAME:
                     if (rNickname == null) continue;
-                    CLog.e("NICK %s", rNickname);
                     AccountUtil.updateNick(rNickname);
                     usernameView.setText(getString(R.string.dashboard_username_text, rNickname));
                     break;

@@ -1,5 +1,7 @@
 language: android
 
+jdk:
+  - oraclejdk8
 android:
   components:
     # Uncomment the lines below if you want to
@@ -17,14 +19,22 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 
-jdk:
-  - oraclejdk8
+#Script courtesy of
+#https://medium.com/@daggerdwivedi/push-your-apk-to-your-github-repository-from-travis-11e397ec430d#.5v6g5lpxx
 
-script: ./gradlew clean test
+ before_install:
+ - chmod +x gradlew
+ - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+ - export JAVA_HOME=$JAVA8_HOME
+ after_success:
+ - chmod +x ./upload-gh-pages.sh
+ - .scripts/upload-apk.sh
+ script:
+ - ./gradlew clean assembleReleaseTest
 
-branches:
-  except:
-    - gh-pages
+#branches:
+#  except:
+#    - gh-pages
 
 notifications:
   email: false
@@ -34,6 +44,3 @@ sudo: false
 cache:
   directories:
     - $HOME/.m2
-
-before_script:
-  - chmod +x gradlew

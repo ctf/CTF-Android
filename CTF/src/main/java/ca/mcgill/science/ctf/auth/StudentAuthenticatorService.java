@@ -13,17 +13,14 @@ public class StudentAuthenticatorService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        if (intent.getAction().equals(AccountManager.ACTION_AUTHENTICATOR_INTENT)) {
+        if (intent.getAction().equals(AccountManager.ACTION_AUTHENTICATOR_INTENT))
             return getAuthenticator().getIBinder();
-        }
         return null;
     }
 
     private synchronized StudentAuthenticator getAuthenticator() {
-        if (authenticator == null) {
+        if (authenticator == null)
             authenticator = new StudentAuthenticator(this);
-        }
-
         return authenticator;
     }
 }

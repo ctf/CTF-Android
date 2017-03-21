@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -87,7 +88,7 @@ public class AccountUtil {
      * rather than reauth and get a new Session after a successfully changing the nick on TEPID
      * we just store the new nick in our current Session object
      *
-     * @param nick
+     * @param nick nickname
      */
     public static void updateNick(String nick) {
         Session session = getSession();

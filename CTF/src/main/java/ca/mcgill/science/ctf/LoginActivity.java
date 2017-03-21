@@ -20,8 +20,8 @@ import com.google.gson.Gson;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.allanwang.capsule.library.logging.CLog;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.api.Session;
+import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -140,8 +140,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             mRequest.enqueue(new Callback<Session>() {
                 @Override
                 public void onResponse(Call<Session> call, Response<Session> response) {
-                    CLog.e("RESPONSE DATA %s", response.toString());
-                    if (response.body() == null || !response.isSuccessful()){
+                    if (response.body() == null || !response.isSuccessful()) {
                         mPasswordField.setError("Empty body returned");
                         showProgress(false);
                         mPasswordField.requestFocus();
@@ -176,7 +175,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 
     // checks if user is logging in with an email, that it is a mcgill email
     private boolean isEmailValid(String email) {
-        return email.endsWith("@mail.mcgill.ca") || email.endsWith("@mcgill.ca");
+        return !email.contains("@") || (email.endsWith("@mail.mcgill.ca") || email.endsWith("@mcgill.ca"));
     }
 
     /**

@@ -1,6 +1,7 @@
 package ca.mcgill.science.ctf;
 
 import android.Manifest;
+import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
@@ -99,30 +100,27 @@ public class MainActivity extends CapsuleActivityFrame {
 //                }
 //            }
 //        });
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
         SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
-        if (isNetworkAvailable()) {
-            if (AccountUtil.isSignedIn()) {
-                AccountUtil.requestToken(this, new AccountUtil.TokenRequestCallback() {
-                    @Override
-                    public void onReceived(@NonNull String token) {
-                        CLog.e("A");
-                        CLog.e("GOT TOKEN %s", token);
-                        mToken = token;
-                        mUserSearch = new UserSearch(MainActivity.this, mToken);
-                        onLogin(savedInstanceState);
-                    }
 
-                    @Override
-                    public void onFailed() {
-                        requestAccount();
-                    }
-                });
-            } else
-                requestAccount();
-        } else
+        if (AccountUtil.isSignedIn()) {
+            AccountUtil.requestToken(this, new AccountUtil.TokenRequestCallback() {
+                @Override
+                public void onReceived(@NonNull String token) {
+                    mToken = token;
+                    mUserSearch = new UserSearch(MainActivity.this, mToken);
+                    onLogin(savedInstanceState);
+                }
+
+                @Override
+                public void onFailed() {
+                    requestAccount();
+                }
+            });
+        } else if (isNetworkAvailable())
+            requestAccount();
+        else
             setContentView(R.layout.no_wifi);
     }
 
@@ -137,7 +135,6 @@ public class MainActivity extends CapsuleActivityFrame {
     }
 
     private void onLogin(final Bundle savedInstanceState) {
-        CLog.e("CRETA");
         capsuleOnCreate(savedInstanceState);
         capsuleFrameOnCreate(savedInstanceState);
         cFab.hide(); //we don't use the fab for now
