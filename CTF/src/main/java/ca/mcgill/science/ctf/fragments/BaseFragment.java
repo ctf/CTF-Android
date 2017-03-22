@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 
 import com.mikepenz.fastadapter.IItem;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import ca.allanwang.capsule.library.event.CFabEvent;
@@ -23,6 +26,7 @@ import ca.allanwang.swiperecyclerview.library.SwipeRecyclerView;
 import ca.allanwang.swiperecyclerview.library.adapters.AnimationAdapter;
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.RefreshEvent;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
@@ -44,6 +48,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     private Call<C> mCall;
     private static final String TAG_TOKEN = "auth_token";
     protected ITEPID api;
+    private SwipeRecyclerView mSRV;
 
     public static Fragment getFragment(String token, Fragment fragment) {
         Bundle args = new Bundle();
@@ -76,6 +81,26 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
         return v;
     }
 
+    @Override
+    @CallSuper
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    @CallSuper
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Subscribe
+    public void refreshEvent(RefreshEvent event) {
+        if (event == null || event.getTitleId() != getTitleId()) return;
+        if (mSRV != null) mSRV.refresh();
+    }
+
     protected void bindButterKnife(View view) {
         unbinder = ButterKnife.bind(this, view);
     }
@@ -95,8 +120,8 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     @Override
     @CallSuper
     protected void configSRV(final SwipeRecyclerView srv) {
-        SwipeRefreshLayout swipe = srv.getSwipeRefreshLayout();
-        swipe.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
+        mSRV = srv;
+        srv.getSwipeRefreshLayout().setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
         srv.setOnRefreshStatus(new ISwipeRecycler.OnRefreshStatus() {
             @Override
             public void onSuccess() {

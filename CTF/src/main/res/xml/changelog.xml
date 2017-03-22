@@ -7,14 +7,16 @@
     -->
 
     <version title="v1.1" />
-    <item text="Completely refractored and rewrote fragments" />
+    <item text="Completely refactored and rewrote fragments" />
     <item text="Switched to retrofit and reactive programming" />
     <item text="Added caching" />
     <item text="Added Tepid interface in Kotlin" />
     <item text="Simplified request objects" />
     <item text="Integrated SwipeRecyclerView" />
-    <item text="" />
-    <item text="" />
+    <item text="Improved recycler animations" />
+    <item text="Add option to enable and disable printers" />
+    <item text="Created automated apk builds (see README)" />
+    <item text="Added auto refresh after data change" />
 
     <version title="v1.0_beta2" />
     <item text="Added adapter animations" />

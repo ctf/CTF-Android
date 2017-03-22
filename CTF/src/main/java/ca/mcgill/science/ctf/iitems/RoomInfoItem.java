@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.RefreshEvent;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.api.PrinterTicket;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
@@ -197,9 +198,10 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
             TEPIDAPI.Companion.getInstanceDangerously().setPrinterStatus(printer.get_id(), new PrinterTicket(isUp, ticket, null)).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
-                    if (response.isSuccessful())
+                    if (response.isSuccessful()) {
                         snackbar(String.format("%s successfully marked  %s.", printer.getName(), isUp ? "up" : "down"));
-                    else {
+                        EventBus.getDefault().post(new RefreshEvent(R.string.dashboard));
+                    } else {
                         CLog.e("Unsuccessful printer ticket %s", response.message());
                         snackbar("Unsuccessful response");
                     }
