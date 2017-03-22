@@ -49,8 +49,6 @@
     <string name="error_incorrect_password">यह पासवर्ड गलत है</string>
     <string name="error_field_required">यह फ़ील्ड आवश्यक है</string>
     <string name="title_activity_user">उपयोगकर्ता</string>
-    <string name="authenticator_account_type">com.ctf.mcgill.StudentAccount</string>
-    <string name="authenticator_token_type">com.ctf.mcgill.TepidToken</string>
     <string name="key_username">USERNAME</string>
     <string name="title_activity_login">साइन इन करें</string>
 

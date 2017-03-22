@@ -72,17 +72,23 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
+            resValue "string", "authenticator_account_type", "ca.mcgill.science.ctf.debug.StudentAccount"
+            resValue "string", "authenticator_token_type", "ca.mcgill.science.ctf.debug.TepidToken"
             resValue "string", "app_name", "CTF Debug"
         }
         releaseTest { //just like release, but with our test keys
             applicationIdSuffix ".test"
             signingConfig signingConfigs.test
             versionNameSuffix "-test"
+            resValue "string", "authenticator_account_type", "ca.mcgill.science.ctf.test.StudentAccount"
+            resValue "string", "authenticator_token_type", "ca.mcgill.science.ctf.test.TepidToken"
             resValue "string", "app_name", "CTF Test"
         }
         release {
             minifyEnabled false
             resValue "string", "app_name", "CTF"
+            resValue "string", "authenticator_account_type", "ca.mcgill.science.ctf.StudentAccount"
+            resValue "string", "authenticator_token_type", "ca.mcgill.science.ctf.TepidToken"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -90,9 +96,9 @@ android {
     productFlavors {
     }
 
-    dexOptions {
-        javaMaxHeapSize "2g"
-    }
+//    dexOptions {
+//        javaMaxHeapSize "2g"
+//    }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -103,7 +109,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile('ca.allanwang:capsule:2651a0be0417a17d11b816cbad97f7755b8f4787@aar') {
+    compile('ca.allanwang:capsule:354b3b538e@aar') {
         transitive = true;
     }
 

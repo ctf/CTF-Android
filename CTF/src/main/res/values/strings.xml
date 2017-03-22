@@ -52,8 +52,6 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="title_activity_user">User</string>
-    <string name="authenticator_account_type">com.ctf.mcgill.StudentAccount</string>
-    <string name="authenticator_token_type">com.ctf.mcgill.TepidToken</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings displayed on the dashboard -->
