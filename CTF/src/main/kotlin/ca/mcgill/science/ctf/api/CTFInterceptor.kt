@@ -16,9 +16,7 @@ class CTFInterceptor(val token: String?, val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response? {
         val request = chain.request().newBuilder()
-        CLog.e("Url %S", chain.request().url())
-        CLog.e("BODY %s", chain.request().body())
-        CLog.e("Request headers %s", chain.request().headers())
+        CLog.e("Request Url %S", chain.request().url())
         if (chain.request().header("CTFA-Type") == "NewSession") { //new session request
             request.removeHeader("CTFA-Type")
             request.addHeader("Content-Type", "application/json;charset=UTF-8")

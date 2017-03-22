@@ -2,19 +2,15 @@ package ca.mcgill.science.ctf.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mikepenz.fastadapter.IItem;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -26,7 +22,6 @@ import ca.allanwang.swiperecyclerview.library.SwipeRecyclerView;
 import ca.allanwang.swiperecyclerview.library.adapters.AnimationAdapter;
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.RefreshEvent;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
@@ -42,13 +37,12 @@ import retrofit2.Response;
  * TODO figure out a way to save data on rotate/start; the data is only passed via bundles when creating the fragment, but if it recreates itself the data will be outdated
  */
 
-public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragment<I> {
+public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragment<I> implements SwipeRecyclerView.SilentRefreshListener {
 
     private Unbinder unbinder;
     private Call<C> mCall;
     private static final String TAG_TOKEN = "auth_token";
     protected ITEPID api;
-    private SwipeRecyclerView mSRV;
 
     public static Fragment getFragment(String token, Fragment fragment) {
         Bundle args = new Bundle();
@@ -81,26 +75,6 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
         return v;
     }
 
-    @Override
-    @CallSuper
-    public void onResume() {
-        super.onResume();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    @CallSuper
-    public void onPause() {
-        EventBus.getDefault().unregister(this);
-        super.onPause();
-    }
-
-    @Subscribe
-    public void refreshEvent(RefreshEvent event) {
-        if (event == null || event.getTitleId() != getTitleId()) return;
-        if (mSRV != null) mSRV.refresh();
-    }
-
     protected void bindButterKnife(View view) {
         unbinder = ButterKnife.bind(this, view);
     }
@@ -120,7 +94,6 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     @Override
     @CallSuper
     protected void configSRV(final SwipeRecyclerView srv) {
-        mSRV = srv;
         srv.getSwipeRefreshLayout().setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
         srv.setOnRefreshStatus(new ISwipeRecycler.OnRefreshStatus() {
             @Override
@@ -136,6 +109,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
                 mCall = null;
             }
         });
+        srv.setSilentRefreshListener(this);
         srv.refresh();
     }
 
@@ -177,6 +151,28 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     }
 
     @Override
+    public void onSilentRefresh() {
+        if (!Utils.isNetworkAvailable(getContext()))
+            postEvent(new SnackbarEvent("No internet; Retrieving from cache"));
+        if (mCall != null) mCall.cancel(); //cancel old if it's still running
+        mCall = getAPICall(api);
+        mCall.enqueue(new Callback<C>() {
+            @Override
+            public void onResponse(Call<C> call, Response<C> response) {
+                CLog.e("SILENT RESPONSE DATA %s", response.toString());
+                if (response.body() != null && response.isSuccessful())
+                    onSilentResponseReceived(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<C> call, Throwable t) {
+                if (!call.isCanceled())
+                    CLog.e("Retrofit Silent OnFailure: %s", t.getMessage());
+            }
+        });
+    }
+
+    @Override
     public void onDestroy() {
         if (mCall != null) mCall.cancel();
         super.onDestroy();
@@ -184,7 +180,15 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
     protected abstract Call<C> getAPICall(ITEPID api);
 
-    protected abstract void onResponseReceived(C body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus);
+    protected abstract void onResponseReceived(@NonNull C body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus);
+
+    /**
+     * Callback for silent refreshes; must be implemented on a per fragment basis to use!
+     *
+     * @param body data received
+     */
+    protected void onSilentResponseReceived(@NonNull C body) {
+    }
 
     protected String getShortUser() {
         return AccountUtil.getShortUser();

@@ -113,6 +113,7 @@ public class MainActivity extends CapsuleActivityFrame {
                     //initialize TEPID API
                     mUserSearch = new UserSearch(MainActivity.this, mToken);
                     onLogin(savedInstanceState);
+                    CLog.e("Token received %s", mToken);
                 }
 
                 @Override

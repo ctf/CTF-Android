@@ -166,7 +166,6 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-25.2.0" level="project" />
-    <orderEntry type="library" exported="" name="capsule-354b3b538e" level="project" />
     <orderEntry type="library" exported="" name="transition-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-core-2.3.14" level="project" />
     <orderEntry type="library" exported="" name="ocpsoft-pretty-time-1.0.7" level="project" />
@@ -196,6 +195,7 @@
     <orderEntry type="library" exported="" name="butterknife-8.5.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-25.2.0" level="project" />
+    <orderEntry type="library" exported="" name="capsule-0fc1b59eb7" level="project" />
     <orderEntry type="library" exported="" name="iconics-core-2.8.2" level="project" />
   </component>
 </module>

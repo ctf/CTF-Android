@@ -1,5 +1,7 @@
 package ca.mcgill.science.ctf.fragments;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class MyAccountFragment extends BaseFragment<PairItem, List<PrintData>> {
     }
 
     @Override
-    protected void onResponseReceived(List<PrintData> body, ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+    protected void onResponseReceived(@NonNull List<PrintData> body, ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         List<PairItem> items = new ArrayList<>();
         for (PrintData print : body)
             items.add(print.getPairData());

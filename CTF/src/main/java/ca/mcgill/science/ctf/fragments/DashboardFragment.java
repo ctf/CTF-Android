@@ -1,5 +1,7 @@
 package ca.mcgill.science.ctf.fragments;
 
+import android.support.annotation.NonNull;
+
 import com.mikepenz.fastadapter.adapters.HeaderAdapter;
 
 import java.util.Map;
@@ -36,8 +38,14 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, Pr
     }
 
     @Override
-    protected void onResponseReceived(Map<String, PrinterInfo> body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+    protected void onResponseReceived(@NonNull Map<String, PrinterInfo> body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         mAdapter.add(RoomInfoItem.getItems(body.values()));
+        mAdapter.withItemEvent(new RoomInfoItem.PrinterClickEvent());
+    }
+
+    @Override
+    protected void onSilentResponseReceived(@NonNull Map<String, PrinterInfo> body) {
+        mAdapter.setNewList(RoomInfoItem.getItems(body.values()));
         mAdapter.withItemEvent(new RoomInfoItem.PrinterClickEvent());
     }
 }

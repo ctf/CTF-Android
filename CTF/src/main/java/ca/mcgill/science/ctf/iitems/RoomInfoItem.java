@@ -26,10 +26,10 @@ import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ca.allanwang.capsule.library.event.RefreshEvent;
 import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.RefreshEvent;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.api.PrinterTicket;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
@@ -200,7 +200,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.isSuccessful()) {
                         snackbar(String.format("%s successfully marked  %s.", printer.getName(), isUp ? "up" : "down"));
-                        EventBus.getDefault().post(new RefreshEvent(R.string.dashboard));
+                        EventBus.getDefault().post(new RefreshEvent(R.string.dashboard, true));
                     } else {
                         CLog.e("Unsuccessful printer ticket %s", response.message());
                         snackbar("Unsuccessful response");
