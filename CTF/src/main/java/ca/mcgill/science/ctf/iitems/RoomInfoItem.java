@@ -1,6 +1,7 @@
 package ca.mcgill.science.ctf.iitems;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +39,8 @@ import ca.mcgill.science.ctf.views.PrinterInfoView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.text.InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE;
 
 /**
  * Created by Allan Wang on 18/03/2017.
@@ -163,7 +166,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
 
         private void onClick(final Context context, @Nullable final PrinterInfo printerInfo) {
             if (printerInfo == null) return; //precaution
-            new MaterialDialog.Builder(context)
+            MaterialDialog dialog = new MaterialDialog.Builder(context)
                     .title(printerInfo.getName())
                     .theme(new Preferences(context).isDarkMode() ? Theme.DARK : Theme.LIGHT)
                     .titleColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
@@ -172,9 +175,9 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                     .positiveText(printerInfo.getUp() ? R.string.disable : R.string.enable)
                     .positiveColorAttr(R.attr.material_drawer_primary_text)
                     .autoDismiss(false)
-                    .inputType(printerInfo.getUp() ? InputType.TYPE_NULL : InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+                    .inputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
                     .widgetColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
-                    .input(context.getString(R.string.enter_reason), printerInfo.getTicket() == null ? null : printerInfo.getTicket().getReason(), new MaterialDialog.InputCallback() {
+                    .input(context.getString(R.string.enter_reason), getTicketText(printerInfo), new MaterialDialog.InputCallback() {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                             if (printerInfo.getUp()) { //disabling printer
@@ -192,6 +195,15 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                         }
                     })
                     .show();
+            if (!printerInfo.getUp() && dialog.getInputEditText() != null)
+                dialog.getInputEditText().setFocusable(false);
+        }
+
+        private String getTicketText(PrinterInfo info) {
+            if (info == null || info.getTicket() == null) return null;
+            PrinterTicket ticket = info.getTicket();
+            if (ticket.getUser() == null) return ticket.getReason();
+            return ticket.getReason() + " -" + ticket.getUser().getRealName();
         }
 
         private void sendTicket(final PrinterInfo printer, final boolean isUp, String ticket) {

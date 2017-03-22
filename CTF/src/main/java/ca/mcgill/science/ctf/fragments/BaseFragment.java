@@ -129,7 +129,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
         mCall.enqueue(new Callback<C>() {
             @Override
             public void onResponse(Call<C> call, Response<C> response) {
-                CLog.e("RESPONSE DATA %s", response.toString());
+                CLog.d("RESPONSE DATA %s", response.toString());
                 if (response.body() == null || !response.isSuccessful())
                     onRefreshStatus.onFailure();
                 else {

@@ -75,6 +75,11 @@ public class AccountUtil {
         return getSession().getUser().getShortUser();
     }
 
+    //TODO add ctf member check
+    public static boolean isCTFer() {
+        return false;
+    }
+
     /**
      * gets the user's preferred nick from the Session object
      *

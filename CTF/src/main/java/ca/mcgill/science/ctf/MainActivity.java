@@ -113,7 +113,7 @@ public class MainActivity extends CapsuleActivityFrame {
                     //initialize TEPID API
                     mUserSearch = new UserSearch(MainActivity.this, mToken);
                     onLogin(savedInstanceState);
-                    CLog.e("Token received %s", mToken);
+                    CLog.d("Token received %s", mToken);
                 }
 
                 @Override
@@ -260,29 +260,33 @@ public class MainActivity extends CapsuleActivityFrame {
     }
 
     private void search(String s) {
-
+        if (s == null || s.length() < 3) return;
+        mUserSearch.request(s);
     }
 
     private class UserSearch extends SingleCallRequest<String, List<UserQuery>> {
 
-        public UserSearch(@NotNull Context c, @NotNull String token) {
+        private ITEPID api;
+
+        private UserSearch(@NotNull Context c, @NotNull String token) {
             super(c, token);
+            api = TEPIDAPI.Companion.getInstance(token, c);
         }
 
         @NotNull
         @Override
-        protected Call<List<UserQuery>> getAPICall(String input, @NotNull ITEPID api) {
+        protected Call<List<UserQuery>> getAPICall(String input) {
             return api.getUserQuery(input);
         }
 
         @Override
         protected void onSuccess(List<UserQuery> result) {
-            CLog.e("Success %d", result.size());
+            CLog.d("Search Success %d", result.size());
         }
 
         @Override
         protected void onFail(@NotNull Throwable t) {
-
+            CLog.e("Search fail %s", t.getMessage());
         }
 
         @Override

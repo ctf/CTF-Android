@@ -21,7 +21,7 @@ abstract class SingleCallRequest<in I, C>(c: Context, token: String) {
 
     fun request(input: I) {
         cancel()
-        mCall = getAPICall(input, mAPI)
+        mCall = getAPICall(input)
         mCall!!.enqueue(object : Callback<C> {
             override fun onResponse(call: Call<C>, response: Response<C>) {
                 if (response.body() == null || !response.isSuccessful)
@@ -41,7 +41,7 @@ abstract class SingleCallRequest<in I, C>(c: Context, token: String) {
         mCall = null
     }
 
-    protected abstract fun getAPICall(input: I, api: ITEPID): Call<C>
+    protected abstract fun getAPICall(input: I): Call<C>
 
     protected abstract fun onSuccess(result: C)
 

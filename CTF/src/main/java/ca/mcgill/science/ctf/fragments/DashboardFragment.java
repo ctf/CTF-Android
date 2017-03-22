@@ -12,6 +12,7 @@ import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.iitems.DashboardHeaderItem;
 import ca.mcgill.science.ctf.iitems.RoomInfoItem;
 import retrofit2.Call;
@@ -40,6 +41,7 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, Pr
     @Override
     protected void onResponseReceived(@NonNull Map<String, PrinterInfo> body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         mAdapter.add(RoomInfoItem.getItems(body.values()));
+        //TODO only show dialog if user is a CTF member
         mAdapter.withItemEvent(new RoomInfoItem.PrinterClickEvent());
     }
 

@@ -17,6 +17,7 @@
     <item text="Add option to enable and disable printers" />
     <item text="Created automated apk builds (see README)" />
     <item text="Added auto refresh after data change" />
+    <item text="Added silent refreshing after data change" />
 
     <version title="v1.0_beta2" />
     <item text="Added adapter animations" />

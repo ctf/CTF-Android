@@ -22,10 +22,11 @@ class Session(val role: String, val user: User, val _id: String)
 /**
  * User info; various bits of information for a given student
  */
-class User(val _id: String, val salutation: String, val realName: String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
+class User(val _id: String, val salutation: String, val realName: String, val displayName:String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
 
 /**
  * User Query; student info from autoSuggest
+ * A shorter version of user
  */
 class UserQuery(val displayName: String, val shortUser: String, val email: String, val colorPrinting: Boolean, val type: String)
 
