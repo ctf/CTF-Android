@@ -34,7 +34,7 @@ class UserQuery(val displayName: String, val shortUser: String, val email: Strin
  */
 class PrinterInfoMap(val data: Map<String, PrinterInfo>)
 
-class PrinterInfo(val _id: String, val name: String, val up: Boolean, val ticket: PrinterTicket) {
+class PrinterInfo(val _id: String, val name: String, val up: Boolean, var ticket: PrinterTicket?) {
     fun getRoomName(): String {
         val hyphen = name.indexOf("-")
         return if (hyphen == -1) name else name.substring(0, hyphen)
@@ -56,6 +56,6 @@ class PrintData(val name: String, val colorPages: Long, val pages: Long, val ref
  * Printer Ticket
  * if printer is marked down, this is the ticket detailing the description and user who marked it down
  */
-class PrinterTicket(val up: Boolean, reason: String, user: User)
+class PrinterTicket(val up: Boolean, var reason: String?, var user: User?)
 
 val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA)

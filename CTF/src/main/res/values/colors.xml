@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#FFD50000</color>
     <color name="colorAccent">#FFD50000</color>
     <color name="transparentBlack">#1E000000</color>
+
+    <color name="enabled_green">#4caf50</color>
+    <color name="disabled_red">#d50000</color>
 </resources>

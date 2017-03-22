@@ -110,6 +110,7 @@ public class MainActivity extends CapsuleActivityFrame {
                 @Override
                 public void onReceived(@NonNull String token) {
                     mToken = token;
+                    //initialize TEPID API
                     mUserSearch = new UserSearch(MainActivity.this, mToken);
                     onLogin(savedInstanceState);
                 }
@@ -270,7 +271,7 @@ public class MainActivity extends CapsuleActivityFrame {
         @NotNull
         @Override
         protected Call<List<UserQuery>> getAPICall(String input, @NotNull ITEPID api) {
-            return api.getUserQuery(input, 15);
+            return api.getUserQuery(input);
         }
 
         @Override

@@ -77,6 +77,8 @@
     <!--Verbatim-->
     <string name="enable">Enable</string>
     <string name="disable">Disable</string>
+    <string name="close">Close</string>
+    <string name="enter_reason">Enter reason here</string>
 
 </resources>
 

@@ -1,6 +1,7 @@
 package ca.mcgill.science.ctf.api
 
 import android.content.Context
+import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -22,7 +23,15 @@ class TEPIDAPI private constructor(token: String?, context: Context) {
         private var instance: ITEPID? = null
 
         fun getInstance(token: String?, context: Context): ITEPID {
-            return if (instance == null) TEPIDAPI(token, context).api else instance!!
+            if (instance == null) {
+                instance = TEPIDAPI(token, context).api
+                return instance!!
+            } else return instance!!
+        }
+
+        //if there is no instance, things will go badly...
+        fun getInstanceDangerously(): ITEPID {
+            return instance!!
         }
     }
 
@@ -36,9 +45,11 @@ class TEPIDAPI private constructor(token: String?, context: Context) {
                 .cache(cache)
                 .build()
 
+        val gson = GsonBuilder().setLenient()
+
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://tepid.science.mcgill.ca:8443/tepid/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson.create()))
                 .client(client)
                 .build();
         api = retrofit.create(ITEPID::class.java)

@@ -4,32 +4,39 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.helpers.ClickListenerHelper;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
 import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
-
-import javax.validation.constraints.Null;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.PrinterInfo;
+import ca.mcgill.science.ctf.api.PrinterTicket;
+import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.views.PrinterInfoView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Allan Wang on 18/03/2017.
@@ -129,17 +136,15 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
         @Nullable
         @Override
         public List<View> onBindMany(@NonNull RecyclerView.ViewHolder viewHolder) {
-            if (viewHolder instanceof RoomInfoItem.ViewHolder) {
+            if (viewHolder instanceof RoomInfoItem.ViewHolder)
                 return ClickListenerHelper.toList(((ViewHolder) viewHolder).printer1, ((ViewHolder) viewHolder).printer2);
-            }
             return super.onBindMany(viewHolder);
         }
 
         @Override
         public View onBind(@NonNull RecyclerView.ViewHolder viewHolder) {
-            if (viewHolder instanceof RoomInfoItem.ViewHolder) {
+            if (viewHolder instanceof RoomInfoItem.ViewHolder)
                 return ((ViewHolder) viewHolder).printer1;
-            }
             return null;
         }
 
@@ -155,20 +160,62 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
             }
         }
 
-        private void onClick(Context context, @Nullable final PrinterInfo roomItem) {
-            if (roomItem == null) return; //precaution
+        private void onClick(final Context context, @Nullable final PrinterInfo printerInfo) {
+            if (printerInfo == null) return; //precaution
             new MaterialDialog.Builder(context)
-                    .title(roomItem.get_id())
-                    .positiveText(roomItem.getUp() ? R.string.disable : R.string.enable)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    .title(printerInfo.getName())
+                    .theme(new Preferences(context).isDarkMode() ? Theme.DARK : Theme.LIGHT)
+                    .titleColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
+                    .negativeText(R.string.close)
+                    .negativeColorAttr(R.attr.material_drawer_primary_text)
+                    .positiveText(printerInfo.getUp() ? R.string.disable : R.string.enable)
+                    .positiveColorAttr(R.attr.material_drawer_primary_text)
+                    .autoDismiss(false)
+                    .inputType(printerInfo.getUp() ? InputType.TYPE_NULL : InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+                    .widgetColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
+                    .input(context.getString(R.string.enter_reason), printerInfo.getTicket() == null ? null : printerInfo.getTicket().getReason(), new MaterialDialog.InputCallback() {
                         @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            if (roomItem.getUp()) { //disabling printer
-
-                            } 
+                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                            if (printerInfo.getUp()) { //disabling printer
+                                if (!input.toString().isEmpty()) {
+                                    sendTicket(printerInfo, false, input.toString());
+                                    dialog.dismiss();
+                                } else {
+                                    if (dialog.getInputEditText() != null)
+                                        dialog.getInputEditText().setError(context.getString(R.string.error_field_required));
+                                }
+                            } else {
+                                sendTicket(printerInfo, true, input.toString());
+                                dialog.dismiss();
+                            }
                         }
                     })
                     .show();
+        }
+
+        private void sendTicket(final PrinterInfo printer, final boolean isUp, String ticket) {
+            TEPIDAPI.Companion.getInstanceDangerously().setPrinterStatus(printer.get_id(), new PrinterTicket(isUp, ticket, null)).enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (response.isSuccessful())
+                        snackbar(String.format("%s successfully marked  %s.", printer.getName(), isUp ? "up" : "down"));
+                    else {
+                        CLog.e("Unsuccessful printer ticket %s", response.message());
+                        snackbar("Unsuccessful response");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    CLog.e("Failed printer ticket %s", t.getMessage());
+                    snackbar("Ticket failed to send");
+                }
+            });
+
+        }
+
+        private void snackbar(String s) {
+            EventBus.getDefault().post(new SnackbarEvent(s));
         }
     }
 }

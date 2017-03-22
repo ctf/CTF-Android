@@ -1,6 +1,7 @@
 package ca.mcgill.science.ctf.api
 
 import android.content.Context
+import ca.allanwang.capsule.library.logging.CLog
 import ca.mcgill.science.ctf.utils.Utils
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -14,12 +15,16 @@ class CTFInterceptor(val token: String?, val context: Context) : Interceptor {
     val maxStale = 60 * 60 * 24 * 28 //maxAge to get from cache if online (4 weeks)
 
     override fun intercept(chain: Interceptor.Chain): Response? {
-        val request = chain.request().newBuilder();
+        val request = chain.request().newBuilder()
+        CLog.e("Url %S", chain.request().url())
+        CLog.e("BODY %s", chain.request().body())
+        CLog.e("Request headers %s", chain.request().headers())
         if (chain.request().header("CTFA-Type") == "NewSession") { //new session request
-            request.header("Content-Type", "application/json;charset=UTF-8")
+            request.removeHeader("CTFA-Type")
+            request.addHeader("Content-Type", "application/json;charset=UTF-8")
             request.addHeader("Cache-Control", "public, max-age=0")
         } else {
-            request.header("Authorization", "Token " + token)
+            request.addHeader("Authorization", "Token " + token)
             if (!Utils.isNetworkAvailable(context)) request.addHeader("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
         }
         return chain.proceed(request.build())

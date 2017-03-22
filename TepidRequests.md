@@ -15,7 +15,7 @@ This file is the interface that is used with retrofit. It is annotated with the 
 
 ## TEPIDAPI
 
-This file combines the interface with the actual client. Its methods are named the same way as those in ITEPID
+This file combines the interface with the actual client. It is currently a Singleton and does not need any further modifications.
 
 ## Using the api
 

@@ -16,8 +16,8 @@ import retrofit2.http.*
 
 interface ITEPID {
 
-    @POST("sessions")
     @Headers("CTFA-Type: NewSession")
+    @POST("sessions")
     fun getSession(@Body body: SessionRequest): Call<Session>
 
     @DELETE("sessions/{id}")
@@ -32,6 +32,10 @@ interface ITEPID {
     @GET("destinations")
     fun getPrinterInfo(): Call<Map<String, PrinterInfo>>
 
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST("destinations/{printerId}")
+    fun setPrinterStatus(@Path("printerId") printerId: String, @Body body: PrinterTicket): Call<String>
+
     @GET("queues/{roomId}")
     fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<List<PrintData>>
 
@@ -41,5 +45,9 @@ interface ITEPID {
 
     @GET("users/autosuggest/{expr}")
     fun getUserQuery(@Path("expr") query: String, @Query("limit") limit: Int): Call<List<UserQuery>>
+
+    @GET("users/autosuggest/{expr}?limit=15") //default query limit is 15
+    fun getUserQuery(@Path("expr") query: String): Call<List<UserQuery>>
+
 
 }
