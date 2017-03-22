@@ -7,6 +7,7 @@ import java.util.Map;
 import ca.allanwang.swiperecyclerview.library.SwipeRecyclerView;
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.iitems.DashboardHeaderItem;
@@ -23,7 +24,7 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, Pr
     }
 
     @Override
-    protected Call<Map<String, PrinterInfo>> getAPICall(TEPIDAPI api) {
+    protected Call<Map<String, PrinterInfo>> getAPICall(ITEPID api) {
         return api.getPrinterInfo();
     }
 
@@ -37,5 +38,6 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, Pr
     @Override
     protected void onResponseReceived(Map<String, PrinterInfo> body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         mAdapter.add(RoomInfoItem.getItems(body.values()));
+        mAdapter.withItemEvent(new RoomInfoItem.PrinterClickEvent());
     }
 }

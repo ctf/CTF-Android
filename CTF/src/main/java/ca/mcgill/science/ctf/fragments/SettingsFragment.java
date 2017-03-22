@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.Session;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
@@ -27,7 +28,7 @@ import retrofit2.Response;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    private TEPIDAPI mAPI;
+    private ITEPID mAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -73,6 +73,11 @@
     <string name="ctf_long_name">McGill Science Computer Taskforce</string>
     <string name="error_load_fail">Contents failed to load…</string>
 
+
+    <!--Verbatim-->
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+
 </resources>
 
 

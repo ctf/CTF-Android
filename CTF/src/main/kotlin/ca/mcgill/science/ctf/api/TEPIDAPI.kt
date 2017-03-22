@@ -14,8 +14,17 @@ import java.io.File
  * API for data retrieval
  */
 
-class TEPIDAPI(token: String?, context: Context) {
+class TEPIDAPI private constructor(token: String?, context: Context) {
+
     private val api: ITEPID
+
+    companion object {
+        private var instance: ITEPID? = null
+
+        fun getInstance(token: String?, context: Context): ITEPID {
+            return if (instance == null) TEPIDAPI(token, context).api else instance!!
+        }
+    }
 
     init {
         val cacheDir = File(context.cacheDir, "responses")
@@ -34,43 +43,5 @@ class TEPIDAPI(token: String?, context: Context) {
                 .build();
         api = retrofit.create(ITEPID::class.java)
     }
-
-    fun getSession(username: String, password: String): Call<Session> {
-        return api.getSession(SessionRequest(username, password))
-    }
-
-    fun removeSession(id: String): Call<Void> {
-        return api.removeSession(id)
-    }
-
-
-    fun getUser(shortUser: String): Call<User> {
-        return api.getUser(shortUser)
-    }
-
-    fun getQuota(shortUser: String): Call<Int> {
-        return api.getQuota(shortUser)
-    }
-
-    fun getPrinterInfo(): Call<Map<String, PrinterInfo>> {
-        return api.getPrinterInfo()
-    }
-
-    fun getPrintQueue(roomId: String, limit: Int): Call<List<PrintData>> {
-        return api.getPrintQueue(roomId, limit)
-    }
-
-    fun getUserPrintJobs(shortUser: String): Call<List<PrintData>> {
-        return api.getUserPrintJobs(shortUser)
-    }
-
-    fun getUserQuery(query: String): Call<List<UserQuery>> {
-        return getUserQuery(query, 15)
-    }
-
-    fun getUserQuery(query: String, limit: Int): Call<List<UserQuery>> {
-        return api.getUserQuery(query, limit)
-    }
-
 
 }

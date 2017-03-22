@@ -33,7 +33,6 @@ import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.adapter.PrintJobAdapter;
 import ca.mcgill.science.ctf.enums.DataType;
 import ca.mcgill.science.ctf.enums.Room;
-import ca.mcgill.science.ctf.interfaces.DataFragmentContract;
 import ca.mcgill.science.ctf.tepid.Destination;
 import ca.mcgill.science.ctf.tepid.PrintJob;
 import ca.mcgill.science.ctf.wrappers.DestinationHashMap;
@@ -43,7 +42,7 @@ import ca.mcgill.science.ctf.wrappers.RoomPrintJob;
  * Created by Allan Wang on 2016-11-20.
  */
 
-public class RoomTabFragment extends CapsulePageFragment implements SwipeRefreshRecyclerView.OnRefreshListener, DataFragmentContract {
+public class RoomTabFragment extends CapsulePageFragment implements SwipeRefreshRecyclerView.OnRefreshListener {
 
     @Nullable
     @Override

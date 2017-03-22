@@ -13,14 +13,16 @@ import java.util.*
 /**
  * Session JSON object
  */
-class SessionRequest(val username: String, val password: String, val persistent: Boolean = true, val permanent: Boolean = true)
+class SessionRequest(val username: String, val password: String, val persistent: Boolean = true, val permanent: Boolean = true) {
+    constructor(username: String, password: String) : this(username, password, true, true)
+}
 
 class Session(val role: String, val user: User, val _id: String)
 
 /**
  * User info; various bits of information for a given student
  */
-class User(val salutation: String, val realName: String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
+class User(val _id: String, val salutation: String, val realName: String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
 
 /**
  * User Query; student info from autoSuggest
@@ -32,7 +34,7 @@ class UserQuery(val displayName: String, val shortUser: String, val email: Strin
  */
 class PrinterInfoMap(val data: Map<String, PrinterInfo>)
 
-class PrinterInfo(val name: String, val up: Boolean) {
+class PrinterInfo(val _id: String, val name: String, val up: Boolean, val ticket: PrinterTicket) {
     fun getRoomName(): String {
         val hyphen = name.indexOf("-")
         return if (hyphen == -1) name else name.substring(0, hyphen)
@@ -49,5 +51,11 @@ class PrintData(val name: String, val colorPages: Long, val pages: Long, val ref
         return PairItem(name, dateFormat.format(if (printed == -1L) Date() else Date(printed)).toString())
     }
 }
+
+/**
+ * Printer Ticket
+ * if printer is marked down, this is the ticket detailing the description and user who marked it down
+ */
+class PrinterTicket(val up: Boolean, reason: String, user: User)
 
 val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA)

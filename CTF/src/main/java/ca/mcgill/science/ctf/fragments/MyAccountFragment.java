@@ -6,8 +6,8 @@ import java.util.List;
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
 import ca.allanwang.swiperecyclerview.library.items.PairItem;
 import ca.mcgill.science.ctf.R;
+import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrintData;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
 import retrofit2.Call;
 
 public class MyAccountFragment extends BaseFragment<PairItem, List<PrintData>> {
@@ -29,7 +29,7 @@ public class MyAccountFragment extends BaseFragment<PairItem, List<PrintData>> {
     }
 
     @Override
-    protected Call<List<PrintData>> getAPICall(TEPIDAPI api) {
+    protected Call<List<PrintData>> getAPICall(ITEPID api) {
         return api.getUserPrintJobs(getShortUser());
     }
 

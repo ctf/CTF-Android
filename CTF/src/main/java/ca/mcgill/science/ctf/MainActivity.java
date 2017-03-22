@@ -42,6 +42,7 @@ import ca.allanwang.capsule.library.item.DrawerItem;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.allanwang.capsule.library.permissions.CPermissionCallback;
+import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.SingleCallRequest;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.api.UserQuery;
@@ -268,8 +269,8 @@ public class MainActivity extends CapsuleActivityFrame {
 
         @NotNull
         @Override
-        protected Call<List<UserQuery>> getAPICall(String input, @NotNull TEPIDAPI api) {
-            return api.getUserQuery(input);
+        protected Call<List<UserQuery>> getAPICall(String input, @NotNull ITEPID api) {
+            return api.getUserQuery(input, 15);
         }
 
         @Override

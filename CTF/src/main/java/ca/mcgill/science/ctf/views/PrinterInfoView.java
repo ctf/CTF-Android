@@ -57,13 +57,13 @@ public class PrinterInfoView extends LinearLayout {
 
     private void init() {
         inflate(getContext(), R.layout.item_printer, this);
-        setVisibility(INVISIBLE);
+        setVisibility(GONE);
         ButterKnife.bind(this);
     }
 
     public PrinterInfoView bind(@Nullable PrinterInfo data) {
         if (data == null) {
-            setVisibility(INVISIBLE);
+            setVisibility(GONE);
             image.setImageDrawable(null);
             name.setText(null);
         } else {

@@ -16,7 +16,7 @@ import retrofit2.Response
 abstract class SingleCallRequest<in I, C>(c: Context, token: String) {
 
     private var mCall: Call<C>? = null
-    private val mAPI: TEPIDAPI = TEPIDAPI(token, c)
+    private val mAPI: ITEPID = TEPIDAPI.getInstance(token, c)
     val EMPTY_RESULT = -1
 
     fun request(input: I) {
@@ -41,7 +41,7 @@ abstract class SingleCallRequest<in I, C>(c: Context, token: String) {
         mCall = null
     }
 
-    protected abstract fun getAPICall(input: I, api: TEPIDAPI): Call<C>
+    protected abstract fun getAPICall(input: I, api: ITEPID): Call<C>
 
     protected abstract fun onSuccess(result: C)
 
