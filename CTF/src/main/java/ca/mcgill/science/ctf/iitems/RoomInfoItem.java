@@ -1,7 +1,6 @@
 package ca.mcgill.science.ctf.iitems;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -39,8 +38,6 @@ import ca.mcgill.science.ctf.views.PrinterInfoView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.text.InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE;
 
 /**
  * Created by Allan Wang on 18/03/2017.
@@ -164,6 +161,13 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
             }
         }
 
+        /**
+         * Dialog creator for printers
+         * Will open the printer status, along with the ticket information if available, and the option to create/remove one
+         *
+         * @param context     view context
+         * @param printerInfo info for specified printer
+         */
         private void onClick(final Context context, @Nullable final PrinterInfo printerInfo) {
             if (printerInfo == null) return; //precaution
             MaterialDialog dialog = new MaterialDialog.Builder(context)
@@ -175,7 +179,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                     .positiveText(printerInfo.getUp() ? R.string.disable : R.string.enable)
                     .positiveColorAttr(R.attr.material_drawer_primary_text)
                     .autoDismiss(false)
-                    .inputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                    .inputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)
                     .widgetColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
                     .input(context.getString(R.string.enter_reason), getTicketText(printerInfo), new MaterialDialog.InputCallback() {
                         @Override

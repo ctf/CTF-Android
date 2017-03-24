@@ -1,3 +1,9 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'kotlin-android'
+apply plugin: 'io.fabric'
+apply plugin: 'com.github.dcendents.android-maven'
+
 ext {
     TARGET_SDK = 25
     BUILD_TOOLS = "25.0.2"
@@ -15,11 +21,6 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
-apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.dokka'
-apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
-apply plugin: 'com.github.dcendents.android-maven'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -113,14 +114,16 @@ dependencies {
         transitive = true;
     }
 
+    compile 'com.lapism:searchview:4.0'
+
     //Butterknife
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
-    compile 'com.android.volley:volley:1.0.0'
-    compile 'com.github.vajro:MaterialDesignLibrary:1.6'
+//    compile 'com.android.volley:volley:1.0.0'
+//    compile 'com.github.vajro:MaterialDesignLibrary:1.6'
 
-    compile 'com.eclipsesource.jaxrs:jersey-all:2.22.2'
+//    compile 'com.eclipsesource.jaxrs:jersey-all:2.22.2'
 
 //    compile 'com.squareup.okhttp3:okhttp:3.6.0'
 //    compile 'com.google.code.gson:gson:2.8.0'
@@ -131,7 +134,7 @@ dependencies {
 //    compile 'com.octo.android.robospice:robospice:1.4.14'
 //    compile 'com.octo.android.robospice:robospice-okhttp:1.4.14'
 
-    compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.7'
+//    compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.7'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }

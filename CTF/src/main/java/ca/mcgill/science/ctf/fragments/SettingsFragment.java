@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-
-import com.gc.materialdesign.widgets.Dialog;
 
 import java.util.Locale;
 
@@ -16,7 +13,6 @@ import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.Session;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,8 +70,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference("pref_about").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Dialog dialog = new Dialog(getActivity(), "About", "...");
-                dialog.show();
+                //TODO add about
+//                Dialog dialog = new Dialog(getActivity(), "About", "...");
+//                dialog.show();
                 return true;
             }
         });

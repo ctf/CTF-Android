@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -32,6 +31,11 @@ class TEPIDAPI private constructor(token: String?, context: Context) {
         //if there is no instance, things will go badly...
         fun getInstanceDangerously(): ITEPID {
             return instance!!
+        }
+
+        //forcefully define new instance
+        fun setInstance(token: String?, context: Context): Unit {
+            instance = TEPIDAPI(token, context).api
         }
     }
 

@@ -1,7 +1,6 @@
 package ca.mcgill.science.ctf;
 
 import android.Manifest;
-import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
@@ -18,7 +17,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,21 +29,14 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
-import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
 import ca.allanwang.capsule.library.changelog.ChangelogDialog;
 import ca.allanwang.capsule.library.interfaces.CDrawerItem;
 import ca.allanwang.capsule.library.item.DrawerItem;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.allanwang.capsule.library.permissions.CPermissionCallback;
-import ca.mcgill.science.ctf.api.ITEPID;
-import ca.mcgill.science.ctf.api.SingleCallRequest;
+import ca.mcgill.science.ctf.activities.SearchActivity;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
-import ca.mcgill.science.ctf.api.UserQuery;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
@@ -55,13 +46,11 @@ import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
 import io.fabric.sdk.android.Fabric;
-import retrofit2.Call;
 import timber.log.Timber;
 
-public class MainActivity extends CapsuleActivityFrame {
+public class MainActivity extends SearchActivity {
 
     private String mToken;
-    private UserSearch mUserSearch;
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -111,7 +100,7 @@ public class MainActivity extends CapsuleActivityFrame {
                 public void onReceived(@NonNull String token) {
                     mToken = token;
                     //initialize TEPID API
-                    mUserSearch = new UserSearch(MainActivity.this, mToken);
+                    TEPIDAPI.Companion.setInstance(token, MainActivity.this); //to be sure, set api instance here
                     onLogin(savedInstanceState);
                     CLog.d("Token received %s", mToken);
                 }
@@ -142,6 +131,7 @@ public class MainActivity extends CapsuleActivityFrame {
         capsuleFrameOnCreate(savedInstanceState);
         cFab.hide(); //we don't use the fab for now
         cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
+        setSearchView(mToken);
         selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default TODO fix commitAllowingStateLoss ->   java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
     }
 
@@ -238,66 +228,16 @@ public class MainActivity extends CapsuleActivityFrame {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchItem.setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_search).color(Color.WHITE).sizeDp(24).respectFontBounds(true));
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                search(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                search(newText);
-                return true;
-            }
-
-
-        });
+        menu.findItem(R.id.action_search).setIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_search).color(Color.WHITE).sizeDp(24).respectFontBounds(true));
         return true;
-    }
-
-    private void search(String s) {
-        if (s == null || s.length() < 3) return;
-        mUserSearch.request(s);
-    }
-
-    private class UserSearch extends SingleCallRequest<String, List<UserQuery>> {
-
-        private ITEPID api;
-
-        private UserSearch(@NotNull Context c, @NotNull String token) {
-            super(c, token);
-            api = TEPIDAPI.Companion.getInstance(token, c);
-        }
-
-        @NotNull
-        @Override
-        protected Call<List<UserQuery>> getAPICall(String input) {
-            return api.getUserQuery(input);
-        }
-
-        @Override
-        protected void onSuccess(List<UserQuery> result) {
-            CLog.d("Search Success %d", result.size());
-        }
-
-        @Override
-        protected void onFail(@NotNull Throwable t) {
-            CLog.e("Search fail %s", t.getMessage());
-        }
-
-        @Override
-        protected void onEnd(int flag) {
-
-        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_search:
+                mSearchView.open(true, item);
+                return true;
             case R.id.action_changelog:
                 ChangelogDialog.show(this, R.xml.changelog);
                 return true;
