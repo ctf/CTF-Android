@@ -77,6 +77,8 @@
     <string name="disable">Disable</string>
     <string name="close">Close</string>
     <string name="enter_reason">Enter reason here</string>
+    <string name="no_suggestions">No suggestions found.</string>
+    <string name="search_users">Search short usernames…</string>
 
 </resources>
 

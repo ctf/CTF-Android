@@ -48,6 +48,7 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
         mSearchView = (SearchView) findViewById(R.id.searchView);
         mSearchView.setVersion(SearchView.VERSION_MENU_ITEM);
         mSearchView.setVersionMargins(SearchView.VERSION_MARGINS_MENU_ITEM);
+        mSearchView.setHint(R.string.search_users);
         mUserSearch = new UserSearch(token, this);
 
         mSearchView.setArrowOnly(false); //we don't want a menu button
@@ -93,7 +94,7 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
         mQueryResults = results;
         List<SearchItem> searchItems = new ArrayList<>();
         if (results == null || results.isEmpty())
-            searchItems.add(new SearchItem("No results found."));
+            searchItems.add(new SearchItem(getString(R.string.no_suggestions)));
         else
             for (int i = 0; i < results.size(); i++)
                 searchItems.add(new SearchItem(results.get(i).getDisplayName()));
