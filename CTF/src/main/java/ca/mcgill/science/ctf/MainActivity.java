@@ -55,7 +55,7 @@ public class MainActivity extends SearchActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        if (!BuildConfig.DEBUG && !BuildConfig.BUILD_TYPE.equals("releaseTest")) {
+        if (!isDebug()) {
             disableCLog(); //Make things cleaner; don't log unless specified
             //Add crashlytics
             CrashlyticsCore core = new CrashlyticsCore.Builder().build();

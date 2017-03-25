@@ -3,6 +3,7 @@ apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'me.tatarka.retrolambda'
 
 ext {
     TARGET_SDK = 25
@@ -97,12 +98,20 @@ android {
     productFlavors {
     }
 
-//    dexOptions {
-//        javaMaxHeapSize "2g"
-//    }
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
 }
 
 dependencies {
@@ -115,7 +124,7 @@ dependencies {
     }
 
     //compile 'com.lapism:searchview:4.0'
-    compile 'com.github.AllanWang:SearchView:577b95f7ff'
+    compile 'com.github.AllanWang:SearchView:d24ad07b9b'
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.5.1'
@@ -130,8 +139,11 @@ dependencies {
     //starting new dependency model
     compile "io.reactivex.rxjava2:rxjava:2.0.7"
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    compile 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.0.0'
+
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
 

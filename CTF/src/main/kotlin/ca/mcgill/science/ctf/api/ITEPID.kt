@@ -1,6 +1,6 @@
 package ca.mcgill.science.ctf.api
 
-import io.reactivex.Observable
+import retrofit2.Call
 import retrofit2.http.*
 
 /**
@@ -18,36 +18,36 @@ interface ITEPID {
 
     @Headers("CTFA-Type: NewSession")
     @POST("sessions")
-    fun getSession(@Body body: SessionRequest): Observable<Session>
+    fun getSession(@Body body: SessionRequest): Call<Session>
 
     @DELETE("sessions/{id}")
-    fun removeSession(@Path("id") id: String): Observable<Void>
+    fun removeSession(@Path("id") id: String): Call<Void>
 
     @GET("users/{shortUser}")
-    fun getUser(@Path("shortUser") shortUser: String): Observable<User>
+    fun getUser(@Path("shortUser") shortUser: String): Call<User>
 
     @GET("users/{shortUser}/quota")
-    fun getQuota(@Path("shortUser") shortUser: String): Observable<Int>
+    fun getQuota(@Path("shortUser") shortUser: String): Call<Int>
 
     @GET("destinations")
-    fun getPrinterInfo(): Observable<Map<String, PrinterInfo>>
+    fun getPrinterInfo(): Call<Map<String, PrinterInfo>>
 
     @Headers("Content-Type: application/json;charset=UTF-8")
     @POST("destinations/{printerId}")
-    fun setPrinterStatus(@Path("printerId") printerId: String, @Body body: PrinterTicket): Observable<String>
+    fun setPrinterStatus(@Path("printerId") printerId: String, @Body body: PrinterTicket): Call<String>
 
     @GET("queues/{roomId}")
-    fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Observable<List<PrintData>>
+    fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<List<PrintData>>
 
     //TODO add limit query
     @GET("jobs/{shortUser}")
-    fun getUserPrintJobs(@Path("shortUser") shortUser: String): Observable<List<PrintData>>
+    fun getUserPrintJobs(@Path("shortUser") shortUser: String): Call<List<PrintData>>
 
     @GET("users/autosuggest/{expr}")
-    fun getUserQuery(@Path("expr") query: String, @Query("limit") limit: Int): Observable<List<UserQuery>>
+    fun getUserQuery(@Path("expr") query: String, @Query("limit") limit: Int): Call<List<UserQuery>>
 
     @GET("users/autosuggest/{expr}?limit=10") //use default query limit
-    fun getUserQuery(@Path("expr") query: String): Observable<List<UserQuery>>
+    fun getUserQuery(@Path("expr") query: String): Call<List<UserQuery>>
 
 
 }

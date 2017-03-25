@@ -1,12 +1,12 @@
 package ca.mcgill.science.ctf.activities;
 
 import android.content.Context;
-import android.content.Intent;
-import android.speech.RecognizerIntent;
-import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import com.lapism.searchview.SearchAdapter;
 import com.lapism.searchview.SearchItem;
 import com.lapism.searchview.SearchView;
@@ -15,14 +15,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
+import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
-import ca.mcgill.science.ctf.api.SingleObservable;
+import ca.mcgill.science.ctf.api.SingleCallRequest;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.api.UserQuery;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
 import retrofit2.Call;
 
 /**
@@ -31,13 +34,12 @@ import retrofit2.Call;
  * Portion of {@link ca.mcgill.science.ctf.MainActivity} with the search menu logic
  */
 
-public abstract class SearchActivity extends CapsuleActivityFrame {
+public abstract class SearchActivity extends BaseActivity {
 
     protected SearchView mSearchView;
-    private UserSearch mUserSearch;
     private SearchAdapter mSearchAdapter;
     private List<UserQuery> mQueryResults;
-    private long mDelay = 300;
+    private UserSearch mUserSearch;
 
     //custom activity to add SearchView
     @Override
@@ -46,23 +48,28 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
     }
 
     protected void setSearchView(String token) {
-        mSearchView = (SearchView) findViewById(R.id.searchView);
         mUserSearch = new UserSearch(token, this);
+        RxTextView.textChangeEvents((TextView) findViewById(com.lapism.searchview.R.id.searchEditText_input))
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .filter(changes -> !changes.text().toString().isEmpty() && changes.text().toString().length() >= 2)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(getSearchObserver());
+
+        mSearchView = (SearchView) findViewById(R.id.searchView);
         mSearchView.setVersion(SearchView.VERSION_MENU_ITEM)
                 .setVersionMargins(SearchView.VERSION_MARGINS_MENU_ITEM)
                 .setHint(R.string.search_users)
-                .setDelay(mDelay)
+                .setVoice(false)
                 .setArrowOnly(false) //we don't want a menu button
                 .setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        search(query);
                         return true;
                     }
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        search(newText);
+                        mSearchAdapter.setData(new ArrayList<>()); //so when you go from a big search to no characters, it doesn't blink the old data
                         return true;
                     }
                 });
@@ -86,23 +93,35 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
         mSearchView.setAdapter(mSearchAdapter);
     }
 
-    private void search(String s) {
-        if (s == null || s.length() < 3) return;
-        mUserSearch.request(s);
+    private DisposableObserver<TextViewTextChangeEvent> getSearchObserver() {
+        return new DisposableObserver<TextViewTextChangeEvent>() {
+            @Override
+            public void onComplete() { }
+
+            @Override
+            public void onError(Throwable e) {
+                postEventDebug(new SnackbarEvent("SearchActivity failed"));
+            }
+
+            @Override
+            public void onNext(TextViewTextChangeEvent onTextChangeEvent) {
+                mUserSearch.request(onTextChangeEvent.text().toString());
+            }
+        };
     }
 
     private void postSearchResults(List<UserQuery> results) {
-        mQueryResults = results;
         List<SearchItem> searchItems = new ArrayList<>();
         if (results == null || results.isEmpty())
             searchItems.add(new SearchItem(getString(R.string.no_suggestions)));
         else
             for (int i = 0; i < results.size(); i++)
                 searchItems.add(new SearchItem(results.get(i).getDisplayName()));
+        mQueryResults = results;
         mSearchAdapter.setData(searchItems);
     }
 
-    private class UserSearch extends SingleObservable<String, List<UserQuery>> {
+    private class UserSearch extends SingleCallRequest<String, List<UserQuery>> {
 
         private ITEPID api;
 
@@ -133,22 +152,6 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
         protected void onEnd(int flag) {
 
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SearchView.SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
-            List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            if (results != null && results.size() > 0) {
-                String searchWrd = results.get(0);
-                if (!TextUtils.isEmpty(searchWrd)) {
-                    if (mSearchView != null) {
-                        mSearchView.setQuery(searchWrd, true);
-                    }
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
