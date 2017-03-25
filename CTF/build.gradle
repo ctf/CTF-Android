@@ -114,7 +114,8 @@ dependencies {
         transitive = true;
     }
 
-    compile 'com.lapism:searchview:4.0'
+//    compile 'com.lapism:searchview:4.0'
+    compile 'com.github.AllanWang:SearchView:577b95f7ff'
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.5.1'

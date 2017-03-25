@@ -37,6 +37,7 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
     private UserSearch mUserSearch;
     private SearchAdapter mSearchAdapter;
     private List<UserQuery> mQueryResults;
+    private long mDelay = 300;
 
     //custom activity to add SearchView
     @Override
@@ -46,25 +47,25 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
 
     protected void setSearchView(String token) {
         mSearchView = (SearchView) findViewById(R.id.searchView);
-        mSearchView.setVersion(SearchView.VERSION_MENU_ITEM);
-        mSearchView.setVersionMargins(SearchView.VERSION_MARGINS_MENU_ITEM);
-        mSearchView.setHint(R.string.search_users);
         mUserSearch = new UserSearch(token, this);
+        mSearchView.setVersion(SearchView.VERSION_MENU_ITEM)
+                .setVersionMargins(SearchView.VERSION_MARGINS_MENU_ITEM)
+                .setHint(R.string.search_users)
+                .setDelay(mDelay)
+                .setArrowOnly(false) //we don't want a menu button
+                .setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        search(query);
+                        return true;
+                    }
 
-        mSearchView.setArrowOnly(false); //we don't want a menu button
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                search(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                search(newText);
-                return true;
-            }
-        });
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        search(newText);
+                        return true;
+                    }
+                });
 
         mSearchAdapter = new SearchAdapter(this);
         mSearchAdapter.addOnItemClickListener(new SearchAdapter.OnItemClickListener() {
