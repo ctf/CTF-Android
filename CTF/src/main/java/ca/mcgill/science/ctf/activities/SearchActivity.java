@@ -20,7 +20,7 @@ import ca.allanwang.capsule.library.activities.CapsuleActivityFrame;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
-import ca.mcgill.science.ctf.api.SingleCallRequest;
+import ca.mcgill.science.ctf.api.SingleObservable;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.api.UserQuery;
 import retrofit2.Call;
@@ -102,7 +102,7 @@ public abstract class SearchActivity extends CapsuleActivityFrame {
         mSearchAdapter.setData(searchItems);
     }
 
-    private class UserSearch extends SingleCallRequest<String, List<UserQuery>> {
+    private class UserSearch extends SingleObservable<String, List<UserQuery>> {
 
         private ITEPID api;
 

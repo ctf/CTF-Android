@@ -1,11 +1,15 @@
 package ca.mcgill.science.ctf.api
 
 import android.content.Context
+import ca.mcgill.science.ctf.BuildConfig
 import com.google.gson.GsonBuilder
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import rx.schedulers.Schedulers
 import java.io.File
 
 /**
@@ -47,14 +51,19 @@ class TEPIDAPI private constructor(token: String?, context: Context) {
         val client = OkHttpClient.Builder()
                 .addInterceptor(CTFInterceptor(token, context))
                 .cache(cache)
-                .build()
+
+        if (BuildConfig.DEBUG || BuildConfig.BUILD_TYPE == "releaseTest") { //log if not full release
+            client.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
+        }
+
 
         val gson = GsonBuilder().setLenient()
 
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://tepid.science.mcgill.ca:8443/tepid/")
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create(gson.create()))
-                .client(client)
+                .client(client.build())
                 .build();
         api = retrofit.create(ITEPID::class.java)
     }
