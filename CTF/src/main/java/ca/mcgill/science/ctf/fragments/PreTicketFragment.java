@@ -123,8 +123,8 @@ public class PreTicketFragment extends Fragment implements CFragmentCore {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onStart() {
+        super.onStart();
         EventBus.getDefault().post(new CFabEvent(GoogleMaterial.Icon.gmd_send, v -> {
             ((MainActivity) getContext()).addFragment(TicketFragment.getInstance(user, problemText.getText().toString(), printer));
         }));
