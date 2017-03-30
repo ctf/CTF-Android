@@ -8,11 +8,11 @@ printer availability.
 
 [![](https://jitpack.io/v/CTFMcGill/CTF-Android.svg)](https://jitpack.io/#CTFMcGill/CTF-Android)
 
-[Javadocs v0.2](https://jitpack.io/com/github/CTFMcGill/CTF-Android/v0.2/javadoc/)
-
 This project is written in both Java and Kotlin. You will therefore need to have the Kotlin plugin to build it properly.
 
 [Automatic Test Builds](https://github.com/CTFMcGill/CTFMcGill.github.io/releases/)
+
+[Full Changelog](https://github.com/CTFMcGill/CTF-Android/tree/master/docs/Changelog.md)
 
 ## Documentation
 
