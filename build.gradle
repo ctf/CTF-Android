@@ -27,6 +27,26 @@ allprojects {
     }
 }
 
+project.ext.VERSION_CODE = VERSION_NAME.replace(".", "") // play it safe; avoid suffixes
+
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task generateChangelogMd() {
+    def parsedProjectXml = (new XmlParser()).parse("$project.rootDir/CTF/src/main/res/xml/changelog.xml")
+    def sw = new StringWriter()
+    sw.append("# Changelog\n")
+    parsedProjectXml.depthFirst().each {
+        switch (it.name()) {
+            case "version":
+                sw.append("\n## ${it.@title}\n")
+                break
+            case "item":
+                if (it.@text?.trim())
+                    sw.append("* ${it.@text}\n")
+        }
+    }
+    def changelogMd = new File("$project.rootDir/docs/Changelog.md")
+    changelogMd.write(sw.toString())
 }

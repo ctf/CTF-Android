@@ -41,8 +41,10 @@ import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
 import ca.mcgill.science.ctf.fragments.MyAccountFragment;
+import ca.mcgill.science.ctf.fragments.PreTicketFragment;
 import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
+import ca.mcgill.science.ctf.fragments.TicketFragment;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
 import io.fabric.sdk.android.Fabric;
@@ -171,6 +173,7 @@ public class MainActivity extends SearchActivity {
                 new TepidDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, new DashboardFragment()),
 //                new TepidDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
                 new TepidDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, new MyAccountFragment()),
+                new TepidDrawerItem(R.string.ticket, GoogleMaterial.Icon.gmd_bug_report, new PreTicketFragment()),
                 new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, new SettingsFragment()),
                 new TepidDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, new ReportProblemFragment())
         );

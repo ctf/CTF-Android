@@ -5,14 +5,6 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'me.tatarka.retrolambda'
 
-ext {
-    TARGET_SDK = 25
-    BUILD_TOOLS = "25.0.2"
-    ANDROID_SUPPORT_LIBS = "25.2.0"
-    VERSION_CODE = 4
-    VERSION_NAME = "1.1"
-}
-
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -38,14 +30,15 @@ tasks.whenTaskAdded { task ->
 }
 
 android {
-    compileSdkVersion TARGET_SDK
-    buildToolsVersion BUILD_TOOLS
+    compileSdkVersion Integer.parseInt(project.TARGET_SDK)
+    buildToolsVersion project.BUILD_TOOLS
+    
     defaultConfig {
-        applicationId 'ca.mcgill.science.ctf'
-        minSdkVersion 17
-        targetSdkVersion TARGET_SDK
-        versionCode VERSION_CODE
-        versionName VERSION_NAME
+        applicationId "${project.APP_GROUP}." + project.APP_ID.toLowerCase()
+        minSdkVersion Integer.parseInt(project.MIN_SDK)
+        targetSdkVersion Integer.parseInt(project.TARGET_SDK)
+        versionCode Integer.parseInt(project.VERSION_CODE)
+        versionName project.VERSION_NAME
         multiDexEnabled true
     }
 
@@ -119,7 +112,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile('ca.allanwang:capsule:0fc1b59eb7@aar') {
+    compile('ca.allanwang:capsule:c5eb730228@aar') {
         transitive = true;
     }
 

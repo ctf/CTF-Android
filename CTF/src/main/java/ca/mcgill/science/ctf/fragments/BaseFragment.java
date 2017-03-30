@@ -116,7 +116,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     @Nullable
     @Override
     protected CFabEvent updateFab() {
-        return null;
+        return new CFabEvent(false); //be safe; hide fab every time
     }
 
     @Override
