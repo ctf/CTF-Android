@@ -33,8 +33,6 @@ class UserQuery(val displayName: String, val shortUser: String, val email: Strin
 /**
  * Printer info; tells you which printers are up and down in which rooms
  */
-class PrinterInfoMap(val data: Map<String, PrinterInfo>)
-
 class PrinterInfo(val _id: String, val name: String, val up: Boolean, var ticket: PrinterTicket?) {
     fun getRoomName(): String {
         val hyphen = name.indexOf("-")

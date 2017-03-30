@@ -24,12 +24,21 @@
         <item>ru</item>
     </string-array>
 
-    <string-array name="printers">
-        <item>None</item>
-        <item>1B16-North</item>
-        <item>1B16-South</item>
-        <item>1B17-North</item>
-        <item>1B17-South</item>
-        <item>1B18-North</item>
+    <!--Ensure that the ticket names and full arrays have the same length-->
+
+    <string-array name="ticket_preset_names">
+        <item>Out of toner</item>
+        <item>Waste toner cartridge</item>
+        <item>Drum replacement</item>
+        <item>Printer Jam</item>
+        <item>Ink streaks</item>
+    </string-array>
+
+    <string-array name="ticket_preset_full">
+        <item>One of our Burnside printers is out of toner.</item>
+        <item>One of our Burnside printers requires a waste toner cartridge replacement.</item>
+        <item>One of our Burnside printers requires a drum replacement.</item>
+        <item>One of our Burnside printers is jamming repeatedly.</item>
+        <item>One of our Burnside printers is printing streaks on all the pages.</item>
     </string-array>
 </resources>

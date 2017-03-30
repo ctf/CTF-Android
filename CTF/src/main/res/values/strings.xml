@@ -80,7 +80,7 @@
     <string name="enter_reason">Enter reason here</string>
     <string name="no_suggestions">No suggestions found.</string>
     <string name="search_users">Search short usernames…</string>
-    <string name="ticket_problem_desc">Type the problem or use one of the presets; state just the problem as your header and footer will be added automatically.</string>
+    <string name="ticket_problem_desc">Type the problem or use one of the presets; state just the problem as your header and footer will be added automatically.\nPress the send button when you\'re done to prefill the form. Verify that everything is correct before sending it.</string>
     <string name="use_preset">Use Preset</string>
     <string name="type_here">Type here</string>
     <string name="bracket_none">[none]</string>

@@ -26,7 +26,7 @@ class TicketData {
     val problemId = "edit-submitted-problem-question"
 
     val problemHead = "To whom it may concern,\\n\\nThis is Computer Taskforce (CTF). "
-    val problemTail = "\\n\\nThe printer is marked down right now. It will be great if the technician can inform us at our office, Burnside 1B19, or by email, after the completion ofthe replacement.\\n\\nThank you!\\nComputer Taskforce (CTF)"
+    val problemTail = "\\n\\nThe printer is marked down right now. It will be great if the technician can inform us at our office, Burnside 1B19, or by email, after the issue is fixed.\\n\\nThank you!\\nComputer Taskforce (CTF)"
 
     var printer: PrinterId? = null
 
@@ -35,7 +35,12 @@ class TicketData {
         _1B16_South("XKP516518"),
         _1B17_North("XKP529682"),
         _1B17_South("XKP530648"),
-        _1B18_North("XKP511152")
+        _1B18_North("XKP511152");
+
+        //name matches the true printer name on TEPID
+        fun getName(): String {
+            return toString().substring(1).replace("_", "-")
+        }
     }
 
     fun getInjector(): String {
@@ -53,7 +58,7 @@ class TicketData {
         val builder = StringBuilder()
         builder.append(problemHead)
         builder.append(problem)
-        if (printer != null) builder.append(String.format("\\n\\nPrinter Name: %s\\nPrinter SN: %s", printer.toString().substring(1), printer!!.serialNumber))
+        if (printer != null) builder.append(String.format("\\n\\nPrinter Name: %s\\nPrinter SN: %s", printer!!.getName(), printer!!.serialNumber))
         builder.append(problemTail)
         return builder.toString()
     }

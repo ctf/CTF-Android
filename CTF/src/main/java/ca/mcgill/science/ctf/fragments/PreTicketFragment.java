@@ -6,10 +6,10 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -22,7 +22,6 @@ import butterknife.Unbinder;
 import ca.allanwang.capsule.library.event.CFabEvent;
 import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.allanwang.capsule.library.interfaces.CFragmentCore;
-import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.TicketData;
@@ -46,7 +45,8 @@ public class PreTicketFragment extends Fragment implements CFragmentCore {
     @BindView(R.id.btn_ticket)
     AppCompatButton ticketButton;
     @BindView(R.id.problem_text)
-    AppCompatEditText problemText;
+    AutoCompleteTextView problemText;
+    private CharSequence[] printerOptions;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,8 +72,8 @@ public class PreTicketFragment extends Fragment implements CFragmentCore {
         bindButterKnife(v);
         printerButton.setOnClickListener(btn -> {
             new MaterialDialog.Builder(getContext())
-                    .items(R.array.printers)
-                    .itemsCallbackSingleChoice(getPrinterChoice(), (dialog, itemView, which, text) -> {
+                    .items(getPrinterOptions())
+                    .itemsCallbackSingleChoice(getPrinterChoiceIndex(), (dialog, itemView, which, text) -> {
                         if (which == 0) printer = null;
                         else printer = TicketData.PrinterId.values()[which - 1];
                         //update text
@@ -82,10 +82,31 @@ public class PreTicketFragment extends Fragment implements CFragmentCore {
                     })
                     .show();
         });
+        ticketButton.setOnClickListener(btn -> {
+            new MaterialDialog.Builder(getContext())
+                    .items(R.array.ticket_preset_names)
+                    .itemsCallbackSingleChoice(-1, (dialog, itemView, which, text) -> {
+                        problemText.setText(getResources().getStringArray(R.array.ticket_preset_full)[which]);
+                        return true;
+                    })
+                    .show();
+        });
         return v;
     }
 
-    private int getPrinterChoice() {
+    //generates list choices for the printer options; do not hardcode as this is needed in many places
+    private CharSequence[] getPrinterOptions() {
+        if (printerOptions != null) return printerOptions;
+        TicketData.PrinterId[] printers = TicketData.PrinterId.values();
+        printerOptions = new CharSequence[printers.length + 1];
+        printerOptions[0] = getString(R.string.bracket_none);
+        for (int i = 0; i < printers.length; i++)
+            printerOptions[i + 1] = printers[i].getName();
+        return printerOptions;
+    }
+
+    //list contains [none] followed by list of ordinals
+    private int getPrinterChoiceIndex() {
         if (printer == null) return 0;
         return printer.ordinal() + 1;
     }

@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.webkit.WebView;
 
+import org.greenrobot.eventbus.EventBus;
+
+import ca.allanwang.capsule.library.event.CFabEvent;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.TicketData;
@@ -52,8 +55,14 @@ public class TicketFragment extends BaseWebViewFragment {
         return data;
     }
 
-    private static final String IT_URL = "https://www.mcgill.ca/it/node/27784/need-help/#page-title", GOOGLE_URL = "https://www.google.ca/";
+    private static final String IT_URL = "https://www.mcgill.ca/it/node/27784/need-help/#page-title";
     private boolean injectForm = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().post(new CFabEvent(false));
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -73,4 +82,6 @@ public class TicketFragment extends BaseWebViewFragment {
     public int getTitleId() {
         return R.string.ticket;
     }
+
+
 }

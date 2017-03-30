@@ -51,10 +51,13 @@
     </RelativeLayout>
 
 
-    <android.support.v7.widget.AppCompatEditText
+    <AutoCompleteTextView
         android:id="@+id/problem_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/type_here" />
+        android:hint="@string/type_here"
+        android:imeOptions="actionNext"
+        android:inputType="textAutoCorrect|textCapSentences|textMultiLine|textLongMessage"
+        android:paddingBottom="@dimen/capsule_activity_vertical_margin" />
 
 </LinearLayout>
