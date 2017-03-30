@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.2
+* Add prefilled ticket submissions
+
 ## v1.1
 * Completely refactored and rewrote fragments
 * Switched to retrofit and reactive programming

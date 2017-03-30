@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -181,21 +182,19 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                     .autoDismiss(false)
                     .inputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)
                     .widgetColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
-                    .input(context.getString(R.string.enter_reason), getTicketText(printerInfo), new MaterialDialog.InputCallback() {
-                        @Override
-                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            if (printerInfo.getUp()) { //disabling printer
-                                if (!input.toString().isEmpty()) {
-                                    sendTicket(printerInfo, false, input.toString());
-                                    dialog.dismiss();
-                                } else {
-                                    if (dialog.getInputEditText() != null)
-                                        dialog.getInputEditText().setError(context.getString(R.string.error_field_required));
-                                }
+                    .onNegative((dialog12, which) -> dialog12.dismiss())
+                    .input(context.getString(R.string.enter_reason), getTicketText(printerInfo), (dialog1, input) -> {
+                        if (printerInfo.getUp()) { //disabling printer
+                            if (!input.toString().isEmpty()) {
+                                sendTicket(printerInfo, false, input.toString());
+                                dialog1.dismiss();
                             } else {
-                                sendTicket(printerInfo, true, input.toString());
-                                dialog.dismiss();
+                                if (dialog1.getInputEditText() != null)
+                                    dialog1.getInputEditText().setError(context.getString(R.string.error_field_required));
                             }
+                        } else {
+                            sendTicket(printerInfo, true, input.toString());
+                            dialog1.dismiss();
                         }
                     })
                     .show();
