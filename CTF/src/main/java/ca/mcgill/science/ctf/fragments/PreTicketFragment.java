@@ -1,6 +1,5 @@
 package ca.mcgill.science.ctf.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
@@ -123,8 +122,8 @@ public class PreTicketFragment extends Fragment implements CFragmentCore {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         EventBus.getDefault().post(new CFabEvent(GoogleMaterial.Icon.gmd_send, v -> {
             ((MainActivity) getContext()).addFragment(TicketFragment.getInstance(user, problemText.getText().toString(), printer));
         }));

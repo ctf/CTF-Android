@@ -3,7 +3,7 @@
 #create a new directory that will contain our generated apk
 mkdir $HOME/CTFA/
 # copy generated apk from build folder to the folder just created
-cp -R CTF/build/outputs/apk/CTF-Android.apk $HOME/CTFA/
+cp -R CTF/build/outputs/apk/CTF-Android-releaseTest.apk $HOME/CTFA/
 
 # go to home and setup git
 echo "Clone Git"
@@ -30,6 +30,6 @@ API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "master","name": "v%s"
 newRelease=$(curl --data "$API_JSON" https://api.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases?access_token=$GITHUB_API_KEY)
 rID=`echo $newRelease | jq ".id"`
 echo "Push apk to $rID"
-curl "https://uploads.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases/${rID}/assets?access_token=${GITHUB_API_KEY}&name=CTFA-Test-v${TRAVIS_BUILD_NUMBER}.apk" --header 'Content-Type: application/zip' --upload-file CTFA/CTF-Android.apk -X POST
+curl "https://uploads.github.com/repos/CTFMcGill/CTFMcGill.github.io/releases/${rID}/assets?access_token=${GITHUB_API_KEY}&name=CTFA-Test-v${TRAVIS_BUILD_NUMBER}.apk" --header 'Content-Type: application/zip' --upload-file CTFA/CTF-Android-releaseTest.apk -X POST
 
 echo -e "Done\n"

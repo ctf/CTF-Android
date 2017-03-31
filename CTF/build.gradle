@@ -32,7 +32,7 @@ tasks.whenTaskAdded { task ->
 android {
     compileSdkVersion Integer.parseInt(project.TARGET_SDK)
     buildToolsVersion project.BUILD_TOOLS
-    
+
     defaultConfig {
         applicationId "${project.APP_GROUP}." + project.APP_ID.toLowerCase()
         minSdkVersion Integer.parseInt(project.MIN_SDK)
@@ -50,7 +50,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             output.outputFile = new File(output.outputFile.parent,
-                    "CTF-Android.apk")
+                    "CTF-Android-${variant.buildType.name}.apk")
         }
     }
 
@@ -67,23 +67,23 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
-            resValue "string", "authenticator_account_type", "ca.mcgill.science.ctf.debug.StudentAccount"
-            resValue "string", "authenticator_token_type", "ca.mcgill.science.ctf.debug.TepidToken"
+            resValue "string", "authenticator_account_type", "${project.APP_GROUP}." + project.APP_ID.toLowerCase() + ".debug.StudentAccount"
+            resValue "string", "authenticator_token_type", "${project.APP_GROUP}." + project.APP_ID.toLowerCase() + ".debug.TepidToken"
             resValue "string", "app_name", "CTF Debug"
         }
         releaseTest { //just like release, but with our test keys
             applicationIdSuffix ".test"
             signingConfig signingConfigs.test
             versionNameSuffix "-test"
-            resValue "string", "authenticator_account_type", "ca.mcgill.science.ctf.test.StudentAccount"
-            resValue "string", "authenticator_token_type", "ca.mcgill.science.ctf.test.TepidToken"
+            resValue "string", "authenticator_account_type", "${project.APP_GROUP}." + project.APP_ID.toLowerCase() + ".test.StudentAccount"
+            resValue "string", "authenticator_token_type", "${project.APP_GROUP}." + project.APP_ID.toLowerCase() + ".test.TepidToken"
             resValue "string", "app_name", "CTF Test"
         }
         release {
             minifyEnabled false
             resValue "string", "app_name", "CTF"
-            resValue "string", "authenticator_account_type", "ca.mcgill.science.ctf.StudentAccount"
-            resValue "string", "authenticator_token_type", "ca.mcgill.science.ctf.TepidToken"
+            resValue "string", "authenticator_account_type", "${project.APP_GROUP}." + project.APP_ID.toLowerCase() + ".StudentAccount"
+            resValue "string", "authenticator_token_type", "${project.APP_GROUP}." + project.APP_ID.toLowerCase() + ".TepidToken"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -112,7 +112,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile('ca.allanwang:capsule:bbc85cead1355ed484d06d42dc46a67a47eec495@aar') {
+    compile('ca.allanwang:capsule:6b9d1df027@aar') {
         transitive = true;
     }
 
