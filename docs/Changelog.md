@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.3
+* Fixed fragment IllegalStateException
+
 ## v1.2
 * Add prefilled ticket submissions
 

@@ -45,6 +45,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     protected ITEPID api;
 
     public static Fragment getFragment(String token, Fragment fragment) {
+        if (fragment == null) return null;
         Bundle args = new Bundle();
         args.putString(TAG_TOKEN, token);
         fragment.setArguments(args);

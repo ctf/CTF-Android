@@ -6,13 +6,11 @@
     <item text="" />
     -->
 
-    <version title="v1.2"/>
+    <version title="v1.3" />
+    <item text="Fixed fragment IllegalStateException" />
+
+    <version title="v1.2" />
     <item text="Add prefilled ticket submissions" />
-    <item text="" />
-    <item text="" />
-    <item text="" />
-    <item text="" />
-    <item text="" />
 
     <version title="v1.1" />
     <item text="Completely refactored and rewrote fragments" />

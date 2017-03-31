@@ -1,8 +1,6 @@
 package ca.mcgill.science.ctf;
 
 import android.Manifest;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +24,7 @@ import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 
@@ -44,7 +43,6 @@ import ca.mcgill.science.ctf.fragments.MyAccountFragment;
 import ca.mcgill.science.ctf.fragments.PreTicketFragment;
 import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
-import ca.mcgill.science.ctf.fragments.TicketFragment;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
 import io.fabric.sdk.android.Fabric;
@@ -62,18 +60,15 @@ public class MainActivity extends SearchActivity {
             //Add crashlytics
             CrashlyticsCore core = new CrashlyticsCore.Builder().build();
             Fabric.with(this, new Crashlytics.Builder().core(core).build(), new Answers(), new Crashlytics());
-            Timber.plant(new CallbackLogTree(new CallbackLogTree.Callback() {
-                @Override
-                public void log(int priority, String tag, String message, Throwable t) {
-                    if (priority == Log.ERROR) {
-                        if (t == null) {
-                            Crashlytics.logException(new Exception(message));
-                        } else {
-                            Crashlytics.logException(t);
-                        }
+            Timber.plant(new CallbackLogTree((priority, tag, message, t) -> {
+                if (priority == Log.ERROR) {
+                    if (t == null) {
+                        Crashlytics.logException(new Exception(message));
                     } else {
-                        Crashlytics.log(priority, tag, message);
+                        Crashlytics.logException(t);
                     }
+                } else {
+                    Crashlytics.log(priority, tag, message);
                 }
             }));
         }
@@ -119,12 +114,9 @@ public class MainActivity extends SearchActivity {
     }
 
     private void requestAccount() {
-        AccountUtil.requestAccount(this, new AccountManagerCallback<Bundle>() {
-            @Override
-            public void run(AccountManagerFuture<Bundle> future) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
+        AccountUtil.requestAccount(this, future -> {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -169,31 +161,27 @@ public class MainActivity extends SearchActivity {
      */
     @Override
     protected CDrawerItem[] getDrawerItems() {
-        return generateDrawerItems(
-                new TepidDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, new DashboardFragment()),
+        return new CDrawerItem[]{
+                new TepidDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, DashboardFragment::new),
 //                new TepidDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
-                new TepidDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, new MyAccountFragment()),
-                new TepidDrawerItem(R.string.ticket, GoogleMaterial.Icon.gmd_bug_report, new PreTicketFragment()),
-                new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, new SettingsFragment()),
-                new TepidDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, new ReportProblemFragment())
-        );
+                new TepidDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, MyAccountFragment::new),
+                new TepidDrawerItem(R.string.ticket, GoogleMaterial.Icon.gmd_bug_report, PreTicketFragment::new),
+                new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, SettingsFragment::new),
+                new TepidDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, ReportProblemFragment::new)
+        };
     }
 
     //create drawer item and pass the token
-    private class TepidDrawerItem extends ShortCDrawerItem {
+    private class TepidDrawerItem extends DrawerItem {
 
-        TepidDrawerItem(@StringRes int titleId, GoogleMaterial.Icon icon, Fragment fragment) {
-            super(titleId, icon, fragment);
+        TepidDrawerItem(@StringRes int titleId, IIcon icon, DrawerFragment drawerFragment) {
+            super(titleId, icon, true, drawerFragment);
         }
 
-        public CDrawerItem getCDrawerItem() {
-            return new DrawerItem(titleId, icon, true) {
-                @Nullable
-                @Override
-                public Fragment getFragment() {
-                    return BaseFragment.getFragment(mToken, fragment);
-                }
-            };
+        @Nullable
+        @Override
+        public Fragment getFragment() {
+            return BaseFragment.getFragment(mToken, super.getFragment());
         }
     }
 
