@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
-import ca.allanwang.swiperecyclerview.library.items.PairItem;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrintData;
+import ca.mcgill.science.ctf.iitems.PrintJobItem;
 import retrofit2.Call;
 
-public class MyAccountFragment extends BaseFragment<PairItem, List<PrintData>> {
+public class AccountFragment extends BaseFragment<PrintJobItem, List<PrintData>> {
 
     //    @BindView(R.id.my_account_quota)
 //    TextView quotaView;
@@ -23,6 +23,7 @@ public class MyAccountFragment extends BaseFragment<PairItem, List<PrintData>> {
 //    @BindView(R.id.change_nick)
 //    Button changeNickView;
 //    @BindView(R.id.my_account_color)
+
 //    AppCompatCheckBox turnColor;
 
     @Override
@@ -37,10 +38,20 @@ public class MyAccountFragment extends BaseFragment<PairItem, List<PrintData>> {
 
     @Override
     protected void onResponseReceived(@NonNull List<PrintData> body, ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
-        List<PairItem> items = new ArrayList<>();
+        List<PrintJobItem> items = new ArrayList<>();
         for (PrintData print : body)
-            items.add(print.getPairData());
+            items.add(new PrintJobItem(print));
         mAdapter.add(items);
+        mAdapter.withItemEvent(new PrintJobItem.PrintJobClickEvent());
+    }
+
+    @Override
+    protected void onSilentResponseReceived(@NonNull List<PrintData> body) {
+        List<PrintJobItem> items = new ArrayList<>();
+        for (PrintData print : body)
+            items.add(new PrintJobItem(print));
+        mAdapter.setNewList(items);
+        mAdapter.withItemEvent(new PrintJobItem.PrintJobClickEvent());
     }
 
 }

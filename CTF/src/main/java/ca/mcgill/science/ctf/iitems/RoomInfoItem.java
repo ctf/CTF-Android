@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.mikepenz.fastadapter.FastAdapter;
@@ -78,7 +77,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
     }
 
     public int getLayoutRes() {
-        return R.layout.room_info;
+        return R.layout.iitem_room_info;
     }
 
     @Override
@@ -143,12 +142,12 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
             return super.onBindMany(viewHolder);
         }
 
-        @Override
-        public View onBind(@NonNull RecyclerView.ViewHolder viewHolder) {
-            if (viewHolder instanceof RoomInfoItem.ViewHolder)
-                return ((ViewHolder) viewHolder).printer1;
-            return null;
-        }
+//        @Override
+//        public View onBind(@NonNull RecyclerView.ViewHolder viewHolder) {
+//            if (viewHolder instanceof RoomInfoItem.ViewHolder)
+//                return ((ViewHolder) viewHolder).printer1;
+//            return null;
+//        }
 
         @Override
         public void onClick(View v, int position, FastAdapter<RoomInfoItem> fastAdapter, RoomInfoItem item) {

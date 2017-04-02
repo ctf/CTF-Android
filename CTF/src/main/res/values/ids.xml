@@ -2,5 +2,5 @@
 <resources>
     <item name="ctf_room_info_item" type="id" />
     <item name="ctf_dashboard_header" type="id" />
-    <item name="ctf_pair_item" type="id" />
+    <item name="ctf_print_job_item" type="id" />
 </resources>

@@ -116,6 +116,8 @@ dependencies {
         transitive = true;
     }
 
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
     //compile 'com.lapism:searchview:4.0'
     compile 'com.github.AllanWang:SearchView:d24ad07b9b'
 

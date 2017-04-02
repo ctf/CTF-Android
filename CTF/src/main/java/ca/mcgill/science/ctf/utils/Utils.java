@@ -3,6 +3,7 @@ package ca.mcgill.science.ctf.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.StringRes;
 
 /**
  * Created by Allan Wang on 19/03/2017.

@@ -56,7 +56,7 @@ public class PrinterInfoView extends LinearLayout {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.item_printer, this);
+        inflate(getContext(), R.layout.view_printer, this);
         setVisibility(GONE);
         ButterKnife.bind(this);
     }

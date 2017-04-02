@@ -24,6 +24,8 @@ import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.SingleCallRequest;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.api.UserQuery;
+import ca.mcgill.science.ctf.fragments.AccountFragment;
+import ca.mcgill.science.ctf.fragments.BaseFragment;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.Call;
@@ -75,20 +77,18 @@ public abstract class SearchActivity extends BaseActivity {
                 });
 
         mSearchAdapter = new SearchAdapter(this);
-        mSearchAdapter.addOnItemClickListener(new SearchAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                if (mQueryResults == null || mQueryResults.size() <= position)
-                    return; //no results actually exist
-                UserQuery query = mQueryResults.get(position);
-                //TextView textView = (TextView) view.findViewById(R.id.textView_item_text);
-                //TODO reroute to actual fragment rather than dialog; this is just for display
-                new MaterialDialog.Builder(SearchActivity.this)
-                        .title(query.getDisplayName())
-                        .content(query.getShortUser() + "\n" + query.getEmail() + "\nColor printing: " + (query.getColorPrinting() ? "Enabled" : "Disabled"))
-                        .show();
-                mSearchView.close(false);
-            }
+        mSearchAdapter.addOnItemClickListener((view, position) -> {
+            if (mQueryResults == null || mQueryResults.size() <= position)
+                return; //no results actually exist
+            UserQuery query = mQueryResults.get(position);
+            switchFragment(BaseFragment.getFragment(token, query.getShortUser(), new AccountFragment()));
+            //TextView textView = (TextView) view.findViewById(R.id.textView_item_text);
+            //TODO reroute to actual fragment rather than dialog; this is just for display
+//                new MaterialDialog.Builder(SearchActivity.this)
+//                        .title(query.getDisplayName())
+//                        .content(query.getShortUser() + "\n" + query.getEmail() + "\nColor printing: " + (query.getColorPrinting() ? "Enabled" : "Disabled"))
+//                        .show();
+            mSearchView.close(false);
         });
         mSearchView.setAdapter(mSearchAdapter);
     }
@@ -96,7 +96,8 @@ public abstract class SearchActivity extends BaseActivity {
     private DisposableObserver<TextViewTextChangeEvent> getSearchObserver() {
         return new DisposableObserver<TextViewTextChangeEvent>() {
             @Override
-            public void onComplete() { }
+            public void onComplete() {
+            }
 
             @Override
             public void onError(Throwable e) {

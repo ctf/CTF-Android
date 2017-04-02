@@ -1,5 +1,7 @@
 package ca.mcgill.science.ctf.api
 
+import android.content.Context
+import android.text.format.DateUtils
 import ca.allanwang.swiperecyclerview.library.items.PairItem
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,7 +24,7 @@ class Session(val role: String, val user: User, val _id: String)
 /**
  * User info; various bits of information for a given student
  */
-class User(val _id: String, val salutation: String, val realName: String, val displayName:String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
+class User(val _id: String, val salutation: String, val realName: String, val displayName: String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
 
 /**
  * User Query; student info from autoSuggest
@@ -45,9 +47,13 @@ class PrinterInfo(val _id: String, val name: String, val up: Boolean, var ticket
  * TODO check if long or int
  */
 
-class PrintData(val name: String, val colorPages: Long, val pages: Long, val refunded: Boolean, val printed: Long) {
-    fun getPairData(): PairItem {
-        return PairItem(name, dateFormat.format(if (printed == -1L) Date() else Date(printed)).toString())
+class PrintData(val _id: String, val name: String, val colorPages: Long, val pages: Long, val refunded: Boolean, val printed: Long, val queueName: String, val originalHost: String, val userIdentification: String) {
+    fun getFormattedDate(): String {
+        return dateFormat.format(if (printed == -1L) Date() else Date(printed)).toString()
+    }
+
+    fun getRelativeDate(): String {
+        return DateUtils.getRelativeTimeSpanString(printed, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString()
     }
 }
 

@@ -2,6 +2,9 @@
 
 ## v1.3
 * Fixed fragment IllegalStateException
+* Improved user search results
+* Created refund option
+* Reformatted account fragment
 
 ## v1.2
 * Add prefilled ticket submissions

@@ -39,9 +39,8 @@ import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
-import ca.mcgill.science.ctf.fragments.MyAccountFragment;
+import ca.mcgill.science.ctf.fragments.AccountFragment;
 import ca.mcgill.science.ctf.fragments.PreTicketFragment;
-import ca.mcgill.science.ctf.fragments.ReportProblemFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
@@ -164,10 +163,10 @@ public class MainActivity extends SearchActivity {
         return new CDrawerItem[]{
                 new TepidDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, DashboardFragment::new),
 //                new TepidDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
-                new TepidDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, MyAccountFragment::new),
+                new TepidDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, AccountFragment::new),
                 new TepidDrawerItem(R.string.ticket, GoogleMaterial.Icon.gmd_bug_report, PreTicketFragment::new),
-                new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, SettingsFragment::new),
-                new TepidDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, ReportProblemFragment::new)
+                new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, SettingsFragment::new)
+//                new TepidDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, ReportProblemFragment::new)
         };
     }
 
@@ -181,7 +180,7 @@ public class MainActivity extends SearchActivity {
         @Nullable
         @Override
         public Fragment getFragment() {
-            return BaseFragment.getFragment(mToken, super.getFragment());
+            return BaseFragment.getFragment(mToken, null, super.getFragment());
         }
     }
 

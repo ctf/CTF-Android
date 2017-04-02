@@ -8,6 +8,9 @@
 
     <version title="v1.3" />
     <item text="Fixed fragment IllegalStateException" />
+    <item text="Improved user search results" />
+    <item text="Created refund option" />
+    <item text="Reformatted account fragment" />
 
     <version title="v1.2" />
     <item text="Add prefilled ticket submissions" />

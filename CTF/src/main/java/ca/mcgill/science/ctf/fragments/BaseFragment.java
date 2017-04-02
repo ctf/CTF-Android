@@ -41,13 +41,14 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
 
     private Unbinder unbinder;
     private Call<C> mCall;
-    private static final String TAG_TOKEN = "auth_token";
+    private static final String TAG_TOKEN = "auth_token", TAG_SHORT_USER = "short_user";
     protected ITEPID api;
 
-    public static Fragment getFragment(String token, Fragment fragment) {
+    public static Fragment getFragment(String token, String shortUser, Fragment fragment) {
         if (fragment == null) return null;
         Bundle args = new Bundle();
         args.putString(TAG_TOKEN, token);
+        args.putString(TAG_SHORT_USER, shortUser);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,6 +56,11 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     public static String getToken(Fragment fragment) {
         if (fragment.getArguments() == null) return null;
         return fragment.getArguments().getString(TAG_TOKEN);
+    }
+
+    public static String getShortUser(Fragment fragment) {
+        if (fragment.getArguments() == null) return null;
+        return fragment.getArguments().getString(TAG_SHORT_USER);
     }
 
     public static ITEPID getAPI(Fragment fragment) {
@@ -95,7 +101,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     @Override
     @CallSuper
     protected void configSRV(final SwipeRecyclerView srv) {
-        srv.getSwipeRefreshLayout().setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
+//        srv.getSwipeRefreshLayout().setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.accent));
         srv.setOnRefreshStatus(new ISwipeRecycler.OnRefreshStatus() {
             @Override
             public void onSuccess() {
@@ -192,7 +198,8 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     }
 
     protected String getShortUser() {
-        return AccountUtil.getShortUser();
+        if (BaseFragment.getShortUser(this) == null) return AccountUtil.getShortUser();
+        return BaseFragment.getShortUser(this);
     }
 
 }

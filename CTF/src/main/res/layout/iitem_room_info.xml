@@ -14,7 +14,7 @@
         android:id="@+id/computer_availability"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Computer Availability" />
+        android:contentDescription="@string/computer_availability" />
 
     <ca.mcgill.science.ctf.views.PrinterInfoView
         android:id="@+id/printer_1"

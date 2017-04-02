@@ -1,14 +1,20 @@
 package ca.mcgill.science.ctf.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Locale;
 
+import ca.allanwang.capsule.library.event.CFabEvent;
 import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
@@ -113,6 +119,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Configuration config = new Configuration();
         config.setLocale(locale);
         activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        EventBus.getDefault().post(new CFabEvent(false));
     }
 
 }

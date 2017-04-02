@@ -49,4 +49,6 @@ interface ITEPID {
     @GET("users/autosuggest/{expr}?limit=10") //use default query limit
     fun getUserQuery(@Path("expr") query: String): Call<List<UserQuery>>
 
+    @PUT("jobs/job/{id}/refunded")
+    fun refund(@Path("id") id: String, @Body refund: Boolean): Call<Void>
 }
