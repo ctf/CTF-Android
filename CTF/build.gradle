@@ -112,14 +112,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile('ca.allanwang:capsule:5b5eed13b7@aar') {
+    compile('ca.allanwang:capsule:c42cf1a8e6@aar') {
         transitive = true;
     }
 
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     //compile 'com.lapism:searchview:4.0'
-    compile 'com.github.AllanWang:SearchView:d24ad07b9b'
+    compile 'com.github.AllanWang:SearchView:60222b9b96'
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.5.1'

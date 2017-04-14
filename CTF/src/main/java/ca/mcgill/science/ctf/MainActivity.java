@@ -37,10 +37,11 @@ import ca.allanwang.capsule.library.permissions.CPermissionCallback;
 import ca.mcgill.science.ctf.activities.SearchActivity;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
+import ca.mcgill.science.ctf.fragments.AccountFragment;
 import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
-import ca.mcgill.science.ctf.fragments.AccountFragment;
 import ca.mcgill.science.ctf.fragments.PreTicketFragment;
+import ca.mcgill.science.ctf.fragments.RoomsViewPagerFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
@@ -60,15 +61,10 @@ public class MainActivity extends SearchActivity {
             CrashlyticsCore core = new CrashlyticsCore.Builder().build();
             Fabric.with(this, new Crashlytics.Builder().core(core).build(), new Answers(), new Crashlytics());
             Timber.plant(new CallbackLogTree((priority, tag, message, t) -> {
-                if (priority == Log.ERROR) {
-                    if (t == null) {
-                        Crashlytics.logException(new Exception(message));
-                    } else {
-                        Crashlytics.logException(t);
-                    }
-                } else {
-                    Crashlytics.log(priority, tag, message);
-                }
+                if (priority == Log.ERROR)
+                    if (t == null) Crashlytics.logException(new Exception(message));
+                    else Crashlytics.logException(t);
+                else Crashlytics.log(priority, tag, message);
             }));
         }
 //        super.onCreate(savedInstanceState);
@@ -162,7 +158,7 @@ public class MainActivity extends SearchActivity {
     protected CDrawerItem[] getDrawerItems() {
         return new CDrawerItem[]{
                 new TepidDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, DashboardFragment::new),
-//                new TepidDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, new RoomMapFragment()),
+                new TepidDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, RoomsViewPagerFragment::new),
                 new TepidDrawerItem(R.string.userinfo, GoogleMaterial.Icon.gmd_person, AccountFragment::new),
                 new TepidDrawerItem(R.string.ticket, GoogleMaterial.Icon.gmd_bug_report, PreTicketFragment::new),
                 new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, SettingsFragment::new)
