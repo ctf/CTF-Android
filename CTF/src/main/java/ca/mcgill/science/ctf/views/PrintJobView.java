@@ -17,6 +17,10 @@ import ca.mcgill.science.ctf.auth.AccountUtil;
 
 public class PrintJobView extends ConstraintLayout {
 
+    @BindView(R.id.pv_short_user)
+    TextView shortUser;
+    @BindView(R.id.pv_status)
+    TextView status;
     @BindView(R.id.pv_date_formatted)
     TextView dateFormatted;
     @BindView(R.id.pv_date_relative)
@@ -49,6 +53,16 @@ public class PrintJobView extends ConstraintLayout {
     }
 
     public PrintJobView bind(PrintData data) {
+        shortUser.setText(data.getUserIdentification());
+        if (data.getFailed() != null)
+            status.setText(R.string.failed);
+        else if (data.getRefunded())
+            status.setText(R.string.refunded);
+        else if (data.getPrinted() != null)
+            status.setText(R.string.printed);
+        else if (data.getProcessed() != null)
+            status.setText(R.string.processed);
+        else status.setText(R.string.processing);
         dateFormatted.setText(data.getFormattedDate());
         dateRelative.setText(data.getRelativeDate());
         pageCount.setText(String.format(getContext().getString(R.string.page_count_format), data.getPages()));

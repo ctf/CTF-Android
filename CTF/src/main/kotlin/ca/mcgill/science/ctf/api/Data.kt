@@ -1,8 +1,6 @@
 package ca.mcgill.science.ctf.api
 
-import android.content.Context
 import android.text.format.DateUtils
-import ca.allanwang.swiperecyclerview.library.items.PairItem
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,15 +43,16 @@ class PrinterInfo(val _id: String, val name: String, val up: Boolean, var ticket
 /**
  * PrintData info; gets list of printJobs
  * TODO check if long or int
+ * Keep in mind that some dates do not always exist
  */
 
-class PrintData(val _id: String, val name: String, val colorPages: Long, val pages: Long, val refunded: Boolean, val printed: Long, val queueName: String, val originalHost: String, val userIdentification: String) {
+class PrintData(val _id: String, val name: String, val colorPages: Long, val pages: Long, val refunded: Boolean, val started: Long, val processed: Long?, val failed: Long?, val printed: Long?, val queueName: String, val originalHost: String, val error: String?, val userIdentification: String) {
     fun getFormattedDate(): String {
-        return dateFormat.format(if (printed == -1L) Date() else Date(printed)).toString()
+        return dateFormat.format(if (started == -1L) Date() else Date(started)).toString()
     }
 
     fun getRelativeDate(): String {
-        return DateUtils.getRelativeTimeSpanString(printed, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString()
+        return DateUtils.getRelativeTimeSpanString(started, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString()
     }
 }
 

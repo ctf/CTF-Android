@@ -95,6 +95,10 @@
     <string name="refund_fail_format">%1$s failed to %2$s</string>
     <string name="page_count_format">%1$d pages</string>
     <string name="colour_page_count_format">%1$d coloured pages</string>
+    <string name="failed">Failed</string>
+    <string name="printed">Printed</string>
+    <string name="processed">Processed</string>
+    <string name="processing">Processing</string>
 
 </resources>
 

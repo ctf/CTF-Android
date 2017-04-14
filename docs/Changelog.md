@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4
+* Added Room Info
+* Make PrintJob list display errors & refunds
+* Make PrintJob dialog display print user, room, and status
+
 ## v1.3
 * Fixed fragment IllegalStateException
 * Improved user search results

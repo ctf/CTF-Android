@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/pv_date_relative"
+        android:id="@+id/pv_short_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -15,12 +15,30 @@
         tools:layout_editor_absoluteX="163dp" />
 
     <TextView
-        android:id="@+id/pv_date_formatted"
+        android:id="@+id/pv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="163dp" />
+
+    <TextView
+        android:id="@+id/pv_date_relative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pv_short_user"
+        tools:layout_editor_absoluteX="163dp" />
+
+    <TextView
+        android:id="@+id/pv_date_formatted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pv_short_user"
         tools:layout_editor_absoluteX="163dp" />
 
     <TextView

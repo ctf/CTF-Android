@@ -6,6 +6,13 @@
     <item text="" />
     -->
 
+    <version title="v1.4" />
+    <item text="Added Room Info" />
+    <item text="Make PrintJob list display errors &amp; refunds" />
+    <item text="Make PrintJob dialog display print user, room, and status" />
+    <item text="" />
+    <item text="" />
+
     <version title="v1.3" />
     <item text="Fixed fragment IllegalStateException" />
     <item text="Improved user search results" />

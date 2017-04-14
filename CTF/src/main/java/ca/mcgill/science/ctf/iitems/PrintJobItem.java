@@ -1,5 +1,6 @@
 package ca.mcgill.science.ctf.iitems;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.afollestad.materialdialogs.util.DialogUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
@@ -21,6 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ca.allanwang.capsule.library.event.RefreshEvent;
@@ -56,12 +59,15 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
         return R.layout.iitem_print_job;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void bindView(PrintJobItem.ViewHolder viewHolder, List<Object> payloads) {
         super.bindView(viewHolder, payloads);
         viewHolder.title.setText(data.getName());
         viewHolder.date.setText(data.getRelativeDate());
         viewHolder.count.setText(Long.toString(data.getPages()));
+        if (data.getFailed() != null) viewHolder.setError();
+        if (data.getRefunded()) viewHolder.setRefunded();
         if (viewHolder.getAdapterPosition() % 2 == 0)
             viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(viewHolder.itemView.getContext(), getShader()));
     }
@@ -75,9 +81,7 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
     @Override
     public void unbindView(PrintJobItem.ViewHolder holder) {
         super.unbindView(holder);
-        holder.title.setText(null);
-        holder.date.setText(null);
-        holder.count.setText(null);
+        holder.resetTextViews();
         holder.itemView.setBackgroundColor(0x00000000);
     }
 
@@ -93,10 +97,40 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
         TextView date;
         @BindView(R.id.print_page_count)
         TextView count;
+        @BindColor(R.color.disabled_red)
+        int errorRed;
+        @BindColor(R.color.enabled_green)
+        int refundGreen;
+        int primaryColor;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            primaryColor = DialogUtils.resolveColor(view.getContext(), R.attr.material_drawer_primary_text);
+        }
+
+        interface TextViewChange {
+            void changeTextView(TextView t);
+        }
+
+        //helper to change attribute for all textviews
+        void allTextView(TextViewChange action) {
+            action.changeTextView(title);
+            action.changeTextView(date);
+            action.changeTextView(count);
+        }
+
+        void setError() {
+            allTextView((t) -> t.setTextColor(errorRed));
+        }
+
+        void setRefunded() {
+            allTextView((t) -> t.setTextColor(refundGreen));
+        }
+
+        void resetTextViews() {
+            allTextView((t) -> t.setText(null));
+            allTextView((t) -> t.setTextColor(primaryColor));
         }
     }
 
@@ -140,14 +174,16 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
             MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                     .title(printData.getName())
                     .theme(new Preferences(context).isDarkMode() ? Theme.DARK : Theme.LIGHT)
-                    .widgetColor(0xff000000)
+                    .widgetColorAttr(R.attr.material_drawer_primary_text)
                     .customView(view, true);
 
             if (printData.getUserIdentification().equals(AccountUtil.getShortUser()))
                 builder.positiveText(R.string.close);
             else //TODO you cannot refund yourself; verify this is server side
                 builder.negativeText(R.string.close)
+                        .negativeColorAttr(R.attr.material_drawer_primary_text)
                         .positiveText(printData.getRefunded() ? R.string.unrefund : R.string.refund)
+                        .positiveColorAttr(R.attr.material_drawer_primary_text)
                         .onPositive((dialog, which) -> toggleRefund(context, printData));
             builder.show();
         }
