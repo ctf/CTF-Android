@@ -2,8 +2,8 @@
 
 ## v1.4
 * Added Room Info
-* Make PrintJob list display errors & refunds
-* Make PrintJob dialog display print user, room, and status
+* Made PrintJob list display errors & refunds
+* Made PrintJob dialog display print user, room, and status
 
 ## v1.3
 * Fixed fragment IllegalStateException
