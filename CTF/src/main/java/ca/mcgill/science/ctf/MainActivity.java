@@ -118,6 +118,7 @@ public class MainActivity extends SearchActivity {
     private void onLogin(final Bundle savedInstanceState) {
         capsuleOnCreate(savedInstanceState);
         capsuleFrameOnCreate(savedInstanceState);
+        onVersionUpdate(BuildConfig.VERSION_CODE, () -> ChangelogDialog.show(MainActivity.this, R.xml.changelog));
         cFab.hide(); //we don't use the fab for now
         cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
         setSearchView(mToken);

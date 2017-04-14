@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.5
+* Made Changelog display automatically on version update
+* Keep Room fragment active on tab switch
+
 ## v1.4
 * Added Room Info
 * Made PrintJob list display errors & refunds

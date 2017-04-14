@@ -112,7 +112,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //Framework lib with android support libraries and eventbus
-    compile('ca.allanwang:capsule:c42cf1a8e6@aar') {
+    compile('ca.allanwang:capsule:5420fd94da@aar') {
         transitive = true;
     }
 

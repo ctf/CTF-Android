@@ -1,11 +1,12 @@
 package ca.mcgill.science.ctf.fragments;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.allanwang.capsule.library.fragments.ViewPagerFragment;
 import ca.allanwang.capsule.library.interfaces.CPage;
 import ca.allanwang.capsule.library.item.PageItem;
+import ca.mcgill.science.ctf.R;
 
 /**
  * Created by Allan Wang on 2017-04-14.
@@ -14,10 +15,19 @@ import ca.allanwang.capsule.library.item.PageItem;
 public class RoomsViewPagerFragment extends ViewPagerFragment {
     @Override
     protected List<CPage> setPages() {
-        return Arrays.asList(new CPage[]{
-                new PageItem(RoomJobFragment.getInstance(this, RoomJobFragment.Rooms._1B16), RoomJobFragment.Rooms._1B16.id),
-                new PageItem(RoomJobFragment.getInstance(this, RoomJobFragment.Rooms._1B17), RoomJobFragment.Rooms._1B17.id),
-                new PageItem(RoomJobFragment.getInstance(this, RoomJobFragment.Rooms._1B18), RoomJobFragment.Rooms._1B18.id)
-        });
+        List<CPage> list = new ArrayList<>(RoomJobFragment.Rooms.values().length);
+        for (RoomJobFragment.Rooms room : RoomJobFragment.Rooms.values())
+            list.add(new PageItem(RoomJobFragment.getInstance(this, room), room.id));
+        return list;
+    }
+
+    @Override
+    protected int getOffscreenPageLimit(int pageCount) {
+        return pageCount - 1;
+    }
+
+    @Override
+    public int getTitleId() {
+        return R.string.roominfo;
     }
 }

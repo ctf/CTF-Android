@@ -6,6 +6,13 @@
     <item text="" />
     -->
 
+    <version title="v1.5"/>
+    <item text="Made Changelog display automatically on version update" />
+    <item text="Keep Room fragment active on tab switch" />
+    <item text="" />
+    <item text="" />
+    <item text="" />
+
     <version title="v1.4" />
     <item text="Added Room Info" />
     <item text="Made PrintJob list display errors &amp; refunds" />

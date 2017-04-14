@@ -17,8 +17,10 @@ public class RoomJobFragment extends BasePrintJobFragment implements CPageFragme
     private Rooms room;
 
     @Override
-    public void onSelected() {
-        //nothing special
+    public void onSelected(int oldPosition, int newPosition) {
+        if (mSRV == null) return; //not ready yet
+        if (oldPosition == newPosition)
+            mSRV.getRecyclerView().scrollToPosition(0); //if tab is selected and tapped again, scroll back to the top
     }
 
     enum Rooms {
