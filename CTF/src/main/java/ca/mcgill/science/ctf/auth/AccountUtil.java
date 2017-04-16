@@ -122,19 +122,16 @@ public class AccountUtil {
     }
 
     public static void requestToken(Activity activity, @NonNull final TokenRequestCallback callback) {
-        AccountManager.get(activity).getAuthToken(getAccount(), tokenType, null, activity, new AccountManagerCallback<Bundle>() {
-            @Override
-            public void run(AccountManagerFuture<Bundle> future) {
-                try {
-                    String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
-                    if (token == null || token.isEmpty())
-                        callback.onFailed();
-                    else
-                        callback.onReceived(token.trim());
-                } catch (Exception e) {
-                    CLog.e("Failed to request token %s", e.getMessage());
+        AccountManager.get(activity).getAuthToken(getAccount(), tokenType, null, activity, future -> {
+            try {
+                String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+                if (token == null || token.isEmpty())
                     callback.onFailed();
-                }
+                else
+                    callback.onReceived(token.trim());
+            } catch (Exception e) {
+                CLog.e("Failed to request token %s", e.getMessage());
+                callback.onFailed();
             }
         }, null);
     }

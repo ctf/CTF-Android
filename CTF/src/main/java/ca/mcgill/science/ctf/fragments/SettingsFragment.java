@@ -2,13 +2,12 @@ package ca.mcgill.science.ctf.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,7 +17,7 @@ import ca.allanwang.capsule.library.event.CFabEvent;
 import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
-import ca.mcgill.science.ctf.api.Session;
+import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -86,25 +85,29 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference("pref_logout").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Session session = AccountUtil.getSession();
                 mAPI.removeSession(AccountUtil.getSession().get_id()).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
-                            AccountUtil.removeAccount();
-                        getActivity().finish();
+                        relaunchLogin();
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
-                            AccountUtil.removeAccount();
-                        getActivity().finish();
+                        relaunchLogin();
                     }
                 });
                 return false;
             }
         });
+    }
+
+    private void relaunchLogin() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            AccountUtil.removeAccount();
+        TEPIDAPI.Companion.invalidate();
+        Intent intent = new Intent(this.getContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     /**

@@ -1,15 +1,12 @@
 package ca.mcgill.science.ctf;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
@@ -31,12 +28,8 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import ca.allanwang.capsule.library.changelog.ChangelogDialog;
 import ca.allanwang.capsule.library.interfaces.CDrawerItem;
 import ca.allanwang.capsule.library.item.DrawerItem;
-import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
-import ca.allanwang.capsule.library.permissions.CPermissionCallback;
 import ca.mcgill.science.ctf.activities.SearchActivity;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
-import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.AccountFragment;
 import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
@@ -67,67 +60,16 @@ public class MainActivity extends SearchActivity {
                 else Crashlytics.log(priority, tag, message);
             }));
         }
-//        super.onCreate(savedInstanceState);
-        Preferences prefs = new Preferences(this);
-        if (prefs.isDarkMode()) setTheme(R.style.AppTheme_Dark_NoActionBar);
-
-        preCapsuleOnCreate(savedInstanceState);
-//        checkAccountPermission(new CPermissionCallback() {
-//            @Override
-//            public void onResult(PermissionResult result) {
-//                if (result.isAllGranted()) {
-        AccountUtil.initAccount(MainActivity.this);
-//                } else {
-//                    //Stop app?
-//                }
-//            }
-//        });
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String lang = preferences.getString("pref_language", "en");
-        SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
-
-        if (AccountUtil.isSignedIn()) {
-            AccountUtil.requestToken(this, new AccountUtil.TokenRequestCallback() {
-                @Override
-                public void onReceived(@NonNull String token) {
-                    mToken = token;
-                    //initialize TEPID API
-                    TEPIDAPI.Companion.setInstance(token, MainActivity.this); //to be sure, set api instance here
-                    onLogin(savedInstanceState);
-                    CLog.d("Token received %s", mToken);
-                }
-
-                @Override
-                public void onFailed() {
-                    requestAccount();
-                }
-            });
-        } else if (isNetworkAvailable())
-            requestAccount();
-        else
-            setContentView(R.layout.no_wifi);
-    }
-
-    private void requestAccount() {
-        AccountUtil.requestAccount(this, future -> {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    private void onLogin(final Bundle savedInstanceState) {
-        capsuleOnCreate(savedInstanceState);
-        capsuleFrameOnCreate(savedInstanceState);
+        Preferences.setTheme(this);
+        mToken = getIntent().getStringExtra(StartActivity.EXTRA_TOKEN);
+        super.onCreate(savedInstanceState);
         onVersionUpdate(BuildConfig.VERSION_CODE, () -> ChangelogDialog.show(MainActivity.this, R.xml.changelog));
         cFab.hide(); //we don't use the fab for now
+//        expandAppBar();
         cCoordinatorLayout.setScrollAllowed(false); //scrolling is currently not being used
         setSearchView(mToken);
         selectDrawerItem(getLastDrawerPosition()); //Go to dashboard by default TODO fix commitAllowingStateLoss ->   java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
-    }
 
-    //TODO use this?
-    public void checkAccountPermission(@NonNull CPermissionCallback callback) {
-        requestPermission(callback, 42, Manifest.permission.GET_ACCOUNTS);
     }
 
     /**

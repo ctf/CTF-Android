@@ -25,6 +25,7 @@ import ca.mcgill.science.ctf.api.Session;
 import ca.mcgill.science.ctf.api.SessionRequest;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
+import ca.mcgill.science.ctf.utils.Preferences;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,8 +63,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Preferences.setTheme(this);
         setContentView(R.layout.activity_student_login);
-
         mAccountManager = AccountManager.get(getBaseContext());
         mAPI = TEPIDAPI.Companion.getInstance(null, this);
         ButterKnife.bind(this);

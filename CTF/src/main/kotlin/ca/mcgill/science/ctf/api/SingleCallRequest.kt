@@ -11,7 +11,7 @@ import retrofit2.Response
  * Makes sure that only one call is used at a time; is many are called, only the newest one will keep executing
  */
 
-abstract class SingleCallRequest<in I, C>(c: Context, token: String) {
+abstract class SingleCallRequest<in I, C>(c: Context, token: String?) {
 
     private var mCall: Call<C>? = null
     private val mAPI: ITEPID = TEPIDAPI.getInstance(token, c)

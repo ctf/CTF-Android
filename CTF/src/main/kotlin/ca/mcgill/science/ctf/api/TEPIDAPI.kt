@@ -42,6 +42,10 @@ class TEPIDAPI private constructor(token: String?, context: Context) {
         fun setInstance(token: String?, context: Context): Unit {
             instance = TEPIDAPI(token, context).api
         }
+
+        fun invalidate(): Unit {
+            instance = null
+        }
     }
 
     init {
