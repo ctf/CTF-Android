@@ -3,19 +3,15 @@ package ca.mcgill.science.ctf.auth;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
 import ca.allanwang.capsule.library.logging.CLog;
-import ca.mcgill.science.ctf.CTFApp;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.Session;
 import ca.mcgill.science.ctf.api.User;
@@ -27,17 +23,24 @@ public class AccountUtil {
 
     private static AccountManager am;
     private static Account account;
-    public static final String accountType = CTFApp.getAppContext().getResources().getString(R.string.authenticator_account_type),
-            tokenType = CTFApp.getAppContext().getResources().getString(R.string.authenticator_token_type),
-            KEY_SESSION = "SESSION";
+    public static final String KEY_SESSION = "SESSION";
+
+    public static String getAccountType(Context context) {
+        return context.getResources().getString(R.string.authenticator_account_type);
+    }
+
+    public static String getTokenType(Context context) {
+        return context.getResources().getString(R.string.authenticator_token_type);
+    }
 
     /**
      * called on startup to keep a global reference to the user's account
      *
-     * @param context likely MainActivity or CTFApp
+     * @param context likely {@link ca.mcgill.science.ctf.StartActivity}
      */
     public static void initAccount(Context context) {
         am = AccountManager.get(context);
+        String accountType = getAccountType(context);
         if (am.getAccountsByType(accountType).length > 0) { //TODO request account permission
             account = am.getAccountsByType(accountType)[0];
         }
@@ -106,13 +109,22 @@ public class AccountUtil {
      * removes the CTFAccount from android's account manager
      * used before logout to remove the account from the system
      */
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
-    public static void removeAccount() {
-        am.removeAccountExplicitly(account);
+    public static void removeAccount(final GeneralCallback callback) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            am.removeAccountExplicitly(account);
+            callback.onFinish();
+        } else {
+            AccountManagerCallback<Boolean> handler = future -> callback.onFinish();
+            am.removeAccount(account, handler, null);
+        }
     }
 
     public static void requestAccount(Activity activity, AccountManagerCallback<Bundle> callback) {
-        AccountManager.get(activity).addAccount(accountType, tokenType, null, null, activity, callback, null);
+        AccountManager.get(activity).addAccount(getAccountType(activity), getTokenType(activity), null, null, activity, callback, null);
+    }
+
+    public interface GeneralCallback {
+        void onFinish();
     }
 
     public interface TokenRequestCallback {
@@ -122,12 +134,13 @@ public class AccountUtil {
     }
 
     public static void requestToken(Activity activity, @NonNull final TokenRequestCallback callback) {
-        AccountManager.get(activity).getAuthToken(getAccount(), tokenType, null, activity, future -> {
+        AccountManager.get(activity).getAuthToken(getAccount(), getTokenType(activity), null, activity, future -> {
             try {
                 String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
-                if (token == null || token.isEmpty())
+                if (token == null || token.isEmpty()) {
+                    CLog.e("empty token received");
                     callback.onFailed();
-                else
+                } else
                     callback.onReceived(token.trim());
             } catch (Exception e) {
                 CLog.e("Failed to request token %s", e.getMessage());

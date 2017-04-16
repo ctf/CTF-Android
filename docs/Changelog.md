@@ -2,7 +2,8 @@
 
 ## v1.5
 * Made Changelog display automatically on version update
-* Keep Room fragment active on tab switch
+* Kept Room fragment active on tab switch
+* Added splash screen when loading
 
 ## v1.4
 * Added Room Info

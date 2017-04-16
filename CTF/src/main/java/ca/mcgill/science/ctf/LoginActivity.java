@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.Session;
 import ca.mcgill.science.ctf.api.SessionRequest;
@@ -149,7 +148,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                         mPasswordField.requestFocus();
                     } else {
                         Session responseData = response.body();
-                        final Account account = new Account(responseData.getUser().getShortUser(), AccountUtil.accountType);
+                        final Account account = new Account(responseData.getUser().getShortUser(), AccountUtil.getAccountType(LoginActivity.this));
 
                         if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
                             Bundle userData = new Bundle();
@@ -159,7 +158,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                         }
 
                         // set the auth token using the session we received
-                        mAccountManager.setAuthToken(account, AccountUtil.tokenType,
+                        mAccountManager.setAuthToken(account, AccountUtil.getTokenType(LoginActivity.this),
                                 Base64.encodeToString((responseData.getUser().getShortUser() + ":" + responseData.get_id()).getBytes(), Base64.CRLF));
                         finish();
                     }

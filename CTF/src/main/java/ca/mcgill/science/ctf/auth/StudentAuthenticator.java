@@ -42,8 +42,8 @@ public class StudentAuthenticator extends AbstractAccountAuthenticator {
 
         final Intent intent = new Intent(mContext, LoginActivity.class);
 
-        intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, AccountUtil.accountType);
-        intent.putExtra(LoginActivity.ARG_TOKEN_TYPE, AccountUtil.tokenType);
+        intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, AccountUtil.getAccountType(mContext));
+        intent.putExtra(LoginActivity.ARG_TOKEN_TYPE, AccountUtil.getTokenType(mContext));
         intent.putExtra(LoginActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 

@@ -2,6 +2,7 @@ package ca.mcgill.science.ctf;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.wifi.WifiInfo;
@@ -30,6 +31,8 @@ import ca.allanwang.capsule.library.interfaces.CDrawerItem;
 import ca.allanwang.capsule.library.item.DrawerItem;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.mcgill.science.ctf.activities.SearchActivity;
+import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.AccountFragment;
 import ca.mcgill.science.ctf.fragments.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
@@ -37,7 +40,6 @@ import ca.mcgill.science.ctf.fragments.PreTicketFragment;
 import ca.mcgill.science.ctf.fragments.RoomsViewPagerFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.utils.Preferences;
-import ca.mcgill.science.ctf.utils.Utils;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
@@ -62,6 +64,7 @@ public class MainActivity extends SearchActivity {
         }
         Preferences.setTheme(this);
         mToken = getIntent().getStringExtra(StartActivity.EXTRA_TOKEN);
+        TEPIDAPI.Companion.setInstance(mToken, this); //to be sure, set api instance here
         super.onCreate(savedInstanceState);
         onVersionUpdate(BuildConfig.VERSION_CODE, () -> ChangelogDialog.show(MainActivity.this, R.xml.changelog));
         cFab.hide(); //we don't use the fab for now
@@ -149,10 +152,6 @@ public class MainActivity extends SearchActivity {
         return false;
     }
 
-    private boolean isNetworkAvailable() {
-        return Utils.isNetworkAvailable(this);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -175,6 +174,15 @@ public class MainActivity extends SearchActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void removeAccount() {
+        AccountUtil.removeAccount(() -> {
+            TEPIDAPI.Companion.invalidate();
+            Intent intent = new Intent(this, StartActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
     }
 
 }

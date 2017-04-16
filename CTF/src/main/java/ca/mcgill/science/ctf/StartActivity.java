@@ -1,6 +1,5 @@
 package ca.mcgill.science.ctf;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,11 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 
 import ca.allanwang.capsule.library.logging.CLog;
-import ca.allanwang.capsule.library.permissions.CPermissionCallback;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
-import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.utils.Utils;
 
 /**
@@ -40,14 +37,13 @@ public class StartActivity extends AppCompatActivity {
 //        });
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("pref_language", "en");
-        SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else? CTFApp maybe?
+        SettingsFragment.setLocale(this, lang); //todo put setlocale somewhere else?
 
         if (AccountUtil.isSignedIn()) {
             AccountUtil.requestToken(this, new AccountUtil.TokenRequestCallback() {
                 @Override
                 public void onReceived(@NonNull String token) {
                     //initialize TEPID API
-                    TEPIDAPI.Companion.setInstance(token, StartActivity.this); //to be sure, set api instance here
                     CLog.d("Token received %s", token);
                     launchMainActivity(token);
                 }

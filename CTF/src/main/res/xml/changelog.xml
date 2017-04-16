@@ -8,8 +8,8 @@
 
     <version title="v1.5"/>
     <item text="Made Changelog display automatically on version update" />
-    <item text="Keep Room fragment active on tab switch" />
-    <item text="" />
+    <item text="Kept Room fragment active on tab switch" />
+    <item text="Added splash screen when loading" />
     <item text="" />
     <item text="" />
 
