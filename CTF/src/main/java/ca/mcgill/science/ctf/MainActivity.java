@@ -29,6 +29,7 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import ca.allanwang.capsule.library.changelog.ChangelogDialog;
 import ca.allanwang.capsule.library.interfaces.CDrawerItem;
 import ca.allanwang.capsule.library.item.DrawerItem;
+import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.mcgill.science.ctf.activities.SearchActivity;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
@@ -64,6 +65,7 @@ public class MainActivity extends SearchActivity {
         }
         Preferences.setTheme(this);
         mToken = getIntent().getStringExtra(StartActivity.EXTRA_TOKEN);
+        CLog.d("Token received %s", mToken);
         TEPIDAPI.Companion.setInstance(mToken, this); //to be sure, set api instance here
         super.onCreate(savedInstanceState);
         onVersionUpdate(BuildConfig.VERSION_CODE, () -> ChangelogDialog.show(MainActivity.this, R.xml.changelog));

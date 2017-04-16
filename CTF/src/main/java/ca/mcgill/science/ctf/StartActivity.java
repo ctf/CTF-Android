@@ -8,8 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 
-import ca.allanwang.capsule.library.logging.CLog;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
 import ca.mcgill.science.ctf.utils.Utils;
@@ -43,8 +41,6 @@ public class StartActivity extends AppCompatActivity {
             AccountUtil.requestToken(this, new AccountUtil.TokenRequestCallback() {
                 @Override
                 public void onReceived(@NonNull String token) {
-                    //initialize TEPID API
-                    CLog.d("Token received %s", token);
                     launchMainActivity(token);
                 }
 

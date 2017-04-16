@@ -10,7 +10,7 @@
     <item text="Made Changelog display automatically on version update" />
     <item text="Kept Room fragment active on tab switch" />
     <item text="Added splash screen when loading" />
-    <item text="" />
+    <item text="Big code cleanup" />
     <item text="" />
 
     <version title="v1.4" />
