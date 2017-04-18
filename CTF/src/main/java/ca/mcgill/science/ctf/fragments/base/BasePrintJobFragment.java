@@ -1,11 +1,11 @@
-package ca.mcgill.science.ctf.fragments;
+package ca.mcgill.science.ctf.fragments.base;
 
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
+import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.api.PrintData;
 import ca.mcgill.science.ctf.iitems.PrintJobItem;
 

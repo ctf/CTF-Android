@@ -4,7 +4,8 @@
     <!-- Strings for page titles -->
     <string name="dashboard">Dashboard</string>
     <string name="roominfo">Room Info</string>
-    <string name="userinfo">User Account</string>
+    <string name="my_account">My Account</string>
+    <string name="user_print_jobs">Print Jobs</string>
     <string name="ticket">Submit Ticket</string>
     <string name="settings">Settings</string>
     <string name="reportproblem">Report a problem</string>
@@ -99,6 +100,11 @@
     <string name="printed">Printed</string>
     <string name="processed">Processed</string>
     <string name="processing">Processing</string>
+    <string name="colour_printing">Colour Printing</string>
+    <string name="colour_printing_result">Colour printing successfully %s</string>
+    <string name="enabled">enabled</string>
+    <string name="disabled">disabled</string>
+    <string name="colour_printing_toggle_fail">Failed to toggle colour printing</string>
 
 </resources>
 

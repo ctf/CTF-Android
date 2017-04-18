@@ -2,12 +2,14 @@ package ca.mcgill.science.ctf.fragments;
 
 import java.util.List;
 
+import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrintData;
+import ca.mcgill.science.ctf.fragments.base.BasePrintJobFragment;
 import retrofit2.Call;
 
-public class AccountFragment extends BasePrintJobFragment {
+public class AccountJobFragment extends BasePrintJobFragment {
 
     //    @BindView(R.id.my_account_quota)
 //    TextView quotaView;
@@ -28,8 +30,19 @@ public class AccountFragment extends BasePrintJobFragment {
 
     @Override
     public int getTitleId() {
-        return R.string.userinfo;
+        return R.string.user_print_jobs;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) getActivity()).expandAppBar();
+    }
+
+    @Override
+    public void onStop() {
+        ((MainActivity) getActivity()).collapseAppBar();
+        super.onStop();
+    }
 }
 

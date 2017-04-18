@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.6
+* Enabled autocorrect when changing printer status
+
 ## v1.5
 * Made Changelog display automatically on version update
 * Kept Room fragment active on tab switch

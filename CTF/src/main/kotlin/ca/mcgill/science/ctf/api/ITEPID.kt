@@ -51,4 +51,8 @@ interface ITEPID {
 
     @PUT("jobs/job/{id}/refunded")
     fun refund(@Path("id") id: String, @Body refund: Boolean): Call<Void>
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @PUT("users/{shortUser}/color")
+    fun enableColor(@Path("shortUser") shortUser: String, @Body enable: Boolean): Call<ColorResponse>
 }

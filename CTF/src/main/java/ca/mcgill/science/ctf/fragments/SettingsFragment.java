@@ -11,10 +11,12 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Locale;
 
 import ca.allanwang.capsule.library.event.CFabEvent;
+import ca.allanwang.capsule.library.interfaces.CFragmentCore;
 import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.auth.AccountUtil;
+import ca.mcgill.science.ctf.fragments.base.BaseFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,7 +25,7 @@ import retrofit2.Response;
  * Created by Allan Wang on 18/03/2017.
  */
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsFragment extends PreferenceFragmentCompat implements CFragmentCore{
 
     private ITEPID mAPI;
 
@@ -99,4 +101,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         EventBus.getDefault().post(new CFabEvent(false));
     }
 
+    @Override
+    public int getTitleId() {
+        return R.string.settings;
+    }
 }

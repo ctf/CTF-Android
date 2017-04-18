@@ -4,7 +4,7 @@
     <!-- Strings for page titles -->
     <string name="dashboard">डैशबोर्ड</string>
     <string name="roominfo">कमरा</string>
-    <string name="userinfo">मेरा खाता</string>
+    <string name="user_print_jobs">मेरा खाता</string>
     <string name="settings">सेटिंग्स</string>
     <string name="reportproblem">समस्या के बारे में बताएं</string>
 

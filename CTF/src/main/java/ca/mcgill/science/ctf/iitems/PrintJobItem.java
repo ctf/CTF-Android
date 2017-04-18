@@ -17,7 +17,6 @@ import com.afollestad.materialdialogs.util.DialogUtils;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
-import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,7 +43,6 @@ import retrofit2.Response;
 
 public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHolder> {
 
-    private static final ViewHolderFactory<? extends ViewHolder> FACTORY = new PrintJobItem.ItemFactory();
     private PrintData data;
 
     public PrintJobItem(PrintData data) {
@@ -75,7 +73,7 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
     protected
     @ColorRes
     int getShader() {
-        return R.color.srv_transparent_black;
+        return R.color.capsule_srv_transparent_black;
     }
 
     @Override
@@ -85,8 +83,9 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
         holder.itemView.setBackgroundColor(0x00000000);
     }
 
-    public ViewHolderFactory<? extends PrintJobItem.ViewHolder> getFactory() {
-        return FACTORY;
+    @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -131,15 +130,6 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
         void resetTextViews() {
             allTextView((t) -> t.setText(null));
             allTextView((t) -> t.setTextColor(primaryColor));
-        }
-    }
-
-    protected static class ItemFactory implements ViewHolderFactory<PrintJobItem.ViewHolder> {
-        protected ItemFactory() {
-        }
-
-        public PrintJobItem.ViewHolder create(View v) {
-            return new PrintJobItem.ViewHolder(v);
         }
     }
 
@@ -196,7 +186,7 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
             TEPIDAPI.Companion.getInstanceDangerously().refund(printData.get_id(), !printData.getRefunded()).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
-                    EventBus.getDefault().post(new RefreshEvent(R.string.userinfo, true));
+                    EventBus.getDefault().post(new RefreshEvent(R.string.user_print_jobs, true));
                     snackbar(String.format(s(c, R.string.refund_success_format), trim(printData.getName()), s(c, printData.getRefunded() ? R.string.unrefunded : R.string.refunded)));
                 }
 

@@ -15,7 +15,6 @@ import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.helpers.ClickListenerHelper;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
-import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,7 +46,6 @@ import retrofit2.Response;
  */
 
 public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHolder> {
-    private static final ViewHolderFactory<? extends RoomInfoItem.ViewHolder> FACTORY = new RoomInfoItem.ItemFactory();
     private PrinterInfo printer1, printer2;
     private String roomName;
 
@@ -98,8 +96,9 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
         holder.printer2.bind(null);
     }
 
-    public ViewHolderFactory<? extends RoomInfoItem.ViewHolder> getFactory() {
-        return FACTORY;
+    @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -116,15 +115,6 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-        }
-    }
-
-    protected static class ItemFactory implements ViewHolderFactory<RoomInfoItem.ViewHolder> {
-        protected ItemFactory() {
-        }
-
-        public RoomInfoItem.ViewHolder create(View v) {
-            return new RoomInfoItem.ViewHolder(v);
         }
     }
 
@@ -179,7 +169,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                     .positiveText(printerInfo.getUp() ? R.string.disable : R.string.enable)
                     .positiveColorAttr(R.attr.material_drawer_primary_text)
                     .autoDismiss(false)
-                    .inputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)
+                    .inputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)
                     .widgetColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
                     .onNegative((dialog12, which) -> dialog12.dismiss())
                     .input(context.getString(R.string.enter_reason), getTicketText(printerInfo), (dialog1, input) -> {
@@ -187,10 +177,8 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                             if (!input.toString().isEmpty()) {
                                 sendTicket(printerInfo, false, input.toString());
                                 dialog1.dismiss();
-                            } else {
-                                if (dialog1.getInputEditText() != null)
-                                    dialog1.getInputEditText().setError(context.getString(R.string.error_field_required));
-                            }
+                            } else if (dialog1.getInputEditText() != null)
+                                dialog1.getInputEditText().setError(context.getString(R.string.error_field_required));
                         } else {
                             sendTicket(printerInfo, true, input.toString());
                             dialog1.dismiss();

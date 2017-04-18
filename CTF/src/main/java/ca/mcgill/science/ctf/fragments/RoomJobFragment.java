@@ -10,6 +10,8 @@ import ca.allanwang.capsule.library.interfaces.CPageFragment;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrintData;
+import ca.mcgill.science.ctf.fragments.base.BaseFragment;
+import ca.mcgill.science.ctf.fragments.base.BasePrintJobFragment;
 import retrofit2.Call;
 
 public class RoomJobFragment extends BasePrintJobFragment implements CPageFragment {

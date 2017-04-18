@@ -1,11 +1,10 @@
-package ca.mcgill.science.ctf.fragments;
+package ca.mcgill.science.ctf.fragments.base;
 
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,9 @@ import ca.allanwang.capsule.library.event.CFabEvent;
 import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.allanwang.capsule.library.fragments.CapsuleSRVFragment;
 import ca.allanwang.capsule.library.logging.CLog;
-import ca.allanwang.swiperecyclerview.library.SwipeRecyclerView;
-import ca.allanwang.swiperecyclerview.library.adapters.AnimationAdapter;
-import ca.allanwang.swiperecyclerview.library.interfaces.ISwipeRecycler;
+import ca.allanwang.capsule.library.swiperecyclerview.SwipeRecyclerView;
+import ca.allanwang.capsule.library.swiperecyclerview.adapters.AnimationAdapter;
+import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.TEPIDAPI;

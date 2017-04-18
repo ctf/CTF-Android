@@ -1,4 +1,4 @@
-package ca.mcgill.science.ctf.fragments;
+package ca.mcgill.science.ctf.fragments.base;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;

@@ -4,7 +4,7 @@
     <!-- Strings for page titles -->
     <string name="dashboard">Dashboard</string>
     <string name="roominfo">Room Info</string>
-    <string name="userinfo">Mon Compte</string>
+    <string name="user_print_jobs">Mon Compte</string>
     <string name="settings">Réglages</string>
     <string name="reportproblem">Contactez nous</string>
 

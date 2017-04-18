@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
-import com.mikepenz.fastadapter.utils.ViewHolderFactory;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ import ca.mcgill.science.ctf.R;
  */
 
 public class DashboardHeaderItem extends AbstractItem<DashboardHeaderItem, DashboardHeaderItem.ViewHolder> {
-    private static final ViewHolderFactory<? extends DashboardHeaderItem.ViewHolder> FACTORY = new DashboardHeaderItem.ItemFactory();
     private String username, quota, lastPrintJob;
 
     public DashboardHeaderItem(String username, String quota, String lastPrintJob) {
@@ -51,8 +49,9 @@ public class DashboardHeaderItem extends AbstractItem<DashboardHeaderItem, Dashb
         holder.lastPrintJob.setText(null);
     }
 
-    public ViewHolderFactory<? extends DashboardHeaderItem.ViewHolder> getFactory() {
-        return FACTORY;
+    @Override
+    public ViewHolder getViewHolder(View v) {
+        return new ViewHolder(v);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -67,15 +66,6 @@ public class DashboardHeaderItem extends AbstractItem<DashboardHeaderItem, Dashb
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-        }
-    }
-
-    protected static class ItemFactory implements ViewHolderFactory<DashboardHeaderItem.ViewHolder> {
-        protected ItemFactory() {
-        }
-
-        public DashboardHeaderItem.ViewHolder create(View v) {
-            return new DashboardHeaderItem.ViewHolder(v);
         }
     }
 }

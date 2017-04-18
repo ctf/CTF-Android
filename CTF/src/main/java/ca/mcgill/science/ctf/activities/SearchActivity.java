@@ -1,10 +1,8 @@
 package ca.mcgill.science.ctf.activities;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import com.lapism.searchview.SearchAdapter;
@@ -24,8 +22,8 @@ import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.SingleCallRequest;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
 import ca.mcgill.science.ctf.api.UserQuery;
-import ca.mcgill.science.ctf.fragments.AccountFragment;
-import ca.mcgill.science.ctf.fragments.BaseFragment;
+import ca.mcgill.science.ctf.fragments.AccountJobFragment;
+import ca.mcgill.science.ctf.fragments.base.BaseFragment;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.Call;
@@ -81,7 +79,7 @@ public abstract class SearchActivity extends BaseActivity {
             if (mQueryResults == null || mQueryResults.size() <= position)
                 return; //no results actually exist
             UserQuery query = mQueryResults.get(position);
-            switchFragment(BaseFragment.getFragment(token, query.getShortUser(), new AccountFragment()));
+            switchFragment(BaseFragment.getFragment(token, query.getShortUser(), new AccountJobFragment()));
             //TextView textView = (TextView) view.findViewById(R.id.textView_item_text);
             //TODO reroute to actual fragment rather than dialog; this is just for display
 //                new MaterialDialog.Builder(SearchActivity.this)

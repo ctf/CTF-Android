@@ -12,6 +12,7 @@ import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.TicketData;
 import ca.mcgill.science.ctf.api.User;
+import ca.mcgill.science.ctf.fragments.base.BaseWebViewFragment;
 
 /**
  * Created by Allan Wang on 29/03/2017.

@@ -22,7 +22,7 @@ class Session(val role: String, val user: User, val _id: String)
 /**
  * User info; various bits of information for a given student
  */
-class User(val _id: String, val salutation: String, val realName: String, val displayName: String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val colorPrinting: Boolean)
+class User(val _id: String, val salutation: String, val realName: String, val displayName: String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val faculty: String, val colorPrinting: Boolean)
 
 /**
  * User Query; student info from autoSuggest
@@ -61,5 +61,10 @@ class PrintData(val _id: String, val name: String, val colorPages: Long, val pag
  * if printer is marked down, this is the ticket detailing the description and user who marked it down
  */
 class PrinterTicket(val up: Boolean, var reason: String?, var user: User?)
+
+/**
+ * Response when toggling colour printing (also has rev: String but we don't need it)
+ */
+class ColorResponse(val ok: Boolean, val id: String)
 
 val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA)
