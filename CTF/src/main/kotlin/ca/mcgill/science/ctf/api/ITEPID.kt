@@ -1,6 +1,7 @@
 package ca.mcgill.science.ctf.api
 
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.http.*
 
 /**
@@ -25,6 +26,9 @@ interface ITEPID {
 
     @GET("users/{shortUser}")
     fun getUser(@Path("shortUser") shortUser: String): Call<User>
+
+    @GET("users/{id}?noRedirect")
+    fun getUser(@Path("id") id: Long): Call<User>
 
     @GET("users/{shortUser}/quota")
     fun getQuota(@Path("shortUser") shortUser: String): Call<Int>
@@ -55,4 +59,8 @@ interface ITEPID {
     @Headers("Content-Type: application/json;charset=UTF-8")
     @PUT("users/{shortUser}/color")
     fun enableColor(@Path("shortUser") shortUser: String, @Body enable: Boolean): Call<ColorResponse>
+
+    @GET("barcode/_wait")
+    fun scanBarcode(): Call<UserBarcode>
+
 }

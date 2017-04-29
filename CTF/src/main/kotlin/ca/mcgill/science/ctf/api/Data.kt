@@ -67,4 +67,9 @@ class PrinterTicket(val up: Boolean, var reason: String?, var user: User?)
  */
 class ColorResponse(val ok: Boolean, val id: String)
 
+/**
+ * User response from a barcode scan
+ */
+class UserBarcode(val _id: String, val code: Long, val time: Long)
+
 val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA)

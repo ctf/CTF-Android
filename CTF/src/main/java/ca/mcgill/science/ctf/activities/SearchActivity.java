@@ -21,12 +21,16 @@ import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.SingleCallRequest;
 import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.User;
+import ca.mcgill.science.ctf.api.UserBarcode;
 import ca.mcgill.science.ctf.api.UserQuery;
 import ca.mcgill.science.ctf.fragments.AccountJobFragment;
 import ca.mcgill.science.ctf.fragments.base.BaseFragment;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Allan Wang on 2017-03-24.
@@ -40,6 +44,8 @@ public abstract class SearchActivity extends BaseActivity {
     private SearchAdapter mSearchAdapter;
     private List<UserQuery> mQueryResults;
     private UserSearch mUserSearch;
+    private Call<UserBarcode> mBarcodeScanner;
+    private String token;
 
     //custom activity to add SearchView
     @Override
@@ -48,6 +54,7 @@ public abstract class SearchActivity extends BaseActivity {
     }
 
     protected void setSearchView(String token) {
+        this.token = token;
         mUserSearch = new UserSearch(token, this);
         RxTextView.textChangeEvents((TextView) findViewById(com.lapism.searchview.R.id.searchEditText_input))
                 .debounce(500, TimeUnit.MILLISECONDS)
@@ -72,6 +79,36 @@ public abstract class SearchActivity extends BaseActivity {
                         mSearchAdapter.setData(new ArrayList<>()); //so when you go from a big search to no characters, it doesn't blink the old data
                         return true;
                     }
+                })
+                .setOnOpenCloseListener(new SearchView.OnOpenCloseListener() {
+                    @Override
+                    public boolean onClose() {
+                        if (mBarcodeScanner == null) return false;
+                        mBarcodeScanner.cancel();
+                        mBarcodeScanner = null;
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onOpen() {
+                        mBarcodeScanner = TEPIDAPI.Companion.getInstance(token, SearchActivity.this).scanBarcode();
+                        mBarcodeScanner.enqueue(new Callback<UserBarcode>() {
+                            @Override
+                            public void onResponse(Call<UserBarcode> call, Response<UserBarcode> response) {
+                                if (!call.isCanceled()) {
+                                    if (mSearchView.isSearchOpen())
+                                        mSearchView.close(true);
+                                    jumpToUser(response.body().getCode());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<UserBarcode> call, Throwable t) {
+
+                            }
+                        });
+                        return false;
+                    }
                 });
 
         mSearchAdapter = new SearchAdapter(this);
@@ -79,7 +116,7 @@ public abstract class SearchActivity extends BaseActivity {
             if (mQueryResults == null || mQueryResults.size() <= position)
                 return; //no results actually exist
             UserQuery query = mQueryResults.get(position);
-            switchFragment(BaseFragment.getFragment(token, query.getShortUser(), new AccountJobFragment()));
+            jumpToUser(query.getShortUser());
             //TextView textView = (TextView) view.findViewById(R.id.textView_item_text);
             //TODO reroute to actual fragment rather than dialog; this is just for display
 //                new MaterialDialog.Builder(SearchActivity.this)
@@ -89,6 +126,25 @@ public abstract class SearchActivity extends BaseActivity {
             mSearchView.close(false);
         });
         mSearchView.setAdapter(mSearchAdapter);
+    }
+
+    private void jumpToUser(long studentId) {
+        TEPIDAPI.Companion.getInstanceDangerously().getUser(studentId).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!call.isCanceled())
+                    jumpToUser(response.body().getShortUser());
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void jumpToUser(String shortUser) {
+        switchFragment(BaseFragment.getFragment(token, shortUser, new AccountJobFragment()));
     }
 
     private DisposableObserver<TextViewTextChangeEvent> getSearchObserver() {
