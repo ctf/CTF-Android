@@ -185,8 +185,10 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                         }
                     })
                     .show();
-            if (!printerInfo.getUp() && dialog.getInputEditText() != null)
+            if (!printerInfo.getUp() && dialog.getInputEditText() != null){
                 dialog.getInputEditText().setFocusable(false);
+                dialog.getInputEditText().setInputType(InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
+            }
         }
 
         private String getTicketText(PrinterInfo info) {

@@ -2,6 +2,7 @@
 
 ## v1.6
 * Enabled autocorrect when changing printer status
+* Enable barcode scanner listener when search bar is opened
 
 ## v1.5
 * Made Changelog display automatically on version update
