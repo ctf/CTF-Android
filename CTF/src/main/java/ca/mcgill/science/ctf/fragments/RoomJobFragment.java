@@ -22,7 +22,7 @@ public class RoomJobFragment extends BasePrintJobFragment implements CPageFragme
     public void onSelected(int oldPosition, int newPosition) {
         if (mSRV == null) return; //not ready yet
         if (oldPosition == newPosition)
-            mSRV.getRecyclerView().scrollToPosition(0); //if tab is selected and tapped again, scroll back to the top
+            mSRV.smoothScrollToPosition(0); //if tab is selected and tapped again, scroll back to the top
     }
 
     enum Rooms {

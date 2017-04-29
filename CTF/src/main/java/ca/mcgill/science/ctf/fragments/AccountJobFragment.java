@@ -4,8 +4,11 @@ import android.support.annotation.NonNull;
 
 import com.mikepenz.fastadapter.adapters.HeaderAdapter;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
+import ca.allanwang.capsule.library.event.CClickEvent;
 import ca.allanwang.capsule.library.swiperecyclerview.SwipeRecyclerView;
 import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
@@ -65,6 +68,12 @@ public class AccountJobFragment extends BasePrintJobFragment {
 
     private void updateHeader() {
         UserHeaderItem.inject(headerAdapter, this); //retrieve data again and add item
+    }
+
+    @Subscribe
+    public void onCClick(CClickEvent event) {
+        if (event.view.getId() == R.id.toolbar)
+            mSRV.smoothScrollToPosition(0);
     }
 }
 

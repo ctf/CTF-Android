@@ -69,6 +69,7 @@ public class MainActivity extends SearchActivity {
         CLog.d("Token received %s", mToken);
         TEPIDAPI.Companion.setInstance(mToken, this); //to be sure, set api instance here
         super.onCreate(savedInstanceState);
+        new CustomizeToolbar().withClickEvents(true);
         onVersionUpdate(BuildConfig.VERSION_CODE, () -> ChangelogDialog.show(MainActivity.this, R.xml.changelog));
         cFab.hide(); //we don't use the fab for now
         collapseAppBar();

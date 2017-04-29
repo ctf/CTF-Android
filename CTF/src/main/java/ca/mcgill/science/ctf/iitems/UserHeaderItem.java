@@ -12,6 +12,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.FullUser;
 import ca.mcgill.science.ctf.api.ITEPID;
@@ -58,20 +59,22 @@ public class UserHeaderItem extends AbstractItem<UserHeaderItem, UserHeaderItem.
         Observable<List<PrintData>> printJobs = caller.getUserPrintJobsObservable(fragment.getShortUser());
         Observable<FullUser> fullUserObservable = Observable.zip(user, quota, printJobs, FullUser::new);
 
+        //TODO fix observable
         fullUserObservable.subscribe(new DisposableObserver<FullUser>() {
             @Override
             public void onNext(FullUser fullUser) {
+                CLog.e("User retrieved");
                 adapter.add(new UserHeaderItem(fullUser));
             }
 
             @Override
             public void onError(Throwable e) {
-
+                CLog.e("Errors %s", e.getMessage());
             }
 
             @Override
             public void onComplete() {
-
+                CLog.e("Complete");
             }
         });
     }
