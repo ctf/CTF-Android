@@ -201,7 +201,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.isSuccessful()) {
-                        snackbar(String.format("%s successfully marked  %s.", printer.getName(), isUp ? "up" : "down"));
+                        snackbar(String.format("%s successfully marked %s.", printer.getName(), isUp ? "up" : "down"));
                         EventBus.getDefault().post(new RefreshEvent(R.string.dashboard, true));
                     } else {
                         CLog.e("Unsuccessful printer ticket %s", response.message());

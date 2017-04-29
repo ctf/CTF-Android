@@ -73,3 +73,5 @@ class ColorResponse(val ok: Boolean, val id: String)
 class UserBarcode(val _id: String, val code: Long, val time: Long)
 
 val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CANADA)
+
+class FullUser(val user: User, val quota: Int, val printJobs:List<PrintData>)

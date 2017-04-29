@@ -126,7 +126,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     }
 
     @Override
-    public final void onRefresh(final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+    public void onRefresh(final ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         mAdapter.clear();
         if (!Utils.isNetworkAvailable(getContext()))
             postEvent(new SnackbarEvent("No internet; Retrieving from cache"));
@@ -196,7 +196,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     protected void onSilentResponseReceived(@NonNull C body) {
     }
 
-    protected String getShortUser() {
+    public String getShortUser() {
         if (BaseFragment.getShortUser(this) == null) return AccountUtil.getShortUser();
         return BaseFragment.getShortUser(this);
     }

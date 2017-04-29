@@ -4,11 +4,13 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.adapters.HeaderAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.allanwang.capsule.library.event.SnackbarEvent;
+import ca.allanwang.capsule.library.swiperecyclerview.SwipeRecyclerView;
 import ca.allanwang.capsule.library.swiperecyclerview.adapters.AnimationAdapter;
 import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.allanwang.capsule.library.swiperecyclerview.items.CheckBoxItem;
@@ -117,4 +119,5 @@ public class MyAccount extends BaseFragment<CheckBoxItem, User> {
     private CheckBoxItem item(String s) {
         return new CheckBoxItem().withName(s).hideCheckBox();
     }
+
 }

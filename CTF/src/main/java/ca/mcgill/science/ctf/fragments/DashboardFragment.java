@@ -13,13 +13,13 @@ import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.fragments.base.BaseFragment;
-import ca.mcgill.science.ctf.iitems.DashboardHeaderItem;
+import ca.mcgill.science.ctf.iitems.UserHeaderItem;
 import ca.mcgill.science.ctf.iitems.RoomInfoItem;
 import retrofit2.Call;
 
 public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, PrinterInfo>> {
 
-    private HeaderAdapter<DashboardHeaderItem> mHeader;
+    private HeaderAdapter<UserHeaderItem> mHeader;
 
     @Override
     public int getTitleId() {

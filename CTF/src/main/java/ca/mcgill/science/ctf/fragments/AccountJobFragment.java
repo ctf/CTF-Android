@@ -1,27 +1,29 @@
 package ca.mcgill.science.ctf.fragments;
 
+import android.support.annotation.NonNull;
+
+import com.mikepenz.fastadapter.adapters.HeaderAdapter;
+
 import java.util.List;
 
-import ca.mcgill.science.ctf.MainActivity;
+import ca.allanwang.capsule.library.swiperecyclerview.SwipeRecyclerView;
+import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.ITEPID;
 import ca.mcgill.science.ctf.api.PrintData;
 import ca.mcgill.science.ctf.fragments.base.BasePrintJobFragment;
+import ca.mcgill.science.ctf.iitems.UserHeaderItem;
 import retrofit2.Call;
 
 public class AccountJobFragment extends BasePrintJobFragment {
 
-    //    @BindView(R.id.my_account_quota)
-//    TextView quotaView;
-//    @BindView(R.id.my_account_username)
-//    TextView usernameView;
-//    @BindView(R.id.nick_field)
-//    EditText nickView;
-//    @BindView(R.id.change_nick)
-//    Button changeNickView;
-//    @BindView(R.id.my_account_color)
+    private HeaderAdapter<UserHeaderItem> headerAdapter = new HeaderAdapter<>();
 
-//    AppCompatCheckBox turnColor;
+    @Override
+    protected void configSRV(SwipeRecyclerView srv) {
+        super.configSRV(srv);
+        srv.setAdapter(headerAdapter.wrap(mAdapter), getNumColumns());
+    }
 
     @Override
     protected Call<List<PrintData>> getAPICall(ITEPID api) {
@@ -34,15 +36,35 @@ public class AccountJobFragment extends BasePrintJobFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        ((MainActivity) getActivity()).expandAppBar();
+    protected void onResponseReceived(@NonNull List<PrintData> body, ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+        super.onResponseReceived(body, onRefreshStatus);
+        updateHeader();
     }
 
     @Override
-    public void onStop() {
-        ((MainActivity) getActivity()).collapseAppBar();
-        super.onStop();
+    protected void onSilentResponseReceived(@NonNull List<PrintData> body) {
+        super.onSilentResponseReceived(body);
+        updateHeader();
+    }
+
+    @Override
+    public void onRefresh(ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
+        clearHeader();
+        super.onRefresh(onRefreshStatus);
+    }
+
+    @Override
+    public void onSilentRefresh() {
+        clearHeader();
+        super.onSilentRefresh();
+    }
+
+    private void clearHeader() {
+        if (headerAdapter.getFastAdapter() != null) headerAdapter.clear();
+    }
+
+    private void updateHeader() {
+        UserHeaderItem.inject(headerAdapter, this); //retrieve data again and add item
     }
 }
 

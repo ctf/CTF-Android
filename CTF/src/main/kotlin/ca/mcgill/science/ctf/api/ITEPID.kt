@@ -1,5 +1,6 @@
 package ca.mcgill.science.ctf.api
 
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.http.*
@@ -27,11 +28,17 @@ interface ITEPID {
     @GET("users/{shortUser}")
     fun getUser(@Path("shortUser") shortUser: String): Call<User>
 
+    @GET("users/{shortUser}")
+    fun getUserObservable(@Path("shortUser") shortUser: String): Observable<User>
+
     @GET("users/{id}?noRedirect")
     fun getUser(@Path("id") id: Long): Call<User>
 
     @GET("users/{shortUser}/quota")
     fun getQuota(@Path("shortUser") shortUser: String): Call<Int>
+
+    @GET("users/{shortUser}/quota")
+    fun getQuotaObservable(@Path("shortUser") shortUser: String): Observable<Int>
 
     @GET("destinations")
     fun getPrinterInfo(): Call<Map<String, PrinterInfo>>
@@ -46,6 +53,9 @@ interface ITEPID {
     //TODO add limit query
     @GET("jobs/{shortUser}")
     fun getUserPrintJobs(@Path("shortUser") shortUser: String): Call<List<PrintData>>
+
+    @GET("jobs/{shortUser}")
+    fun getUserPrintJobsObservable(@Path("shortUser") shortUser: String): Observable<List<PrintData>>
 
     @GET("users/autosuggest/{expr}")
     fun getUserQuery(@Path("expr") query: String, @Query("limit") limit: Int): Call<List<UserQuery>>

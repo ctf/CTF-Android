@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/capsule_activity_vertical_margin"
+    android:paddingEnd="@dimen/capsule_activity_horizontal_margin"
+    android:paddingStart="@dimen/capsule_activity_horizontal_margin"
+    android:paddingTop="@dimen/capsule_activity_horizontal_margin">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/quota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/capsule_cards_margin"
+        app:layout_constraintRight_toLeftOf="@+id/colour_printing"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/colour_printing"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
+        android:text="@string/colour_printing"
+        app:layout_constraintBaseline_toBaselineOf="@id/quota"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quota"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/last_print_job"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/capsule_cards_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quota" />
+
+
+</android.support.constraint.ConstraintLayout>
