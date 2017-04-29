@@ -169,7 +169,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                     .positiveText(printerInfo.getUp() ? R.string.disable : R.string.enable)
                     .positiveColorAttr(R.attr.material_drawer_primary_text)
                     .autoDismiss(false)
-                    .inputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)
+                    .inputType(InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
                     .widgetColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
                     .onNegative((dialog12, which) -> dialog12.dismiss())
                     .input(context.getString(R.string.enter_reason), getTicketText(printerInfo), (dialog1, input) -> {
@@ -185,10 +185,8 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
                         }
                     })
                     .show();
-            if (!printerInfo.getUp() && dialog.getInputEditText() != null){
+            if (!printerInfo.getUp() && dialog.getInputEditText() != null)
                 dialog.getInputEditText().setFocusable(false);
-                dialog.getInputEditText().setInputType(InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
-            }
         }
 
         private String getTicketText(PrinterInfo info) {
