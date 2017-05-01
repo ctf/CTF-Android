@@ -7,6 +7,9 @@
     -->
     <version title="v1.7"/>
     <item text="Allow ticket modifications" />
+    <item text="Added timestamp to tickets" />
+    <item text="" />
+    <item text="" />
     <item text="" />
 
     <version title="v1.6"/>

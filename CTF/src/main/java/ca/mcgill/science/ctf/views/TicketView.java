@@ -83,9 +83,10 @@ public class TicketView extends LinearLayout {
             ticketText.setText(ticket.getReason());
             sender.setText(String.format(Locale.CANADA, "\u2014 %s\n%s", ticket.getUser().getRealName(), ticket.getReportedDate()));
             sender.setVisibility(VISIBLE);
-        } else {
             ticketText.clearFocus();
+            ticketText.setCursorVisible(false);
         }
+        ticketText.setOnFocusChangeListener((v, hasFocus) -> ticketText.setCursorVisible(hasFocus));
         int accentRes = info.getUp() ? R.color.enabled_green : R.color.disabled_red;
         int accentColor = ContextCompat.getColor(context, accentRes);
         MDTintHelper.setTint(ticketText, accentColor);

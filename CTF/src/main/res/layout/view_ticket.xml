@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/capsule_dialog_margin"
-    android:paddingRight="@dimen/capsule_dialog_margin"
-    android:orientation="vertical">
+    android:paddingRight="@dimen/capsule_dialog_margin">
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/ticket_text"

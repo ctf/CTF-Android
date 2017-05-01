@@ -2,6 +2,7 @@
 
 ## v1.7
 * Allow ticket modifications
+* Added timestamp to tickets
 
 ## v1.6
 * Enabled autocorrect when changing printer status
