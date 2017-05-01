@@ -8,8 +8,8 @@ cp -R CTF/build/outputs/apk/CTF-Android-releaseTest.apk $HOME/CTFA/
 # go to home and setup git
 echo "Clone Git"
 cd $HOME
-git config --global user.email "me@allanwang.ca"
-git config --global user.name "Allan Wang"
+git config --global fullUser.email "me@allanwang.ca"
+git config --global fullUser.name "Allan Wang"
 # clone the repository in the buildApk folder
 git clone --quiet --branch=master  https://AllanWang:$GITHUB_API_KEY@github.com/CTFMcGill/CTFMcGill.github.io.git  master > /dev/null
 # create version file

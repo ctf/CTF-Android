@@ -9,7 +9,7 @@
     <version title="v1.6"/>
     <item text="Enabled autocorrect when changing printer status" />
     <item text="Enabled barcode scanner listener when search bar is opened (this is automatic)" />
-    <item text="Added user info on AccounJobFragment" />
+    <item text="Added fullUser info on AccounJobFragment" />
     <item text="" />
     <item text="" />
     <item text="" />
@@ -23,11 +23,11 @@
     <version title="v1.4" />
     <item text="Added Room Info" />
     <item text="Made PrintJob list display errors &amp; refunds" />
-    <item text="Made PrintJob dialog display print user, room, and status" />
+    <item text="Made PrintJob dialog display print fullUser, room, and status" />
 
     <version title="v1.3" />
     <item text="Fixed fragment IllegalStateException" />
-    <item text="Improved user search results" />
+    <item text="Improved fullUser search results" />
     <item text="Created refund option" />
     <item text="Reformatted account fragment" />
 

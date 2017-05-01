@@ -3,7 +3,7 @@
 ## v1.6
 * Enabled autocorrect when changing printer status
 * Enabled barcode scanner listener when search bar is opened (this is automatic)
-* Added user info on AccounJobFragment
+* Added fullUser info on AccounJobFragment
 
 ## v1.5
 * Made Changelog display automatically on version update
@@ -14,11 +14,11 @@
 ## v1.4
 * Added Room Info
 * Made PrintJob list display errors & refunds
-* Made PrintJob dialog display print user, room, and status
+* Made PrintJob dialog display print fullUser, room, and status
 
 ## v1.3
 * Fixed fragment IllegalStateException
-* Improved user search results
+* Improved fullUser search results
 * Created refund option
 * Reformatted account fragment
 
