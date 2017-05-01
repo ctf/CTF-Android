@@ -2,7 +2,8 @@
 
 ## v1.6
 * Enabled autocorrect when changing printer status
-* Enable barcode scanner listener when search bar is opened (this is automatic)
+* Enabled barcode scanner listener when search bar is opened (this is automatic)
+* Added user info on AccounJobFragment
 
 ## v1.5
 * Made Changelog display automatically on version update
