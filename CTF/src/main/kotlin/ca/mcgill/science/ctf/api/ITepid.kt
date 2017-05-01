@@ -45,7 +45,7 @@ interface ITepid {
 
     @Headers("Content-Type: application/json;charset=UTF-8")
     @POST("destinations/{printerId}")
-    fun setPrinterStatus(@Path("printerId") printerId: String, @Body body: PrinterTicket): Call<String>
+    fun setPrinterStatus(@Path("printerId") printerId: String, @Body body: PrinterTicketSubmission): Call<String>
 
     @GET("queues/{roomId}")
     fun getPrintQueue(@Path("roomId") roomId: String, @Query("limit") limit: Int): Call<List<PrintData>>

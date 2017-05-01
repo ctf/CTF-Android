@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.7
+* Allow ticket modifications
+
 ## v1.6
 * Enabled autocorrect when changing printer status
 * Enabled barcode scanner listener when search bar is opened (this is automatic)

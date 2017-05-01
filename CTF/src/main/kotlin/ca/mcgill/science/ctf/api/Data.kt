@@ -60,7 +60,17 @@ class PrintData(val _id: String, val name: String, val colorPages: Long, val pag
  * Printer Ticket
  * if printer is marked down, this is the ticket detailing the description and user who marked it down
  */
-class PrinterTicket(val up: Boolean, var reason: String?, var user: User?)
+class PrinterTicket(val up: Boolean, val reason: String, val user: User, val reported: Long) {
+    fun getReportedDate(): String {
+        return dateFormat.format(Date(reported)).toString()
+    }
+}
+
+/**
+ * Printer Ticket to submit
+ * Only contains the necessary params
+ */
+class PrinterTicketSubmission(val up: Boolean, val reason: String?)
 
 /**
  * Response when toggling colour printing (also has rev: String but we don't need it)

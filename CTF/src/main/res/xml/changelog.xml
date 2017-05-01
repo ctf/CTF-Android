@@ -5,14 +5,14 @@
     <version title="v"/>
     <item text="" />
     -->
+    <version title="v1.7"/>
+    <item text="Allow ticket modifications" />
+    <item text="" />
 
     <version title="v1.6"/>
     <item text="Enabled autocorrect when changing printer status" />
     <item text="Enabled barcode scanner listener when search bar is opened (this is automatic)" />
     <item text="Added fullUser info on AccounJobFragment" />
-    <item text="" />
-    <item text="" />
-    <item text="" />
 
     <version title="v1.5"/>
     <item text="Made Changelog display automatically on version update" />

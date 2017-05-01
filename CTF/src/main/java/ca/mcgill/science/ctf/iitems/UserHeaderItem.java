@@ -13,6 +13,7 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter.listeners.ClickEventHook;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,23 +56,27 @@ public class UserHeaderItem extends AbstractItem<UserHeaderItem, UserHeaderItem.
     }
 
     public static void inject(ItemAdapter<UserHeaderItem> adapter, BaseFragment fragment) {
-        inject(adapter, fragment, (fullUser1 -> {
+        retrieve(fragment, (fullUser1 -> {
             adapter.add(new UserHeaderItem(fullUser1));
             new Handler().postDelayed(() -> {
                 SwipeRecyclerView srv = fragment.getSRV();
                 if (srv.getLayoutManager().findFirstCompletelyVisibleItemPosition() == 1) //one below header
                     srv.smoothScrollToPosition(0, (originalSpeed) -> originalSpeed * 3);
             }, 600);
+            if (fullUser1.getUser().getColorPrinting())
+                adapter.getFastAdapter().select(adapter.getAdapterItemCount() - 1);
         }));
     }
 
     public static void injectSilently(ItemAdapter<UserHeaderItem> adapter, BaseFragment fragment) {
-        inject(adapter, fragment, (fullUser1 -> {
+        retrieve(fragment, (fullUser1 -> {
             adapter.set(0, new UserHeaderItem(fullUser1));
+            if (fullUser1.getUser().getColorPrinting())
+                adapter.getFastAdapter().select(0);
         }));
     }
 
-    public static void inject(ItemAdapter<UserHeaderItem> adapter, BaseFragment fragment, @NonNull FullUserResponse response) {
+    public static void retrieve(BaseFragment fragment, @NonNull FullUserResponse response) {
         TepidUtils.getFullUser(fragment.getShortUser(), new SingleObserver<FullUser>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -108,8 +113,7 @@ public class UserHeaderItem extends AbstractItem<UserHeaderItem, UserHeaderItem.
         super.bindView(viewHolder, payloads);
         User user = fullUser.getUser();
         viewHolder.username.setText(user.getDisplayName());
-        viewHolder.quota.setText(Integer.toString(fullUser.getQuota()));
-        withSetSelected(user.getColorPrinting());
+        viewHolder.quota.setText(String.format(Locale.CANADA, viewHolder.itemView.getContext().getString(R.string.pages_remaining), fullUser.getQuota()));
         viewHolder.colourPrinting.setChecked(isSelected());
         viewHolder.shortUser.setText(user.getShortUser());
         viewHolder.email.setText(user.getEmail());
@@ -157,9 +161,7 @@ public class UserHeaderItem extends AbstractItem<UserHeaderItem, UserHeaderItem.
         adapter.withItemEvent(new UserColorClickEvent() {
             @Override
             public void onClick(View v, int position, FastAdapter<UserHeaderItem> fastAdapter, UserHeaderItem item) {
-                CLog.e("Pre %b %d %d", item.isSelected(), fastAdapter.getItemCount(), fastAdapter.getPreItemCount(position));
-                fastAdapter.toggleSelection(position); //TODO toggle isn't working
-                CLog.e("Post %b", item.isSelected());
+                fastAdapter.toggleSelection(position);
                 setColourPrinting(fragment, item.isSelected());
             }
         });
