@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/capsule_dialog_margin"
+    android:paddingRight="@dimen/capsule_dialog_margin">
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/ticket_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_reason"
+        android:inputType="text|textMultiLine|textAutoCorrect|textCapSentences|textShortMessage" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/sender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/capsule_cards_margin"
+        android:textAlignment="textEnd"
+        android:visibility="gone" />
+
+</LinearLayout>

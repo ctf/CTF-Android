@@ -1,12 +1,5 @@
-package ca.mcgill.science.ctf.auth;
+package ca.mcgill.science.ctf.api;
 
-import java.util.List;
-
-import ca.mcgill.science.ctf.api.FullUser;
-import ca.mcgill.science.ctf.api.ITepid;
-import ca.mcgill.science.ctf.api.PrintData;
-import ca.mcgill.science.ctf.api.TepidApi;
-import ca.mcgill.science.ctf.api.User;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -25,8 +18,7 @@ public class TepidUtils {
         ITepid caller = TepidApi.Companion.getInstanceDangerously();
         Single<User> user = caller.getUserObservable(shortUser).singleOrError();
         Single<Integer> quota = caller.getQuotaObservable(shortUser).singleOrError();
-        Single<List<PrintData>> printJobs = caller.getUserPrintJobsObservable(shortUser).singleOrError();
-        Single<FullUser> fullUserObservable = Single.zip(user, quota, printJobs, FullUser::new);
+        Single<FullUser> fullUserObservable = Single.zip(user, quota, FullUser::new);
 
         fullUserObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(fullUserObserver);
     }

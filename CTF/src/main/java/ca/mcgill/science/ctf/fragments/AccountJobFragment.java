@@ -26,6 +26,7 @@ public class AccountJobFragment extends BasePrintJobFragment {
     protected void configSRV(SwipeRecyclerView srv) {
         super.configSRV(srv);
         srv.setAdapter(headerAdapter.wrap(mAdapter), getNumColumns());
+        UserHeaderItem.config(headerAdapter.getFastAdapter(), this);
     }
 
     @Override
@@ -41,33 +42,20 @@ public class AccountJobFragment extends BasePrintJobFragment {
     @Override
     protected void onResponseReceived(@NonNull List<PrintData> body, ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
         super.onResponseReceived(body, onRefreshStatus);
-        updateHeader();
+        UserHeaderItem.inject(headerAdapter, this); //retrieve data again and add item
     }
 
+    //TODO colors mismatch on silent refresh since header item is added
     @Override
     protected void onSilentResponseReceived(@NonNull List<PrintData> body) {
         super.onSilentResponseReceived(body);
-        updateHeader();
+        UserHeaderItem.injectSilently(headerAdapter, this); //retrieve data again and reset item
     }
 
     @Override
     public void onRefresh(ISwipeRecycler.OnRefreshStatus onRefreshStatus) {
-        clearHeader();
-        super.onRefresh(onRefreshStatus);
-    }
-
-    @Override
-    public void onSilentRefresh() {
-        clearHeader();
-        super.onSilentRefresh();
-    }
-
-    private void clearHeader() {
         if (headerAdapter.getFastAdapter() != null) headerAdapter.clear();
-    }
-
-    private void updateHeader() {
-        UserHeaderItem.inject(headerAdapter, this); //retrieve data again and add item
+        super.onRefresh(onRefreshStatus);
     }
 
     @Subscribe
@@ -75,5 +63,6 @@ public class AccountJobFragment extends BasePrintJobFragment {
         if (event.view.getId() == R.id.toolbar)
             mSRV.smoothScrollToPosition(0);
     }
+
 }
 

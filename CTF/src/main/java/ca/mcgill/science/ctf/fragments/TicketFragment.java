@@ -76,7 +76,7 @@ public class TicketFragment extends BaseWebViewFragment {
         CLog.e("URL LOADED %s", url);
         if (injectForm) return;
         javascript(buildTicket().getInjector());
-        injectForm = true; //inject only once
+        injectForm = true; //retrieve only once
     }
 
     @Override

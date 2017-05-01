@@ -42,12 +42,26 @@
         tools:layout_editor_absoluteX="8dp" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/last_print_job"
+        android:id="@+id/short_user"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/capsule_cards_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quota" />
+        android:layout_marginRight="@dimen/capsule_cards_margin"
+        android:layout_marginTop="@dimen/capsule_cards_margin"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@id/quota"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@id/email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/capsule_cards_margin"
+        app:layout_constraintBaseline_toBaselineOf="@id/short_user"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/short_user"
+        tools:layout_editor_absoluteX="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>

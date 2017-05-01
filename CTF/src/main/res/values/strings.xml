@@ -104,6 +104,8 @@
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="colour_printing_toggle_fail">Failed to toggle colour printing</string>
+    <string name="pages_remaining">%d pages remaining</string>
+    <string name="modify">Modify</string>
 
 </resources>
 

@@ -34,6 +34,7 @@ import ca.mcgill.science.ctf.api.PrinterTicket;
 import ca.mcgill.science.ctf.api.TepidApi;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.views.PrinterInfoView;
+import ca.mcgill.science.ctf.views.TicketView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -160,66 +161,8 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
          */
         private void onClick(final Context context, @Nullable final PrinterInfo printerInfo) {
             if (printerInfo == null) return; //precaution
-            MaterialDialog dialog = new MaterialDialog.Builder(context)
-                    .title(printerInfo.getName())
-                    .theme(new Preferences(context).isDarkMode() ? Theme.DARK : Theme.LIGHT)
-                    .titleColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
-                    .negativeText(R.string.close)
-                    .negativeColorAttr(R.attr.material_drawer_primary_text)
-                    .positiveText(printerInfo.getUp() ? R.string.disable : R.string.enable)
-                    .positiveColorAttr(R.attr.material_drawer_primary_text)
-                    .autoDismiss(false)
-                    .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE)
-                    .widgetColorRes(printerInfo.getUp() ? R.color.enabled_green : R.color.disabled_red)
-                    .onNegative((dialog12, which) -> dialog12.dismiss())
-                    .input(context.getString(R.string.enter_reason), getTicketText(printerInfo), (dialog1, input) -> {
-                        if (printerInfo.getUp()) { //disabling printer
-                            if (!input.toString().isEmpty()) {
-                                sendTicket(printerInfo, false, input.toString());
-                                dialog1.dismiss();
-                            } else if (dialog1.getInputEditText() != null)
-                                dialog1.getInputEditText().setError(context.getString(R.string.error_field_required));
-                        } else {
-                            sendTicket(printerInfo, true, input.toString());
-                            dialog1.dismiss();
-                        }
-                    })
-                    .show();
-            if (!printerInfo.getUp() && dialog.getInputEditText() != null)
-                dialog.getInputEditText().setFocusable(false);
+            TicketView.create(context, printerInfo);
         }
 
-        private String getTicketText(PrinterInfo info) {
-            if (info == null || info.getTicket() == null) return null;
-            PrinterTicket ticket = info.getTicket();
-            if (ticket.getUser() == null) return ticket.getReason();
-            return ticket.getReason() + " -" + ticket.getUser().getRealName();
-        }
-
-        private void sendTicket(final PrinterInfo printer, final boolean isUp, String ticket) {
-            TepidApi.Companion.getInstanceDangerously().setPrinterStatus(printer.get_id(), new PrinterTicket(isUp, ticket, null)).enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    if (response.isSuccessful()) {
-                        snackbar(String.format("%s successfully marked %s.", printer.getName(), isUp ? "up" : "down"));
-                        EventBus.getDefault().post(new RefreshEvent(R.string.dashboard, true));
-                    } else {
-                        CLog.e("Unsuccessful printer ticket %s", response.message());
-                        snackbar("Unsuccessful response");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    CLog.e("Failed printer ticket %s", t.getMessage());
-                    snackbar("Ticket failed to send");
-                }
-            });
-
-        }
-
-        private void snackbar(String s) {
-            EventBus.getDefault().post(new SnackbarEvent(s));
-        }
     }
 }
