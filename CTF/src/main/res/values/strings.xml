@@ -4,7 +4,6 @@
     <!-- Strings for page titles -->
     <string name="dashboard">Dashboard</string>
     <string name="roominfo">Room Info</string>
-    <string name="my_account">My Account</string>
     <string name="user_print_jobs">Print Jobs</string>
     <string name="ticket">Submit Ticket</string>
     <string name="settings">Settings</string>

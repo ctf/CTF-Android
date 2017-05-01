@@ -9,7 +9,7 @@ import okhttp3.Response
  * Created by Allan Wang on 18/03/2017.
  */
 
-class CTFInterceptor(val token: String?, val context: Context) : Interceptor {
+class CtfInterceptor(val token: String?, val context: Context) : Interceptor {
 
     val maxStale = 60 * 60 * 24 * 28 //maxAge to get from cache if online (4 weeks)
 

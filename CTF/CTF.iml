@@ -145,12 +145,12 @@
     <orderEntry type="library" exported="" name="support-vector-drawable-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-compat-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="stetho-okhttp3-1.4.2" level="project" />
+    <orderEntry type="library" exported="" name="capsule-9fa5f300a3" level="project" />
     <orderEntry type="library" exported="" name="constraint-layout-1.0.2" level="project" />
     <orderEntry type="library" exported="" name="design-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="core-0.9.4.3" level="project" />
-    <orderEntry type="library" exported="" name="capsule-96371a4895" level="project" />
     <orderEntry type="library" exported="" name="crashlytics-core-2.3.14" level="project" />
     <orderEntry type="library" exported="" name="rxbinding-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v13-25.3.1" level="project" />

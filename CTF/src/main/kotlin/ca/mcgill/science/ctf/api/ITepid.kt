@@ -16,7 +16,7 @@ import retrofit2.http.*
  * https://zeroturnaround.com/rebellabs/getting-started-with-retrofit-2/
  */
 
-interface ITEPID {
+interface ITepid {
 
     @Headers("CTFA-Type: NewSession")
     @POST("sessions")

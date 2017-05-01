@@ -19,10 +19,10 @@ import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.ITepid;
 import ca.mcgill.science.ctf.api.Session;
 import ca.mcgill.science.ctf.api.SessionRequest;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.TepidApi;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.utils.Preferences;
 import retrofit2.Call;
@@ -56,7 +56,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     public View mProgressView;
     @BindView(R.id.login_form)
     public View mLoginFormView;
-    private ITEPID mAPI;
+    private ITepid mAPI;
     private Call<Session> mRequest;
 
     @Override
@@ -65,7 +65,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         Preferences.setTheme(this);
         setContentView(R.layout.activity_student_login);
         mAccountManager = AccountManager.get(getBaseContext());
-        mAPI = TEPIDAPI.Companion.getInstance(null, this);
+        mAPI = TepidApi.Companion.getInstance(null, this);
         ButterKnife.bind(this);
         mPasswordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

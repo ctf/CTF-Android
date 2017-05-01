@@ -13,7 +13,7 @@
         android:id="@+id/username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -21,21 +21,24 @@
         android:id="@+id/quota"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/capsule_cards_margin"
+        android:layout_marginRight="@dimen/capsule_cards_margin"
+        android:layout_marginTop="@dimen/capsule_cards_margin"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/colour_printing"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@id/username"
         tools:layout_editor_absoluteX="0dp" />
 
     <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/colour_printing"
+        android:id="@id/colour_printing"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/capsule_cards_margin"
         android:layoutDirection="rtl"
         android:text="@string/colour_printing"
         app:layout_constraintBaseline_toBaselineOf="@id/quota"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quota"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quota"
         tools:layout_editor_absoluteX="8dp" />
 
     <android.support.v7.widget.AppCompatTextView

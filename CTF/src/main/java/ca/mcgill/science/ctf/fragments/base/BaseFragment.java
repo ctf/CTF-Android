@@ -21,8 +21,8 @@ import ca.allanwang.capsule.library.swiperecyclerview.SwipeRecyclerView;
 import ca.allanwang.capsule.library.swiperecyclerview.adapters.AnimationAdapter;
 import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.ITepid;
+import ca.mcgill.science.ctf.api.TepidApi;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.utils.Utils;
 import retrofit2.Call;
@@ -41,7 +41,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
     private Unbinder unbinder;
     private Call<C> mCall;
     private static final String TAG_TOKEN = "auth_token", TAG_SHORT_USER = "short_user";
-    protected ITEPID api;
+    protected ITepid api;
 
     public static Fragment getFragment(String token, String shortUser, Fragment fragment) {
         if (fragment == null) return null;
@@ -62,8 +62,8 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
         return fragment.getArguments().getString(TAG_SHORT_USER);
     }
 
-    public static ITEPID getAPI(Fragment fragment) {
-        return TEPIDAPI.Companion.getInstance(getToken(fragment), fragment.getContext());
+    public static ITepid getAPI(Fragment fragment) {
+        return TepidApi.Companion.getInstance(getToken(fragment), fragment.getContext());
     }
 
     @Override
@@ -184,7 +184,7 @@ public abstract class BaseFragment<I extends IItem, C> extends CapsuleSRVFragmen
         super.onDestroy();
     }
 
-    protected abstract Call<C> getAPICall(ITEPID api);
+    protected abstract Call<C> getAPICall(ITepid api);
 
     protected abstract void onResponseReceived(@NonNull C body, final ISwipeRecycler.OnRefreshStatus onRefreshStatus);
 

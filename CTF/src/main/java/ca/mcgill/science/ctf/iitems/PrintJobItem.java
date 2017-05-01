@@ -29,7 +29,7 @@ import ca.allanwang.capsule.library.event.RefreshEvent;
 import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.PrintData;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.TepidApi;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.views.PrintJobView;
@@ -183,7 +183,7 @@ public class PrintJobItem extends AbstractItem<PrintJobItem, PrintJobItem.ViewHo
         }
 
         private void toggleRefund(Context c, final PrintData printData) {
-            TEPIDAPI.Companion.getInstanceDangerously().refund(printData.get_id(), !printData.getRefunded()).enqueue(new Callback<Void>() {
+            TepidApi.Companion.getInstanceDangerously().refund(printData.get_id(), !printData.getRefunded()).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     EventBus.getDefault().post(new RefreshEvent(R.string.user_print_jobs, true));

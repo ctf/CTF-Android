@@ -8,8 +8,8 @@
 
     <version title="v1.6"/>
     <item text="Enabled autocorrect when changing printer status" />
-    <item text="Enable barcode scanner listener when search bar is opened (this is automatic)" />
-    <item text="" />
+    <item text="Enabled barcode scanner listener when search bar is opened (this is automatic)" />
+    <item text="Added user info on AccounJobFragment" />
     <item text="" />
     <item text="" />
     <item text="" />

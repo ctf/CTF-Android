@@ -12,7 +12,7 @@ import ca.allanwang.capsule.library.event.CClickEvent;
 import ca.allanwang.capsule.library.swiperecyclerview.SwipeRecyclerView;
 import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.ITepid;
 import ca.mcgill.science.ctf.api.PrintData;
 import ca.mcgill.science.ctf.fragments.base.BasePrintJobFragment;
 import ca.mcgill.science.ctf.iitems.UserHeaderItem;
@@ -29,7 +29,7 @@ public class AccountJobFragment extends BasePrintJobFragment {
     }
 
     @Override
-    protected Call<List<PrintData>> getAPICall(ITEPID api) {
+    protected Call<List<PrintData>> getAPICall(ITepid api) {
         return api.getUserPrintJobs(getShortUser());
     }
 

@@ -31,7 +31,7 @@ import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.api.PrinterTicket;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.TepidApi;
 import ca.mcgill.science.ctf.utils.Preferences;
 import ca.mcgill.science.ctf.views.PrinterInfoView;
 import retrofit2.Call;
@@ -197,7 +197,7 @@ public class RoomInfoItem extends AbstractItem<RoomInfoItem, RoomInfoItem.ViewHo
         }
 
         private void sendTicket(final PrinterInfo printer, final boolean isUp, String ticket) {
-            TEPIDAPI.Companion.getInstanceDangerously().setPrinterStatus(printer.get_id(), new PrinterTicket(isUp, ticket, null)).enqueue(new Callback<String>() {
+            TepidApi.Companion.getInstanceDangerously().setPrinterStatus(printer.get_id(), new PrinterTicket(isUp, ticket, null)).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.isSuccessful()) {

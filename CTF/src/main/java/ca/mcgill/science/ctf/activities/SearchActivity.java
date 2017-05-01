@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 import ca.allanwang.capsule.library.event.SnackbarEvent;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.ITepid;
 import ca.mcgill.science.ctf.api.SingleCallRequest;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.TepidApi;
 import ca.mcgill.science.ctf.api.User;
 import ca.mcgill.science.ctf.api.UserBarcode;
 import ca.mcgill.science.ctf.api.UserQuery;
@@ -91,7 +91,7 @@ public abstract class SearchActivity extends BaseActivity {
 
                     @Override
                     public boolean onOpen() {
-                        mBarcodeScanner = TEPIDAPI.Companion.getInstance(token, SearchActivity.this).scanBarcode();
+                        mBarcodeScanner = TepidApi.Companion.getInstance(token, SearchActivity.this).scanBarcode();
                         mBarcodeScanner.enqueue(new Callback<UserBarcode>() {
                             @Override
                             public void onResponse(Call<UserBarcode> call, Response<UserBarcode> response) {
@@ -129,7 +129,7 @@ public abstract class SearchActivity extends BaseActivity {
     }
 
     private void jumpToUser(long studentId) {
-        TEPIDAPI.Companion.getInstanceDangerously().getUser(studentId).enqueue(new Callback<User>() {
+        TepidApi.Companion.getInstanceDangerously().getUser(studentId).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (!call.isCanceled())
@@ -178,11 +178,11 @@ public abstract class SearchActivity extends BaseActivity {
 
     private class UserSearch extends SingleCallRequest<String, List<UserQuery>> {
 
-        private ITEPID api;
+        private ITepid api;
 
         private UserSearch(@NotNull String token, @NotNull Context c) {
             super(c, token);
-            api = TEPIDAPI.Companion.getInstance(token, c);
+            api = TepidApi.Companion.getInstance(token, c);
         }
 
         @NotNull

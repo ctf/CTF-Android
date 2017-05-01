@@ -10,7 +10,7 @@ import ca.allanwang.capsule.library.swiperecyclerview.SwipeRecyclerView;
 import ca.allanwang.capsule.library.swiperecyclerview.adapters.AnimationAdapter;
 import ca.allanwang.capsule.library.swiperecyclerview.interfaces.ISwipeRecycler;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.ITepid;
 import ca.mcgill.science.ctf.api.PrinterInfo;
 import ca.mcgill.science.ctf.fragments.base.BaseFragment;
 import ca.mcgill.science.ctf.iitems.UserHeaderItem;
@@ -34,7 +34,7 @@ public class DashboardFragment extends BaseFragment<RoomInfoItem, Map<String, Pr
     }
 
     @Override
-    protected Call<Map<String, PrinterInfo>> getAPICall(ITEPID api) {
+    protected Call<Map<String, PrinterInfo>> getAPICall(ITepid api) {
         return api.getPrinterInfo();
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 import ca.allanwang.capsule.library.interfaces.CPageFragment;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.ITepid;
 import ca.mcgill.science.ctf.api.PrintData;
 import ca.mcgill.science.ctf.fragments.base.BaseFragment;
 import ca.mcgill.science.ctf.fragments.base.BasePrintJobFragment;
@@ -56,7 +56,7 @@ public class RoomJobFragment extends BasePrintJobFragment implements CPageFragme
     }
 
     @Override
-    protected Call<List<PrintData>> getAPICall(ITEPID api) {
+    protected Call<List<PrintData>> getAPICall(ITepid api) {
         return api.getPrintQueue(room.name, 50);
     }
 

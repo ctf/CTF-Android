@@ -19,28 +19,28 @@ import java.io.File
  * API for data retrieval
  */
 
-class TEPIDAPI private constructor(token: String?, context: Context) {
+class TepidApi private constructor(token: String?, context: Context) {
 
-    private val api: ITEPID
+    private val api: ITepid
 
     companion object {
-        private var instance: ITEPID? = null
+        private var instance: ITepid? = null
 
-        fun getInstance(token: String?, context: Context): ITEPID {
+        fun getInstance(token: String?, context: Context): ITepid {
             if (instance == null) {
-                instance = TEPIDAPI(token, context).api
+                instance = TepidApi(token, context).api
                 return instance!!
             } else return instance!!
         }
 
         //if there is no instance, things will go badly...
-        fun getInstanceDangerously(): ITEPID {
+        fun getInstanceDangerously(): ITepid {
             return instance!!
         }
 
         //forcefully define new instance
         fun setInstance(token: String?, context: Context): Unit {
-            instance = TEPIDAPI(token, context).api
+            instance = TepidApi(token, context).api
         }
 
         fun invalidate(): Unit {
@@ -54,7 +54,7 @@ class TEPIDAPI private constructor(token: String?, context: Context) {
         val cache = Cache(cacheDir, cacheSize)
 
         val client = OkHttpClient.Builder()
-                .addInterceptor(CTFInterceptor(token, context))
+                .addInterceptor(CtfInterceptor(token, context))
                 .cache(cache)
 
         //add logger and stetho last
@@ -73,7 +73,7 @@ class TEPIDAPI private constructor(token: String?, context: Context) {
                 .addConverterFactory(GsonConverterFactory.create(gson.create()))
                 .client(client.build())
                 .build();
-        api = retrofit.create(ITEPID::class.java)
+        api = retrofit.create(ITepid::class.java)
     }
 
 }

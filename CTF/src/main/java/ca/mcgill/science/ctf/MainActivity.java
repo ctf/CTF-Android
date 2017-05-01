@@ -13,7 +13,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -32,12 +31,11 @@ import ca.allanwang.capsule.library.item.DrawerItem;
 import ca.allanwang.capsule.library.logging.CLog;
 import ca.allanwang.capsule.library.logging.CallbackLogTree;
 import ca.mcgill.science.ctf.activities.SearchActivity;
-import ca.mcgill.science.ctf.api.TEPIDAPI;
+import ca.mcgill.science.ctf.api.TepidApi;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.AccountJobFragment;
 import ca.mcgill.science.ctf.fragments.base.BaseFragment;
 import ca.mcgill.science.ctf.fragments.DashboardFragment;
-import ca.mcgill.science.ctf.fragments.MyAccount;
 import ca.mcgill.science.ctf.fragments.PreTicketFragment;
 import ca.mcgill.science.ctf.fragments.RoomsViewPagerFragment;
 import ca.mcgill.science.ctf.fragments.SettingsFragment;
@@ -58,7 +56,7 @@ public class MainActivity extends SearchActivity {
             CrashlyticsCore core = new CrashlyticsCore.Builder().build();
             Fabric.with(this, new Crashlytics.Builder().core(core).build(), new Answers(), new Crashlytics());
             Timber.plant(new CallbackLogTree((priority, tag, message, t) -> {
-                if (priority == Log.ERROR)
+                if (priority == CLog.ERROR)
                     if (t == null) Crashlytics.logException(new Exception(message));
                     else Crashlytics.logException(t);
                 else Crashlytics.log(priority, tag, message);
@@ -67,7 +65,7 @@ public class MainActivity extends SearchActivity {
         Preferences.setTheme(this);
         mToken = getIntent().getStringExtra(StartActivity.EXTRA_TOKEN);
         CLog.d("Token received %s", mToken);
-        TEPIDAPI.Companion.setInstance(mToken, this); //to be sure, set api instance here
+        TepidApi.Companion.setInstance(mToken, this); //to be sure, set api instance here
         super.onCreate(savedInstanceState);
         new CustomizeToolbar().withClickEvents(true);
         onVersionUpdate(BuildConfig.VERSION_CODE, () -> ChangelogDialog.show(MainActivity.this, R.xml.changelog));
@@ -113,8 +111,7 @@ public class MainActivity extends SearchActivity {
         return new CDrawerItem[]{
                 new TepidDrawerItem(R.string.dashboard, GoogleMaterial.Icon.gmd_dashboard, DashboardFragment::new),
                 new TepidDrawerItem(R.string.roominfo, GoogleMaterial.Icon.gmd_weekend, RoomsViewPagerFragment::new),
-                new TepidDrawerItem(R.string.my_account, GoogleMaterial.Icon.gmd_person, MyAccount::new),
-                new TepidDrawerItem(R.string.user_print_jobs, GoogleMaterial.Icon.gmd_print, AccountJobFragment::new),
+                new TepidDrawerItem(R.string.user_print_jobs, GoogleMaterial.Icon.gmd_person, AccountJobFragment::new),
                 new TepidDrawerItem(R.string.ticket, GoogleMaterial.Icon.gmd_bug_report, PreTicketFragment::new),
                 new TepidDrawerItem(R.string.settings, GoogleMaterial.Icon.gmd_settings, SettingsFragment::new)
 //                new TepidDrawerItem(R.string.reportproblem, GoogleMaterial.Icon.gmd_error, ReportProblemFragment::new)
@@ -187,7 +184,7 @@ public class MainActivity extends SearchActivity {
 
     public void removeAccount() {
         AccountUtil.removeAccount(() -> {
-            TEPIDAPI.Companion.invalidate();
+            TepidApi.Companion.invalidate();
             Intent intent = new Intent(this, StartActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

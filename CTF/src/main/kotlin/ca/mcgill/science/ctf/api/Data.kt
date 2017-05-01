@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Created by Allan Wang on 18/03/2017.
  *
- * All the valid data structures for ITEPID
+ * All the valid data structures for ITepid
  */
 
 /**

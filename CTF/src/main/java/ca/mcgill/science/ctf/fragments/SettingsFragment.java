@@ -14,7 +14,7 @@ import ca.allanwang.capsule.library.event.CFabEvent;
 import ca.allanwang.capsule.library.interfaces.CFragmentCore;
 import ca.mcgill.science.ctf.MainActivity;
 import ca.mcgill.science.ctf.R;
-import ca.mcgill.science.ctf.api.ITEPID;
+import ca.mcgill.science.ctf.api.ITepid;
 import ca.mcgill.science.ctf.auth.AccountUtil;
 import ca.mcgill.science.ctf.fragments.base.BaseFragment;
 import retrofit2.Call;
@@ -27,7 +27,7 @@ import retrofit2.Response;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements CFragmentCore{
 
-    private ITEPID mAPI;
+    private ITepid mAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

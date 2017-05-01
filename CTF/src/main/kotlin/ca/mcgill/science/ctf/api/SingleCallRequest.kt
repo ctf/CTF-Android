@@ -14,7 +14,7 @@ import retrofit2.Response
 abstract class SingleCallRequest<in I, C>(c: Context, token: String?) {
 
     private var mCall: Call<C>? = null
-    private val mAPI: ITEPID = TEPIDAPI.getInstance(token, c)
+    private val mAPI: ITepid = TepidApi.getInstance(token, c)
     val EMPTY_RESULT = -1
 
     fun request(input: I) {
