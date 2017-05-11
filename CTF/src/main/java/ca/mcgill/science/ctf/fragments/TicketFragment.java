@@ -34,7 +34,8 @@ public class TicketFragment extends BaseWebViewFragment {
         Bundle args = new Bundle();
         if (user != null) {
             args.putString(EXTRA_STUDENT_NAME, user.getRealName());
-            args.putString(EXTRA_STUDENT_ID, Integer.toString(user.getStudentId()));
+            if (user.getStudentId() != null)
+                args.putString(EXTRA_STUDENT_ID, Integer.toString(user.getStudentId()));
             args.putString(EXTRA_STUDENT_EMAIL, user.getEmail());
         }
         args.putSerializable(EXTRA_PRINTER, printer);
@@ -49,7 +50,7 @@ public class TicketFragment extends BaseWebViewFragment {
             throw new RuntimeException("Args not set in ticket fragment; use getInstance");
         TicketData data = new TicketData();
         data.setName(args.getString(EXTRA_STUDENT_NAME));
-        data.setStudentNum(args.getString(EXTRA_STUDENT_ID));
+        data.setStudentNum(args.getString(EXTRA_STUDENT_ID, ""));
         data.setEmail(args.getString(EXTRA_STUDENT_EMAIL));
         data.setPrinter((TicketData.PrinterId) args.getSerializable(EXTRA_PRINTER));
         data.setProblem(args.getString(EXTRA_PROBLEM));

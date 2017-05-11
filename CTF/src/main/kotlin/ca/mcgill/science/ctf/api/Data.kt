@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Session JSON object
  */
-class SessionRequest(val username: String, val password: String, val persistent: Boolean = true, val permanent: Boolean = true) {
+class SessionRequest(val username: String, val password: String, val persistent: Boolean, val permanent: Boolean) {
     constructor(username: String, password: String) : this(username, password, true, true)
 }
 
@@ -22,7 +22,7 @@ class Session(val role: String, val user: User, val _id: String)
 /**
  * User info; various bits of information for a given student
  */
-class User(val _id: String, val salutation: String, val realName: String, val displayName: String, val shortUser: String, var nick: String, val email: String, val studentId: Int, val faculty: String, val colorPrinting: Boolean)
+class User(val _id: String, val salutation: String, val realName: String, val displayName: String, val shortUser: String, var nick: String?, val email: String, val studentId: Int?, val faculty: String, val colorPrinting: Boolean)
 
 /**
  * User Query; student info from autoSuggest
