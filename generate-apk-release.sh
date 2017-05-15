@@ -20,8 +20,8 @@ cp -R $MODULE_NAME/build/outputs/apk/$APK_NAME.apk $HOME/$VERSION_KEY/
 # go to home and setup git
 echo "Clone Git"
 cd $HOME
-git config --global fullUser.email "$EMAIL"
-git config --global fullUser.name "$USER_AUTH CI"
+git config --global user.email "$EMAIL"
+git config --global user.name "$USER_AUTH CI"
 # clone the repository in the buildApk folder
 git clone --quiet --branch=master  https://$USER_AUTH:$GITHUB_API_KEY@github.com/$RELEASE_REPO.git  master > /dev/null
 # create version file
