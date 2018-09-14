@@ -1,18 +1,31 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.1.2-2'
-    ext.dokka_version = '0.9.13'
+    ext {
+        setup = [
+                compileSdk: 28,
+                buildTools: "28.0.2",
+                minSdk    : 21,
+                targetSdk : 28
+        ]
+        release = [
+                versionName: "0.1.0",
+                versionCode: 100
+        ]
+        versions = [
+                kotlin  : '1.2.60',
+                androidX: '1.0.0-rc02',
+                constraintLayout: '1.1.3'
+        ]
+    }
     repositories {
         jcenter()
         mavenCentral()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
-        classpath 'me.tatarka:gradle-retrolambda:3.6.0'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha10'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -31,20 +44,3 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task generateChangelogMd() {
-    def parsedProjectXml = (new XmlParser()).parse("$project.rootDir/CTF/src/main/res/xml/changelog.xml")
-    def sw = new StringWriter()
-    sw.append("# Changelog\n")
-    parsedProjectXml.depthFirst().each {
-        switch (it.name()) {
-            case "version":
-                sw.append("\n## ${it.@title}\n")
-                break
-            case "item":
-                if (it.@text?.trim())
-                    sw.append("* ${it.@text}\n")
-        }
-    }
-    def changelogMd = new File("$project.rootDir/docs/Changelog.md")
-    changelogMd.write(sw.toString())
-}

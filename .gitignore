@@ -1,3 +1,6 @@
+.DS_Store
+*.iml
+
 # Built application files
 *.apk
 *.ap_
@@ -33,10 +36,7 @@ proguard/
 captures/
 
 # Intellij
-.idea/workspace.xml
-.idea/libraries/
-.idea/tasks.xml
-.idea/runConfigurations.xml
+.idea/
 
 # Keystore files
 *.jks

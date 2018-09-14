@@ -1,0 +1,103 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+android {
+    compileSdkVersion setup.compileSdk
+    buildToolsVersion setup.buildTools
+
+
+    defaultConfig {
+        applicationId "ca.mcgill.science.ctf.android"
+        minSdkVersion setup.minSdk
+        targetSdkVersion setup.targetSdk
+        versionCode release.versionCode
+        versionName release.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    def releaseKeystoreFile = file("../files/release.keystore")
+    def releasePropFile = file("../files/release.properties")
+    def withReleaseSigning = releaseKeystoreFile.exists() && releasePropFile.exists()
+
+    signingConfigs {
+        debug {
+            storeFile file("../files/debug.keystore")
+            storePassword "ctfdebug"
+            keyAlias "ctfdebug"
+            keyPassword "ctfdebug"
+        }
+
+        if (withReleaseSigning) {
+
+            def releaseProps = new Properties()
+            releasePropFile.withInputStream { releaseProps.load(it) }
+
+            release {
+                storeFile releaseKeystoreFile
+                storePassword releaseProps.getProperty('storePassword')
+                keyAlias releaseProps.getProperty('keyAlias')
+                keyPassword releaseProps.getProperty('keyPassword')
+            }
+        }
+
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            resValue "string", "app_name", "CTF Debug"
+        }
+
+        release {
+            minifyEnabled false
+            resValue "string", "app_name", "CTF"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (withReleaseSigning) signingConfig signingConfigs.release
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/library_release.kotlin_module'
+    }
+}
+
+repositories {
+    google()
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation "androidx.core:core-ktx:${versions.androidX}"
+    implementation "androidx.appcompat:appcompat:${versions.androidX}"
+    implementation "androidx.recyclerview:recyclerview:${versions.androidX}"
+    implementation "androidx.annotation:annotation:${versions.androidX}"
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
+    implementation "androidx.cardview:cardview:${versions.androidX}"
+
+    testImplementation 'junit:junit:4.12'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
