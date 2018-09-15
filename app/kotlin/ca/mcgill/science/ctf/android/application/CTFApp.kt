@@ -1,4 +1,4 @@
-package ca.mcgill.science.ctf.android
+package ca.mcgill.science.ctf.android.application
 
 import android.app.Application
 import ca.mcgill.science.ctf.android.preferences.Prefs

@@ -1,4 +1,4 @@
-package ca.mcgill.science.ctf.android.activities
+package ca.mcgill.science.ctf.android.login
 
 import androidx.appcompat.app.AppCompatActivity
 

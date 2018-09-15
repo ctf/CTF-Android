@@ -69,10 +69,24 @@ android {
         }
     }
 
+    def srcDirs = [
+            'application',
+            'login',
+            'preferences'
+    ]
+
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        main {
+            def namespace = 'ca/mcgill/science/ctf/android'
+
+            manifest.srcFile "kotlin/$namespace/AndroidManifest.xml"
+            java.srcDir 'kotlin'
+            java.includes = srcDirs.collect { namespace + it + "/**/*.kt" }
+            res.srcDirs = ["kotlin/$namespace/res"]
+            srcDirs.forEach {
+                res.srcDirs += "kotlin/$namespace/$it/res"
+            }
+        }
     }
 
     packagingOptions {
