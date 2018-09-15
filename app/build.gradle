@@ -90,6 +90,16 @@ dependencies {
     implementation "androidx.annotation:annotation:${versions.androidX}"
     implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
     implementation "androidx.cardview:cardview:${versions.androidX}"
+
+    // LiveData + ViewModel
+
+    implementation "android.arch.lifecycle:extensions:${versions.extensions}"
+
+    // Navigation
+
+    implementation 'androidx.navigation:navigation-fragment:' + rootProject.navigationVersion
+    implementation 'androidx.navigation:navigation-ui:' + rootProject.navigationVersion
+
     implementation project(':api-tepid')
 
     testImplementation 'junit:junit:4.12'

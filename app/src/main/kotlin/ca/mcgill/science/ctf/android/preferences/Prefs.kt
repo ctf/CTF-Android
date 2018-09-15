@@ -14,4 +14,8 @@ object Prefs {
 
     val tepidToken by pref("TEPID_TOKEN", "")
 
+    val shortUser by pref("SHORT_USER", "")
+
+    val email by pref("EMAIL", "")
+
 }
