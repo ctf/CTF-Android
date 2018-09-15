@@ -1,9 +1,6 @@
 package ca.mcgill.science.ctf.tepid.api
 
-import ca.mcgill.science.tepid.models.bindings.CTFER
-import ca.mcgill.science.tepid.models.bindings.ELDER
-import ca.mcgill.science.tepid.models.bindings.USER
-import ca.mcgill.science.tepid.models.data.*
+import ca.mcgill.science.ctf.tepid.models.*
 import kotlinx.coroutines.experimental.Deferred
 import okhttp3.ResponseBody
 import retrofit2.http.*
@@ -96,7 +93,7 @@ interface ITepid {
      */
     @PUT("users/{sam}")
     @MinAuthority(NONE)
-    fun createLocalAdmin(@Path("sam") sam: String, @Body admin: FullUser): Deferred<PutResponse>
+    fun createLocalAdmin(@Path("sam") sam: String, @Body admin: User): Deferred<PutResponse>
 
     /**
      * Gets a list of short users similar to the one supplied
@@ -164,7 +161,7 @@ interface ITepid {
      */
     @PUT("destinations")
     @MinAuthority(ELDER)
-    fun putDestinations(destinations: Map<String, FullDestination>): Deferred<PutResponse>
+    fun putDestinations(destinations: Map<String, Destination>): Deferred<PutResponse>
 
     /**
      * Delete the specified destination
