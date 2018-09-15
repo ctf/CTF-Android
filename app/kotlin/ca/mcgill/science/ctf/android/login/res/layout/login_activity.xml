@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingEnd="@dimen/activity_horizontal_margin">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/login_input_sam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/login_input_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/login_fab_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

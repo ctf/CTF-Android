@@ -70,9 +70,11 @@ android {
     }
 
     def srcDirs = [
+            'api',
             'application',
             'login',
-            'preferences'
+            'preferences',
+            'utils',
     ]
 
     sourceSets {
@@ -81,7 +83,7 @@ android {
 
             manifest.srcFile "kotlin/$namespace/AndroidManifest.xml"
             java.srcDir 'kotlin'
-            java.includes = srcDirs.collect { namespace + it + "/**/*.kt" }
+            java.includes = srcDirs.collect { "$namespace/$it/**/*.kt" }
             res.srcDirs = ["kotlin/$namespace/res"]
             srcDirs.forEach {
                 res.srcDirs += "kotlin/$namespace/$it/res"
@@ -111,11 +113,17 @@ dependencies {
     implementation "android.arch.navigation:navigation-fragment-ktx:${versions.navigation}"
     implementation "android.arch.navigation:navigation-ui-ktx:${versions.navigation}"
 
+    implementation "com.google.android.material:material:${versions.material}"
+
+    implementation "com.mikepenz:iconics-core:${versions.iconics}"
+    implementation 'com.mikepenz:google-material-typeface:3.0.1.2.original@aar'
+
     implementation project(':api-tepid')
 
     testImplementation 'junit:junit:4.12'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
 }
 
 kotlin {

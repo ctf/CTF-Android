@@ -12,10 +12,12 @@ object Prefs {
         sp = c.applicationContext.getSharedPreferences(NAME, Context.MODE_PRIVATE)
     }
 
-    val tepidToken by pref("TEPID_TOKEN", "")
+    var tepidToken by pref("TEPID_TOKEN", "")
 
-    val shortUser by pref("SHORT_USER", "")
+    var shortUser by pref("SHORT_USER", "")
 
-    val email by pref("EMAIL", "")
+    var email by pref("EMAIL", "")
+
+    var role by pref("ROLE", "")
 
 }

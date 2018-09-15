@@ -6,7 +6,7 @@ import okhttp3.ResponseBody
 import retrofit2.http.*
 import java.io.InputStream
 
-interface ITepid {
+interface TepidApi {
 
     /*
      * -------------------------------------------
@@ -345,13 +345,13 @@ private const val NONE = "none"
  * -------------------------------------------
  */
 
-fun ITepid.setNickname(id: Int, nickname: String) = setNickname(id.toString(), nickname)
-fun ITepid.setExchange(id: Int, enable: Boolean) = setExchange(id.toString(), enable)
-fun ITepid.enableColor(id: Int, enable: Boolean) = enableColor(id.toString(), enable)
-fun ITepid.setJobExpiration(id: Int, jobExpiration: Long) = setJobExpiration(id.toString(), jobExpiration)
-fun ITepid.getQuota(id: Int) = getQuota(id.toString())
-fun ITepid.getUserPrintJobs(id: Int) = getUserPrintJobs(id.toString())
-fun ITepid.refundJob(id: String) = refundJob(id, true)
+fun TepidApi.setNickname(id: Int, nickname: String) = setNickname(id.toString(), nickname)
+fun TepidApi.setExchange(id: Int, enable: Boolean) = setExchange(id.toString(), enable)
+fun TepidApi.enableColor(id: Int, enable: Boolean) = enableColor(id.toString(), enable)
+fun TepidApi.setJobExpiration(id: Int, jobExpiration: Long) = setJobExpiration(id.toString(), jobExpiration)
+fun TepidApi.getQuota(id: Int) = getQuota(id.toString())
+fun TepidApi.getUserPrintJobs(id: Int) = getUserPrintJobs(id.toString())
+fun TepidApi.refundJob(id: String) = refundJob(id, true)
 /*
  * -------------------------------------------
  * Query extensions
@@ -359,9 +359,9 @@ fun ITepid.refundJob(id: String) = refundJob(id, true)
  * Supplies defaults to certain queries
  * -------------------------------------------
  */
-fun ITepid.queryUsers(query: String) = queryUsers(query, -1)
+fun TepidApi.queryUsers(query: String) = queryUsers(query, -1)
 
-fun ITepid.getPrintJobs(query: String) = getPrintJobs(query, -1)
+fun TepidApi.getPrintJobs(query: String) = getPrintJobs(query, -1)
 
-fun ITepid.getJobChanges(id: String) = getJobChanges(id, "longpoll", "now")
-//fun ITepid.getJobChanges(id: String, since: Long) = getJobChanges(id, "longpoll", since.toString())
+fun TepidApi.getJobChanges(id: String) = getJobChanges(id, "longpoll", "now")
+//fun TepidApi.getJobChanges(id: String, since: Long) = getJobChanges(id, "longpoll", since.toString())
