@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
+
 android {
     compileSdkVersion setup.compileSdk
     buildToolsVersion setup.buildTools
@@ -77,12 +80,6 @@ android {
     }
 }
 
-repositories {
-    google()
-    jcenter()
-    maven { url "https://jitpack.io" }
-}
-
 dependencies {
     implementation "androidx.core:core-ktx:${versions.androidX}"
     implementation "androidx.appcompat:appcompat:${versions.androidX}"
@@ -93,12 +90,12 @@ dependencies {
 
     // LiveData + ViewModel
 
-    implementation "android.arch.lifecycle:extensions:${versions.extensions}"
+    implementation "android.arch.lifecycle:extensions:${versions.lifecycle}"
 
     // Navigation
 
-    implementation 'androidx.navigation:navigation-fragment:' + rootProject.navigationVersion
-    implementation 'androidx.navigation:navigation-ui:' + rootProject.navigationVersion
+    implementation "android.arch.navigation:navigation-fragment-ktx:${versions.navigation}"
+    implementation "android.arch.navigation:navigation-ui-ktx:${versions.navigation}"
 
     implementation project(':api-tepid')
 

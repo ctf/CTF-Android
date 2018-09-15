@@ -1,10 +1,5 @@
 apply plugin: 'kotlin'
 
-repositories {
-    jcenter()
-    maven { url "https://jitpack.io" }
-}
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
 
