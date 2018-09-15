@@ -90,6 +90,7 @@ dependencies {
     implementation "androidx.annotation:annotation:${versions.androidX}"
     implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
     implementation "androidx.cardview:cardview:${versions.androidX}"
+    implementation project(':api-tepid')
 
     testImplementation 'junit:junit:4.12'
 

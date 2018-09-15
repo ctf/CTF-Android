@@ -1,0 +1,27 @@
+apply plugin: 'kotlin'
+
+repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-moshi:${versions.retrofit}"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:${versions.retrofitCoroutines}"
+
+    implementation "ca.mcgill.tepid-commons:models:${versions.tepid}"
+
+    implementation "com.squareup.moshi:moshi:${versions.moshi}"
+    implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp3}"
+
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
